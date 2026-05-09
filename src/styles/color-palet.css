@@ -1,0 +1,819 @@
+/*
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *  LUXURY LIGHT THEME — COLOR SYSTEM
+ *  Platform: Food Ordering & Catering Management
+ *  Theme: Refined Warmth — Champagne · Ivory · Gold · Onyx · Sage
+ *
+ *  Philosophy
+ *  ──────────
+ *  This palette draws from Parisian patisserie interiors and fine-dining
+ *  table design: warm ivory foundations, aged-gold accents, crisp onyx
+ *  typography, and a single muted sage for contrast balance.
+ *  Every value is chosen for perceptual harmony — not just aesthetic preference.
+ *
+ *  Structure
+ *  ─────────
+ *  1. Raw Color Primitives (Scales)
+ *  2. Background System
+ *  3. Surface & Elevation
+ *  4. Typography
+ *  5. Brand & Interactive
+ *  6. Borders & Dividers
+ *  7. Feedback States (Success · Warning · Error · Info)
+ *  8. Interactive States (Hover · Focus · Active · Disabled)
+ *  9. Overlay & Scrim
+ * 10. Shadow System
+ * 11. Radius System
+ * 12. Component Tokens (Buttons · Inputs · Badges · Tags · Cards · Nav · Sidebar)
+ * ═══════════════════════════════════════════════════════════════════════════════
+ */
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   1. RAW COLOR PRIMITIVES
+   Scale notation: 50 = lightest → 950 = darkest
+   These are never used directly in components — reference component tokens.
+   ───────────────────────────────────────────────────────────────────────────── */
+   :root {
+
+    /* ── Ivory Scale (base background family) ── */
+    --ivory-50:  #FEFCF8;   /* page canvas — near-white with warmth             */
+    --ivory-100: #FBF7EF;   /* default body background                          */
+    --ivory-150: #F7F1E5;   /* subtle surface lift                              */
+    --ivory-200: #F2E9D8;   /* card background                                  */
+    --ivory-300: #E8D9C0;   /* elevated border, section divider                 */
+    --ivory-400: #D9C4A3;   /* muted border                                     */
+    --ivory-500: #C3A87E;   /* decorative border                                */
+  
+    /* ── Champagne / Gold Scale (brand accent family) ── */
+    --gold-100:  #FDF5E0;   /* gold tint background (badges, highlights)        */
+    --gold-200:  #F5E2A8;   /* gold fill light                                  */
+    --gold-300:  #E8C96A;   /* gold mid — hover accents                         */
+    --gold-400:  #D4A832;   /* brand gold — primary accent                      */
+    --gold-500:  #B88A1A;   /* gold pressed / active                            */
+    --gold-600:  #8F6A0E;   /* gold dark — text on gold bg                      */
+    --gold-700:  #5E4408;   /* deep gold — secondary text on light gold         */
+  
+    /* ── Terracotta / Brand Scale (CTA family — warmth without aggression) ── */
+    --terra-100: #FBF0EA;   /* brand tint bg                                    */
+    --terra-200: #F3D4C2;   /* brand light fill                                 */
+    --terra-300: #E4A97F;   /* brand mid — link hover                           */
+    --terra-400: #C97645;   /* primary brand — buttons, active links            */
+    --terra-500: #A85A2C;   /* brand pressed                                    */
+    --terra-600: #7D4020;   /* brand dark — text on brand bg                    */
+    --terra-700: #4E2410;   /* brand deepest                                    */
+  
+    /* ── Sage / Olive Scale (secondary / success family) ── */
+    --sage-100:  #EEF3EC;   /* sage tint bg                                     */
+    --sage-200:  #CFDECB;   /* sage light                                       */
+    --sage-300:  #9CBD95;   /* sage mid                                         */
+    --sage-400:  #607A5B;   /* sage solid — secondary actions, success          */
+    --sage-500:  #435840;   /* sage dark                                        */
+    --sage-600:  #2C3D29;   /* sage deepest — text on sage bg                  */
+  
+    /* ── Onyx / Ink Scale (typography family) ── */
+    --onyx-50:   #F5F3F1;   /* ink tint — disabled backgrounds                 */
+    --onyx-100:  #DDD8D3;   /* placeholder text, muted icons                   */
+    --onyx-200:  #B5ADA5;   /* subtle text, footnotes                           */
+    --onyx-300:  #8A8078;   /* secondary body text                              */
+    --onyx-400:  #5E5650;   /* meta text, labels                                */
+    --onyx-500:  #3A322C;   /* body text                                        */
+    --onyx-600:  #231D18;   /* headings                                         */
+    --onyx-700:  #140F0C;   /* display headings — near-black with warmth        */
+  
+    /* ── Blush / Rose Scale (error / destructive family) ── */
+    --blush-100: #FDF0EE;   /* error bg tint                                    */
+    --blush-200: #F8D0CA;   /* error fill light                                 */
+    --blush-300: #EDA08E;   /* error border                                     */
+    --blush-400: #D45C44;   /* error solid                                      */
+    --blush-500: #A63C26;   /* error dark                                       */
+    --blush-600: #6E2418;   /* error text on light bg                           */
+  
+    /* ── Sky Blue Scale (info family) ── */
+    --sky-100:   #EEF5FB;   /* info bg tint                                     */
+    --sky-200:   #C8DFF4;   /* info fill light                                  */
+    --sky-300:   #85B5E2;   /* info border                                      */
+    --sky-400:   #3A7EC4;   /* info solid                                       */
+    --sky-500:   #2158A0;   /* info dark                                        */
+    --sky-600:   #0E3670;   /* info text on light bg                            */
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     2. BACKGROUND SYSTEM
+     Six semantic layers — composited via z-index. Never mix layers.
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    /* Page-level canvas — the outermost background */
+    --bg-canvas:          var(--ivory-100);   /* #FBF7EF — warm white body        */
+    --bg-canvas-gradient: linear-gradient(
+                            160deg,
+                            #FBF7EF 0%,
+                            #F5EFE3 60%,
+                            #EDE3D4 100%
+                          );                  /* subtle depth for page body        */
+  
+    /* Raised surfaces — cards, panels, modals */
+    --bg-surface:         var(--ivory-50);    /* #FEFCF8 — slightly lighter card   */
+    --bg-surface-raised:  #FFFFFF;            /* absolute white — modal, dropdown  */
+    --bg-surface-sunken:  var(--ivory-150);   /* #F7F1E5 — inset / well            */
+  
+    /* Section / zone backgrounds — content partitions */
+    --bg-section:         var(--ivory-200);   /* #F2E9D8 — alternating sections    */
+    --bg-section-dark:    var(--onyx-600);    /* #231D18 — dark hero / sidebar     */
+  
+    /* Interactive surface tints (unselected tabs, empty states) */
+    --bg-subtle:          #FDFAF6;            /* barely-there warm white           */
+    --bg-subtle-hover:    var(--ivory-150);   /* hover on subtle surfaces          */
+  
+    /* Brand-tinted backgrounds */
+    --bg-brand-tint:      var(--terra-100);   /* #FBF0EA — brand color wash        */
+    --bg-gold-tint:       var(--gold-100);    /* #FDF5E0 — gold wash               */
+    --bg-sage-tint:       var(--sage-100);    /* #EEF3EC — sage wash               */
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     3. SURFACE & ELEVATION
+     Glassmorphic layers for premium depth; backdrop-filter supported browsers.
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    /* Frosted glass panel (navigation, sticky headers) */
+    --surface-glass-bg:      rgba(254, 252, 248, 0.80);
+    --surface-glass-border:  rgba(216, 200, 178, 0.55);
+    --surface-glass-blur:    blur(20px) saturate(1.3);
+  
+    /* Dark frosted glass (hero section, sidebar) */
+    --surface-glass-dark-bg:     rgba(30, 22, 15, 0.88);
+    --surface-glass-dark-border: rgba(255, 255, 255, 0.10);
+    --surface-glass-dark-blur:   blur(24px) saturate(1.2);
+  
+    /* Card highlight shimmer (top-edge light reflection) */
+    --surface-card-sheen:    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     4. TYPOGRAPHY
+     Hierarchy: Display → Heading → Body → Caption → Label
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    /* Text Colors — semantic roles */
+    --text-display:      var(--onyx-700);     /* #140F0C — hero titles             */
+    --text-heading:      var(--onyx-600);     /* #231D18 — section headings        */
+    --text-body:         var(--onyx-500);     /* #3A322C — default reading text    */
+    --text-secondary:    var(--onyx-400);     /* #5E5650 — meta, labels            */
+    --text-muted:        var(--onyx-300);     /* #8A8078 — hints, placeholders     */
+    --text-placeholder:  var(--onyx-200);     /* #B5ADA5 — input placeholders      */
+    --text-disabled:     var(--onyx-100);     /* #DDD8D3 — disabled form labels    */
+  
+    /* Text Colors — on dark surfaces */
+    --text-on-dark:          #FBF7EF;         /* primary text on dark bg           */
+    --text-on-dark-secondary: rgba(251, 247, 239, 0.72);  /* secondary on dark    */
+    --text-on-dark-muted:     rgba(251, 247, 239, 0.48);  /* hints on dark        */
+  
+    /* Text Colors — on brand/accent surfaces */
+    --text-on-brand:     #FEFCF8;            /* text on terra-400 buttons         */
+    --text-on-gold:      var(--gold-700);    /* #5E4408 — text on gold badges     */
+    --text-on-sage:      var(--sage-600);    /* #2C3D29 — text on sage badges     */
+  
+    /* Interactive text */
+    --text-link:         var(--terra-400);   /* #C97645 — inline link             */
+    --text-link-hover:   var(--terra-500);   /* #A85A2C — link hover              */
+    --text-link-visited: var(--onyx-400);    /* visited — subtle desaturation     */
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     5. BRAND & INTERACTIVE COLORS
+     Brand identity + interactive element fills.
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    /* Primary brand (terracotta — warmth, appetite) */
+    --brand-primary:        var(--terra-400);   /* #C97645 — buttons, active        */
+    --brand-primary-hover:  var(--terra-500);   /* #A85A2C — hover                  */
+    --brand-primary-active: var(--terra-600);   /* #7D4020 — pressed                */
+    --brand-primary-tint:   var(--terra-100);   /* #FBF0EA — bg tint                */
+    --brand-primary-light:  var(--terra-200);   /* #F3D4C2 — light fill             */
+    --brand-primary-text:   var(--terra-600);   /* #7D4020 — text on primary tint   */
+  
+    /* Secondary brand (gold — luxury, premium) */
+    --brand-secondary:        var(--gold-400);  /* #D4A832 — accent, highlights     */
+    --brand-secondary-hover:  var(--gold-500);  /* #B88A1A — hover                  */
+    --brand-secondary-active: var(--gold-600);  /* #8F6A0E — pressed                */
+    --brand-secondary-tint:   var(--gold-100);  /* #FDF5E0 — bg tint                */
+    --brand-secondary-text:   var(--gold-700);  /* #5E4408 — text on gold tint      */
+  
+    /* Tertiary brand (sage — freshness, natural) */
+    --brand-tertiary:        var(--sage-400);   /* #607A5B — secondary CTA, icons   */
+    --brand-tertiary-hover:  var(--sage-500);   /* #435840 — hover                  */
+    --brand-tertiary-tint:   var(--sage-100);   /* #EEF3EC — bg tint                */
+    --brand-tertiary-text:   var(--sage-600);   /* #2C3D29 — text on sage tint      */
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     6. BORDERS & DIVIDERS
+     Five levels of separation from invisible to emphatic.
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    /* Hairlines — structural separation without visual weight */
+    --border-hairline:    1px solid rgba(210, 193, 168, 0.35);   /* barely-there    */
+    --border-subtle:      1px solid rgba(210, 193, 168, 0.55);   /* card outlines   */
+    --border-default:     1px solid var(--ivory-300);             /* #E8D9C0 panels  */
+    --border-strong:      1px solid var(--ivory-400);             /* #D9C4A3 emphasis*/
+    --border-heavy:       1px solid var(--onyx-100);              /* dark dividers   */
+  
+    /* Brand-tinted borders */
+    --border-brand:       1px solid var(--terra-300);             /* #E4A97F CTA edge*/
+    --border-gold:        1px solid var(--gold-300);              /* #E8C96A gold    */
+    --border-sage:        1px solid var(--sage-300);              /* #9CBD95 sage    */
+  
+    /* Semantic borders */
+    --border-success:     1px solid var(--sage-300);
+    --border-warning:     1px solid var(--gold-300);
+    --border-error:       1px solid var(--blush-300);
+    --border-info:        1px solid var(--sky-300);
+  
+    /* Decorative — ornamental separators (section rules, card headers) */
+    --border-ornament:    1px solid var(--gold-200);              /* #F5E2A8 luxury  */
+    --border-ornament-gradient: linear-gradient(
+                                90deg,
+                                transparent,
+                                var(--gold-300) 40%,
+                                var(--gold-300) 60%,
+                                transparent
+                              );                                  /* fades at edges  */
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     7. FEEDBACK STATES
+     Success · Warning · Error · Info — each has 4 tokens: bg, border, text, icon
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    /* ── Success ── */
+    --color-success-bg:     var(--sage-100);    /* #EEF3EC                         */
+    --color-success-border: var(--sage-300);    /* #9CBD95                         */
+    --color-success-text:   var(--sage-600);    /* #2C3D29                         */
+    --color-success-icon:   var(--sage-400);    /* #607A5B                         */
+    --color-success-solid:  var(--sage-400);    /* filled badge, pill              */
+  
+    /* ── Warning ── */
+    --color-warning-bg:     var(--gold-100);    /* #FDF5E0                         */
+    --color-warning-border: var(--gold-300);    /* #E8C96A                         */
+    --color-warning-text:   var(--gold-700);    /* #5E4408                         */
+    --color-warning-icon:   var(--gold-500);    /* #B88A1A                         */
+    --color-warning-solid:  var(--gold-400);    /* #D4A832                         */
+  
+    /* ── Error / Danger ── */
+    --color-error-bg:       var(--blush-100);   /* #FDF0EE                         */
+    --color-error-border:   var(--blush-300);   /* #EDA08E                         */
+    --color-error-text:     var(--blush-600);   /* #6E2418                         */
+    --color-error-icon:     var(--blush-400);   /* #D45C44                         */
+    --color-error-solid:    var(--blush-400);   /* #D45C44                         */
+  
+    /* ── Info ── */
+    --color-info-bg:        var(--sky-100);     /* #EEF5FB                         */
+    --color-info-border:    var(--sky-300);     /* #85B5E2                         */
+    --color-info-text:      var(--sky-600);     /* #0E3670                         */
+    --color-info-icon:      var(--sky-400);     /* #3A7EC4                         */
+    --color-info-solid:     var(--sky-400);     /* #3A7EC4                         */
+  
+    /* ── Neutral / Default ── */
+    --color-neutral-bg:     var(--ivory-150);   /* #F7F1E5                         */
+    --color-neutral-border: var(--ivory-400);   /* #D9C4A3                         */
+    --color-neutral-text:   var(--onyx-400);    /* #5E5650                         */
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     8. INTERACTIVE STATES
+     Hover · Focus · Active · Disabled · Selected
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    /* ── Hover ── */
+    --state-hover-overlay:     rgba(195, 142, 68, 0.07);   /* warm gold wash       */
+    --state-hover-bg:          var(--ivory-150);            /* surface hover        */
+    --state-hover-brand-bg:    var(--terra-100);            /* brand item hover bg  */
+    --state-hover-dark-overlay: rgba(255, 255, 255, 0.06); /* hover on dark panels */
+  
+    /* ── Focus ── */
+    --state-focus-ring:        0 0 0 3px rgba(212, 168, 50, 0.32);   /* gold ring  */
+    --state-focus-ring-brand:  0 0 0 3px rgba(201, 118, 69, 0.28);   /* terra ring */
+    --state-focus-ring-error:  0 0 0 3px rgba(212, 92, 68, 0.28);    /* error ring */
+    --state-focus-ring-sage:   0 0 0 3px rgba(96, 122, 91, 0.24);    /* sage ring  */
+    --state-focus-border:      var(--gold-400);                       /* focused border */
+  
+    /* ── Active / Pressed ── */
+    --state-active-bg:         var(--ivory-200);            /* pressed surface      */
+    --state-active-brand-bg:   var(--terra-200);            /* pressed brand        */
+    --state-active-scale:      scale(0.985);                /* subtle press effect  */
+  
+    /* ── Disabled ── */
+    --state-disabled-bg:       var(--onyx-50);              /* #F5F3F1              */
+    --state-disabled-border:   var(--ivory-300);            /* #E8D9C0              */
+    --state-disabled-text:     var(--onyx-100);             /* #DDD8D3              */
+    --state-disabled-opacity:  0.45;
+  
+    /* ── Selected / Checked ── */
+    --state-selected-bg:       var(--terra-100);            /* selected row bg      */
+    --state-selected-border:   var(--terra-300);            /* selected row border  */
+    --state-selected-text:     var(--terra-600);            /* selected text        */
+  
+    /* ── Current / Active (nav) ── */
+    --state-current-bg:        var(--gold-100);             /* current nav item bg  */
+    --state-current-text:      var(--gold-700);             /* current nav text     */
+    --state-current-indicator: var(--gold-400);             /* active indicator bar */
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     9. OVERLAY & SCRIM
+     Modals, drawers, tooltips, loading overlays.
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    /* Modal backdrop */
+    --overlay-scrim:           rgba(20, 14, 10, 0.52);      /* warm tinted black   */
+    --overlay-scrim-light:     rgba(20, 14, 10, 0.28);      /* soft overlay        */
+  
+    /* Tooltip */
+    --overlay-tooltip-bg:      var(--onyx-600);             /* #231D18             */
+    --overlay-tooltip-text:    #FBF7EF;
+    --overlay-tooltip-border:  rgba(255, 255, 255, 0.08);
+  
+    /* Popover */
+    --overlay-popover-bg:      #FFFFFF;
+    --overlay-popover-border:  var(--border-default);
+    --overlay-popover-shadow:  0 8px 32px rgba(68, 42, 20, 0.14),
+                                0 2px 8px rgba(68, 42, 20, 0.08);
+  
+    /* Loading skeleton */
+    --overlay-skeleton-base:   var(--ivory-200);            /* #F2E9D8             */
+    --overlay-skeleton-shine:  var(--ivory-50);             /* #FEFCF8             */
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     10. SHADOW SYSTEM
+     Warm-tinted shadows — never cold grey. Base color: rgba(90, 52, 20).
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    --shadow-xs:  0 1px 3px rgba(90, 52, 20, 0.08);
+                  /* tight glow — badges, chips                                    */
+  
+    --shadow-sm:  0 2px 8px rgba(90, 52, 20, 0.09),
+                  0 1px 2px rgba(90, 52, 20, 0.06);
+                  /* small cards, inline menus                                     */
+  
+    --shadow-md:  0 4px 16px rgba(90, 52, 20, 0.10),
+                  0 2px 6px  rgba(90, 52, 20, 0.07);
+                  /* primary cards, section panels                                 */
+  
+    --shadow-lg:  0 10px 32px rgba(90, 52, 20, 0.12),
+                  0 4px 12px  rgba(90, 52, 20, 0.08);
+                  /* elevated panels, sticky elements                              */
+  
+    --shadow-xl:  0 20px 56px rgba(90, 52, 20, 0.13),
+                  0 8px  20px rgba(90, 52, 20, 0.09);
+                  /* modals, dialogs                                               */
+  
+    --shadow-2xl: 0 32px 80px rgba(90, 52, 20, 0.16),
+                  0 12px 32px rgba(90, 52, 20, 0.10);
+                  /* hero card, main shell                                         */
+  
+    /* Gold-accent glow (premium CTAs, highlight cards) */
+    --shadow-gold-glow: 0 4px 24px rgba(212, 168, 50, 0.22),
+                        0 1px 6px  rgba(212, 168, 50, 0.14);
+  
+    /* Brand (terracotta) glow */
+    --shadow-brand-glow: 0 4px 24px rgba(201, 118, 69, 0.22),
+                         0 1px 6px  rgba(201, 118, 69, 0.14);
+  
+    /* Inset shadow for sunken fields */
+    --shadow-inset: inset 0 1px 4px rgba(90, 52, 20, 0.08);
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     11. RADIUS SYSTEM
+     Consistent corner rounding — geometric to pill.
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+  
+    --radius-none:   0px;
+    --radius-xs:     4px;    /* table cells, code blocks                          */
+    --radius-sm:     8px;    /* tags, small chips, inner form elements            */
+    --radius-md:     12px;   /* buttons, inputs, small cards                      */
+    --radius-lg:     18px;   /* primary cards, panels                             */
+    --radius-xl:     24px;   /* modals, large cards, shell containers             */
+    --radius-2xl:    32px;   /* page-level shell, hero sections                  */
+    --radius-pill:   9999px; /* badges, pills, toggles, status dots               */
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     12. COMPONENT TOKENS
+     Composites that tie primitives to specific UI components.
+     ───────────────────────────────────────────────────────────────────────────── */
+  
+  /* ╔══════════════════════════════╗
+     ║  BUTTONS                     ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    /* Primary Button — terracotta fill */
+    --btn-primary-bg:           var(--brand-primary);         /* #C97645            */
+    --btn-primary-bg-hover:     var(--brand-primary-hover);   /* #A85A2C            */
+    --btn-primary-bg-active:    var(--brand-primary-active);  /* #7D4020            */
+    --btn-primary-text:         #FEFCF8;
+    --btn-primary-border:       transparent;
+    --btn-primary-shadow:       var(--shadow-brand-glow);
+    --btn-primary-shadow-hover: 0 6px 28px rgba(201, 118, 69, 0.32);
+    --btn-primary-radius:       var(--radius-md);
+  
+    /* Secondary Button — gold outlined */
+    --btn-secondary-bg:         transparent;
+    --btn-secondary-bg-hover:   var(--gold-100);              /* #FDF5E0            */
+    --btn-secondary-bg-active:  var(--gold-200);              /* #F5E2A8            */
+    --btn-secondary-text:       var(--gold-600);              /* #8F6A0E            */
+    --btn-secondary-border:     var(--gold-400);              /* #D4A832            */
+    --btn-secondary-radius:     var(--radius-md);
+  
+    /* Ghost Button — minimal, ivory surface */
+    --btn-ghost-bg:             transparent;
+    --btn-ghost-bg-hover:       var(--ivory-150);             /* #F7F1E5            */
+    --btn-ghost-bg-active:      var(--ivory-200);             /* #F2E9D8            */
+    --btn-ghost-text:           var(--onyx-500);              /* #3A322C            */
+    --btn-ghost-border:         var(--ivory-300);             /* #E8D9C0            */
+    --btn-ghost-border-hover:   var(--ivory-400);             /* #D9C4A3            */
+    --btn-ghost-radius:         var(--radius-md);
+  
+    /* Danger Button */
+    --btn-danger-bg:            var(--blush-400);             /* #D45C44            */
+    --btn-danger-bg-hover:      var(--blush-500);             /* #A63C26            */
+    --btn-danger-text:          #FEFCF8;
+    --btn-danger-border:        transparent;
+    --btn-danger-radius:        var(--radius-md);
+  
+    /* Sage / Secondary Positive Button */
+    --btn-sage-bg:              var(--sage-400);              /* #607A5B            */
+    --btn-sage-bg-hover:        var(--sage-500);              /* #435840            */
+    --btn-sage-text:            #FEFCF8;
+    --btn-sage-border:          transparent;
+    --btn-sage-radius:          var(--radius-md);
+  
+    /* Shared button tokens */
+    --btn-disabled-bg:          var(--state-disabled-bg);
+    --btn-disabled-text:        var(--state-disabled-text);
+    --btn-disabled-border:      var(--state-disabled-border);
+    --btn-focus-ring:           var(--state-focus-ring-brand);
+    --btn-transition:           background-color 140ms ease, box-shadow 160ms ease,
+                                transform 80ms ease, border-color 140ms ease;
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  INPUTS & FORM ELEMENTS      ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    /* Text Input / Textarea */
+    --input-bg:               var(--ivory-50);               /* #FEFCF8            */
+    --input-bg-hover:         #FFFFFF;
+    --input-bg-focus:         #FFFFFF;
+    --input-bg-disabled:      var(--onyx-50);                /* #F5F3F1            */
+    --input-bg-error:         var(--blush-100);              /* #FDF0EE            */
+  
+    --input-border:           var(--ivory-300);              /* #E8D9C0            */
+    --input-border-hover:     var(--ivory-400);              /* #D9C4A3            */
+    --input-border-focus:     var(--gold-400);               /* #D4A832            */
+    --input-border-error:     var(--blush-300);              /* #EDA08E            */
+    --input-border-disabled:  var(--ivory-300);
+  
+    --input-text:             var(--onyx-500);               /* #3A322C            */
+    --input-text-placeholder: var(--onyx-200);               /* #B5ADA5            */
+    --input-text-disabled:    var(--onyx-100);               /* #DDD8D3            */
+  
+    --input-label:            var(--onyx-400);               /* #5E5650            */
+    --input-label-required:   var(--blush-400);              /* #D45C44            */
+    --input-helper-text:      var(--onyx-300);               /* #8A8078            */
+    --input-error-text:       var(--blush-600);              /* #6E2418            */
+  
+    --input-radius:           var(--radius-md);
+    --input-shadow:           var(--shadow-inset);
+    --input-shadow-focus:     var(--state-focus-ring);
+    --input-shadow-error:     var(--state-focus-ring-error);
+    --input-transition:       border-color 140ms ease, box-shadow 160ms ease,
+                              background-color 120ms ease;
+  
+    /* Select dropdown */
+    --select-bg:              var(--input-bg);
+    --select-border:          var(--input-border);
+    --select-chevron-color:   var(--onyx-300);               /* #8A8078            */
+  
+    /* Checkbox & Radio */
+    --checkbox-border:        var(--ivory-400);              /* #D9C4A3            */
+    --checkbox-bg:            var(--ivory-50);               /* #FEFCF8            */
+    --checkbox-checked-bg:    var(--brand-primary);          /* #C97645            */
+    --checkbox-checked-border: var(--brand-primary);
+    --checkbox-check-color:   #FEFCF8;
+    --checkbox-radius:        var(--radius-xs);              /* 4px                */
+    --radio-radius:           var(--radius-pill);
+  
+    /* Toggle / Switch */
+    --toggle-track-off:       var(--ivory-300);              /* #E8D9C0            */
+    --toggle-track-on:        var(--brand-primary);          /* #C97645            */
+    --toggle-thumb:           #FFFFFF;
+    --toggle-thumb-shadow:    var(--shadow-xs);
+  
+    /* Range Slider */
+    --range-track:            var(--ivory-300);              /* #E8D9C0            */
+    --range-fill:             var(--gold-400);               /* #D4A832            */
+    --range-thumb:            #FFFFFF;
+    --range-thumb-border:     var(--gold-400);
+    --range-thumb-shadow:     var(--shadow-sm);
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  BADGES & TAGS               ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    /* Brand / Primary Badge */
+    --badge-brand-bg:     var(--terra-100);                  /* #FBF0EA            */
+    --badge-brand-border: var(--terra-200);                  /* #F3D4C2            */
+    --badge-brand-text:   var(--terra-600);                  /* #7D4020            */
+  
+    /* Gold / Premium Badge */
+    --badge-gold-bg:      var(--gold-100);                   /* #FDF5E0            */
+    --badge-gold-border:  var(--gold-200);                   /* #F5E2A8            */
+    --badge-gold-text:    var(--gold-700);                   /* #5E4408            */
+  
+    /* Sage / Success Badge */
+    --badge-sage-bg:      var(--sage-100);                   /* #EEF3EC            */
+    --badge-sage-border:  var(--sage-200);                   /* #CFDECB            */
+    --badge-sage-text:    var(--sage-600);                   /* #2C3D29            */
+  
+    /* Neutral Badge */
+    --badge-neutral-bg:   var(--ivory-150);                  /* #F7F1E5            */
+    --badge-neutral-border: var(--ivory-300);                /* #E8D9C0            */
+    --badge-neutral-text: var(--onyx-400);                   /* #5E5650            */
+  
+    /* Status dot colors */
+    --dot-online:         var(--sage-400);                   /* #607A5B            */
+    --dot-busy:           var(--gold-500);                   /* #B88A1A            */
+    --dot-offline:        var(--onyx-200);                   /* #B5ADA5            */
+    --dot-error:          var(--blush-400);                  /* #D45C44            */
+  
+    --badge-radius:       var(--radius-pill);
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  CARDS                       ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    /* Default Card */
+    --card-bg:                var(--bg-surface);             /* #FEFCF8            */
+    --card-bg-hover:          #FFFFFF;
+    --card-border:            var(--border-subtle);
+    --card-border-hover:      var(--border-default);
+    --card-shadow:            var(--shadow-md);
+    --card-shadow-hover:      var(--shadow-lg);
+    --card-sheen:             var(--surface-card-sheen);
+    --card-radius:            var(--radius-lg);
+    --card-transition:        box-shadow 200ms ease, border-color 160ms ease,
+                              transform 160ms ease;
+  
+    /* Elevated / Featured Card */
+    --card-elevated-bg:       #FFFFFF;
+    --card-elevated-border:   var(--border-ornament);        /* gold border        */
+    --card-elevated-shadow:   var(--shadow-xl);
+    --card-elevated-radius:   var(--radius-xl);
+  
+    /* Food / Menu Item Card */
+    --card-food-bg:           var(--bg-surface);
+    --card-food-border:       var(--border-subtle);
+    --card-food-shadow:       var(--shadow-sm);
+    --card-food-shadow-hover: var(--shadow-md);
+    --card-food-radius:       var(--radius-lg);
+  
+    /* Highlight / Promo Card (gold tint) */
+    --card-promo-bg:          var(--gold-100);               /* #FDF5E0            */
+    --card-promo-border:      var(--gold-200);               /* #F5E2A8            */
+    --card-promo-shadow:      var(--shadow-gold-glow);
+    --card-promo-radius:      var(--radius-xl);
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  NAVIGATION (TOP BAR)        ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    --nav-bg:               var(--surface-glass-bg);
+    --nav-border:           var(--surface-glass-border);
+    --nav-blur:             var(--surface-glass-blur);
+    --nav-shadow:           var(--shadow-sm);
+  
+    --nav-item-text:        var(--onyx-400);                 /* #5E5650            */
+    --nav-item-text-hover:  var(--onyx-600);                 /* #231D18            */
+    --nav-item-text-active: var(--gold-700);                 /* #5E4408            */
+  
+    --nav-item-bg-hover:    var(--state-hover-bg);           /* #F7F1E5            */
+    --nav-item-bg-active:   var(--state-current-bg);         /* #FDF5E0            */
+    --nav-item-indicator:   var(--state-current-indicator);  /* #D4A832            */
+    --nav-item-radius:      var(--radius-sm);                /* 8px                */
+  
+    --nav-logo-color:       var(--onyx-700);                 /* #140F0C            */
+    --nav-logo-accent:      var(--brand-primary);            /* #C97645            */
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  SIDEBAR (ADMIN PANEL)       ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    --sidebar-bg:            var(--onyx-600);                /* #231D18 dark base  */
+    --sidebar-bg-alt:        var(--onyx-700);                /* #140F0C deeper alt */
+    --sidebar-border:        rgba(255, 255, 255, 0.07);
+  
+    --sidebar-brand-text:    #FEFCF8;
+    --sidebar-brand-accent:  var(--gold-300);               /* #E8C96A warm gold  */
+  
+    --sidebar-item-text:     rgba(251, 247, 239, 0.70);
+    --sidebar-item-text-hover:  #FEFCF8;
+    --sidebar-item-text-active: var(--gold-300);            /* #E8C96A active     */
+  
+    --sidebar-item-bg-hover: rgba(255, 255, 255, 0.06);
+    --sidebar-item-bg-active: rgba(212, 168, 50, 0.14);
+    --sidebar-item-indicator: var(--gold-400);              /* #D4A832            */
+    --sidebar-item-radius:   var(--radius-sm);
+  
+    --sidebar-section-label: rgba(251, 247, 239, 0.38);     /* group header text  */
+    --sidebar-divider:       rgba(255, 255, 255, 0.08);
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  TABLE                       ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    --table-header-bg:        var(--ivory-150);              /* #F7F1E5            */
+    --table-header-text:      var(--onyx-400);               /* #5E5650            */
+    --table-header-border:    var(--border-default);         /* #E8D9C0            */
+  
+    --table-row-bg:           transparent;
+    --table-row-bg-alt:       var(--ivory-50);               /* #FEFCF8 zebra      */
+    --table-row-bg-hover:     var(--state-hover-brand-bg);   /* #FBF0EA            */
+    --table-row-bg-selected:  var(--state-selected-bg);      /* #FBF0EA            */
+    --table-row-border:       var(--border-hairline);
+  
+    --table-cell-text:        var(--onyx-500);               /* #3A322C            */
+    --table-cell-text-muted:  var(--onyx-300);               /* #8A8078            */
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  MODAL & DIALOG              ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    --modal-scrim:            var(--overlay-scrim);
+    --modal-bg:               #FFFFFF;
+    --modal-border:           var(--border-subtle);
+    --modal-shadow:           var(--shadow-2xl);
+    --modal-radius:           var(--radius-2xl);
+  
+    --modal-header-bg:        var(--ivory-50);
+    --modal-header-border:    var(--border-hairline);
+    --modal-header-text:      var(--text-heading);
+  
+    --modal-footer-bg:        var(--ivory-50);
+    --modal-footer-border:    var(--border-hairline);
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  STARS / RATINGS             ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    --star-filled:     var(--gold-400);                      /* #D4A832            */
+    --star-half:       var(--gold-300);                      /* #E8C96A            */
+    --star-empty:      var(--ivory-300);                     /* #E8D9C0            */
+    --star-count-text: var(--onyx-300);                      /* #8A8078            */
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  CHARTS (admin analytics)    ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    --chart-line-primary:   var(--terra-400);                /* #C97645 main line  */
+    --chart-line-secondary: var(--sage-400);                 /* #607A5B 2nd line   */
+    --chart-line-tertiary:  var(--gold-400);                 /* #D4A832 3rd line   */
+  
+    --chart-bar-1:          var(--terra-300);                /* #E4A97F            */
+    --chart-bar-2:          var(--terra-200);                /* #F3D4C2            */
+    --chart-bar-3:          var(--gold-300);                 /* #E8C96A            */
+    --chart-bar-4:          var(--gold-200);                 /* #F5E2A8            */
+  
+    --chart-donut-1:        var(--terra-400);                /* 38% — Kabab        */
+    --chart-donut-2:        var(--terra-300);                /* 29% — Khoresht     */
+    --chart-donut-3:        var(--gold-300);                 /* 19% — Starter      */
+    --chart-donut-4:        var(--gold-200);                 /* 14% — Drinks       */
+  
+    --chart-grid:           var(--ivory-300);                /* #E8D9C0            */
+    --chart-axis-text:      var(--onyx-300);                 /* #8A8078            */
+    --chart-tooltip-bg:     var(--overlay-tooltip-bg);
+    --chart-tooltip-text:   var(--overlay-tooltip-text);
+  }
+  
+  
+  /* ╔══════════════════════════════╗
+     ║  ORDER STATUS INDICATORS     ║
+     ╚══════════════════════════════╝ */
+  :root {
+  
+    /* Pending */
+    --status-pending-bg:    var(--gold-100);    --status-pending-text:   var(--gold-700);
+    --status-pending-dot:   var(--gold-400);
+  
+    /* Confirmed */
+    --status-confirmed-bg:  var(--sky-100);     --status-confirmed-text: var(--sky-600);
+    --status-confirmed-dot: var(--sky-400);
+  
+    /* Preparing */
+    --status-preparing-bg:  var(--terra-100);   --status-preparing-text: var(--terra-600);
+    --status-preparing-dot: var(--terra-400);
+  
+    /* Ready */
+    --status-ready-bg:      var(--sage-100);    --status-ready-text:     var(--sage-600);
+    --status-ready-dot:     var(--sage-400);
+  
+    /* Delivered */
+    --status-delivered-bg:  var(--ivory-150);   --status-delivered-text: var(--onyx-400);
+    --status-delivered-dot: var(--onyx-200);
+  
+    /* Cancelled */
+    --status-cancelled-bg:  var(--blush-100);   --status-cancelled-text: var(--blush-600);
+    --status-cancelled-dot: var(--blush-400);
+  }
+  
+  
+  /* ─────────────────────────────────────────────────────────────────────────────
+     QUICK REFERENCE MAP
+     Variable → Hex (default state)
+     ─────────────────────────────────────────────────────────────────────────────
+  
+     BACKGROUNDS
+     ──────────────────────────────────────────────────────────
+     --bg-canvas                #FBF7EF    Warm ivory page bg
+     --bg-surface               #FEFCF8    Card surfaces
+     --bg-surface-raised        #FFFFFF    Modal / dropdown
+     --bg-surface-sunken        #F7F1E5    Inset / well
+     --bg-section               #F2E9D8    Alternating sections
+     --bg-section-dark          #231D18    Hero / sidebar
+     --bg-brand-tint            #FBF0EA    Brand-washed areas
+     --bg-gold-tint             #FDF5E0    Gold-washed areas
+  
+     TEXT
+     ──────────────────────────────────────────────────────────
+     --text-display             #140F0C    Hero titles
+     --text-heading             #231D18    Section headings
+     --text-body                #3A322C    Body copy
+     --text-secondary           #5E5650    Labels, meta
+     --text-muted               #8A8078    Hints
+     --text-placeholder         #B5ADA5    Input placeholder
+     --text-link                #C97645    Inline links
+  
+     BRAND
+     ──────────────────────────────────────────────────────────
+     --brand-primary            #C97645    Main CTA (terracotta)
+     --brand-secondary          #D4A832    Luxury accent (gold)
+     --brand-tertiary           #607A5B    Secondary positive (sage)
+  
+     FEEDBACK
+     ──────────────────────────────────────────────────────────
+     --color-success-solid      #607A5B    Success
+     --color-warning-solid      #D4A832    Warning
+     --color-error-solid        #D45C44    Error
+     --color-info-solid         #3A7EC4    Info
+  
+     ───────────────────────────────────────────────────────── */

@@ -1,0 +1,5 @@
+/* Import order matters — each layer builds on the previous */
+@import './fonts.css';
+@import './color-palet.css';
+@import './reset.css';
+@import './global.css';

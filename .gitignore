@@ -48,7 +48,7 @@ coverage
 Thumbs.db
 .idea
 *.suo
-*.ntvs*
+*.ntvs* 
 *.njsproj
 *.sln
 *.sw?
