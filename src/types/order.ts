@@ -18,6 +18,15 @@ export interface OrderPricing {
   total: number;
 }
 
+export interface OrderItemLine {
+  id: string;
+  foodId: string;
+  foodName: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+}
+
 export interface Order {
   id: string;
   trackingCode: string;
@@ -28,4 +37,10 @@ export interface Order {
   address: OrderAddress;
   pricing: OrderPricing;
   reviewStatus: ReviewStatus;
+  itemsPreview?: Array<{ foodName: string; quantity: number }>;
+}
+
+export interface OrderDetail extends Order {
+  items: OrderItemLine[];
+  reviewPrompt: { canReview: boolean; promptShown: boolean };
 }

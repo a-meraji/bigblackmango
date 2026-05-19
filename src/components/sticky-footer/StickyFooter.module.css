@@ -1,0 +1,13 @@
+.footer {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline: 0;
+  z-index: 150;
+  max-inline-size: var(--layout-max-width);
+  margin-inline: auto;
+  padding: var(--space-3) var(--page-inline-padding);
+  padding-block-end: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  background: var(--bg-surface-raised);
+  border-block-start: var(--border-subtle);
+  box-shadow: var(--shadow-lg);
+}

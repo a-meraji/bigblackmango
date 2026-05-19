@@ -9,6 +9,6 @@ export async function getHome(): Promise<HomePayload> {
 }
 
 export async function getStories(): Promise<Story[]> {
-  const res = await apiClient.get<ApiResponse<{ stories: Story[] }>>('/stories');
-  return res.data.data.stories;
+  const res = await apiClient.get<ApiResponse<Story[]>>('/stories');
+  return res.data.data;
 }

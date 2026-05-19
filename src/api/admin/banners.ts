@@ -1,15 +1,6 @@
 import { apiClient } from '../client';
 import type { ApiResponse, PaginationMeta } from '@types/api';
-
-export interface AdminBanner {
-  id: string;
-  title: string;
-  subtitle?: string;
-  imageUrl: string;
-  sortOrder?: number;
-  servicePageId: string;
-  isActive: boolean;
-}
+import type { AdminBanner } from '@types/admin-content';
 
 export interface BannerPayload {
   title: string;
@@ -29,6 +20,11 @@ export async function adminGetBanners(params?: {
     { params },
   );
   return res.data.data;
+}
+
+export async function adminListBanners(): Promise<AdminBanner[]> {
+  const { items } = await adminGetBanners({ limit: 100 });
+  return items;
 }
 
 export async function adminCreateBanner(payload: BannerPayload): Promise<AdminBanner> {

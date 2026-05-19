@@ -1,0 +1,202 @@
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  adminGetFoods,
+  adminCreateFood,
+  adminUpdateFood,
+  adminDeleteFood,
+  type FoodPayload,
+} from '@api/admin/foods';
+import { adminGetCategories } from '@api/admin/categories';
+import AdminTable, { type Column } from '@components/admin-table/AdminTable';
+import AdminToolbar from '@components/admin-toolbar/AdminToolbar';
+import FoodFormModal from '@features/admin/foods/components/FoodFormModal';
+import { formatPrice } from '@utils/format-price';
+import { resolveMediaUrl } from '@utils/resolve-media-url';
+import type { AdminFood } from '@types/admin-catalog';
+import { useToast } from '@hooks/useToast';
+import shared from '@styles/admin-shared.module.css';
+import styles from './FoodsPage.module.css';
+
+export default function FoodsPage() {
+  const qc = useQueryClient();
+  const toast = useToast();
+  const [search, setSearch] = useState('');
+  const [filterCategoryId, setFilterCategoryId] = useState('');
+  const [filterActive, setFilterActive] = useState('');
+  const [editingFood, setEditingFood] = useState<AdminFood | null>(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['admin', 'categories'],
+    queryFn: () => adminGetCategories(),
+  });
+
+  const { data: foodsData, isLoading } = useQuery({
+    queryKey: ['admin', 'foods', search, filterCategoryId, filterActive],
+    queryFn: () =>
+      adminGetFoods({
+        search: search || undefined,
+        categoryId: filterCategoryId || undefined,
+        isActive: filterActive === '' ? undefined : filterActive === 'true',
+        limit: 100,
+      }),
+  });
+
+  const foods = foodsData?.items ?? [];
+
+  const deleteMutation = useMutation({
+    mutationFn: adminDeleteFood,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'foods'] });
+      toast.success('غذا حذف شد.');
+    },
+    onError: () => toast.error('خطا در حذف.'),
+  });
+
+  function openCreate() {
+    setEditingFood(null);
+    setShowForm(true);
+  }
+
+  function openEdit(food: AdminFood) {
+    setEditingFood(food);
+    setShowForm(true);
+  }
+
+  function handleDelete(food: AdminFood) {
+    if (!window.confirm(`حذف «${food.name}»؟`)) return;
+    deleteMutation.mutate(food.id);
+  }
+
+  const columns: Column<AdminFood>[] = [
+    {
+      key: 'image',
+      label: 'تصویر',
+      width: '72px',
+      render: (food) => {
+        const src = resolveMediaUrl(food.imageUrl);
+        return src ? (
+          <img src={src} alt={food.name} className={shared.thumb} loading="lazy" />
+        ) : (
+          <span className={shared.thumbPlaceholder} aria-hidden="true">
+            —
+          </span>
+        );
+      },
+    },
+    { key: 'name', label: 'نام', render: (food) => <strong>{food.name}</strong> },
+    { key: 'category', label: 'دسته‌بندی', render: (food) => food.category.name },
+    {
+      key: 'price',
+      label: 'قیمت',
+      render: (food) => (
+        <span dir="ltr">{formatPrice(food.price)}</span>
+      ),
+    },
+    {
+      key: 'tags',
+      label: 'تگ‌ها',
+      render: (food) =>
+        food.tags.length > 0 ? (
+          <span className={styles.tags}>{food.tags.join('، ')}</span>
+        ) : (
+          '—'
+        ),
+    },
+    {
+      key: 'isActive',
+      label: 'وضعیت',
+      width: '90px',
+      render: (food) => (
+        <span className={food.isActive ? shared.statusActive : shared.statusInactive}>
+          {food.isActive ? 'فعال' : 'غیرفعال'}
+        </span>
+      ),
+    },
+    {
+      key: 'actions',
+      label: 'عملیات',
+      width: '140px',
+      render: (food) => (
+        <div className={shared.actions}>
+          <button type="button" className={shared.editBtn} onClick={() => openEdit(food)}>
+            ویرایش
+          </button>
+          <button
+            type="button"
+            className={shared.deleteBtn}
+            onClick={() => handleDelete(food)}
+            disabled={deleteMutation.isPending}
+          >
+            حذف
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <AdminToolbar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="جستجوی غذا..."
+        onAdd={openCreate}
+        addLabel="غذای جدید"
+      >
+        <select
+          value={filterCategoryId}
+          onChange={(e) => setFilterCategoryId(e.target.value)}
+          className={shared.filter}
+          aria-label="فیلتر دسته‌بندی"
+        >
+          <option value="">همه دسته‌بندی‌ها</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <select
+          value={filterActive}
+          onChange={(e) => setFilterActive(e.target.value)}
+          className={shared.filter}
+          aria-label="فیلتر وضعیت"
+        >
+          <option value="">همه وضعیت‌ها</option>
+          <option value="true">فعال</option>
+          <option value="false">غیرفعال</option>
+        </select>
+      </AdminToolbar>
+
+      <AdminTable
+        columns={columns}
+        rows={foods}
+        rowKey={(f) => f.id}
+        loading={isLoading}
+        emptyMessage="غذایی یافت نشد."
+        rowClassName={(food) => (!food.isActive ? styles.inactiveRow : undefined)}
+      />
+
+      {showForm && (
+        <FoodFormModal
+          initial={editingFood}
+          categories={categories}
+          onClose={() => setShowForm(false)}
+          onSave={async (payload) => {
+            if (editingFood) {
+              await adminUpdateFood(editingFood.id, payload);
+              toast.success('غذا بروزرسانی شد.');
+            } else {
+              await adminCreateFood(payload as FoodPayload);
+              toast.success('غذا ایجاد شد.');
+            }
+            qc.invalidateQueries({ queryKey: ['admin', 'foods'] });
+            setShowForm(false);
+          }}
+        />
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,13 @@
+.inactiveRow {
+  opacity: 0.72;
+}
+
+.tags {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  max-inline-size: 12rem;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

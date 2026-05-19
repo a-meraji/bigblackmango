@@ -1,0 +1,7 @@
+.expiredRow {
+  background: var(--color-error-bg);
+}
+
+.expiredText {
+  color: var(--text-muted);
+}

@@ -1,38 +1,36 @@
 import { create } from 'zustand';
 
-export type ToastType = 'success' | 'error' | 'info';
+export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
-export interface Toast {
+export interface ToastItem {
   id: string;
   type: ToastType;
   message: string;
 }
 
-interface ToastState {
-  toasts: Toast[];
+interface ToastStore {
+  toasts: ToastItem[];
   push: (type: ToastType, message: string) => void;
-  dismiss: (id: string) => void;
+  remove: (id: string) => void;
 }
 
-export const useToastStore = create<ToastState>((set) => ({
+export const useToastStore = create<ToastStore>((set) => ({
   toasts: [],
 
-  push: (type, message) =>
-    set((state) => ({
-      toasts: [
-        ...state.toasts,
-        { id: `${Date.now()}-${Math.random()}`, type, message },
-      ],
-    })),
+  push: (type, message) => {
+    const id = crypto.randomUUID();
+    set((s) => ({ toasts: [...s.toasts, { id, type, message }] }));
+    // Auto-dismiss after 4 seconds
+    setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), 4000);
+  },
 
-  dismiss: (id) =>
-    set((state) => ({
-      toasts: state.toasts.filter((t) => t.id !== id),
-    })),
+  remove: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
 }));
 
+// Convenience singleton — safe to call outside React components
 export const toast = {
-  success: (message: string) => useToastStore.getState().push('success', message),
-  error: (message: string) => useToastStore.getState().push('error', message),
-  info: (message: string) => useToastStore.getState().push('info', message),
+  success: (msg: string) => useToastStore.getState().push('success', msg),
+  error: (msg: string) => useToastStore.getState().push('error', msg),
+  warning: (msg: string) => useToastStore.getState().push('warning', msg),
+  info: (msg: string) => useToastStore.getState().push('info', msg),
 };

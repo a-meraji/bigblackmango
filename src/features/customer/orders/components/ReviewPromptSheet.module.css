@@ -1,0 +1,88 @@
+/* Full-viewport scrim; sheet sits flush on the bottom edge of the viewport */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background: var(--overlay-scrim);
+  box-sizing: border-box;
+}
+
+/* Match the centered customer app column (same idea as BottomNav / FloatingCartBar) */
+.shell {
+  inline-size: 100%;
+  max-inline-size: var(--layout-max-width);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-block-size: 0;
+  max-block-size: 100%;
+}
+
+.sheet {
+  inline-size: 100%;
+  max-block-size: min(85dvh, 100%);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  border-start-start-radius: var(--radius-xl);
+  border-start-end-radius: var(--radius-xl);
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+  background: var(--bg-surface-raised);
+  box-shadow: var(--shadow-2xl);
+}
+
+.title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-block-end: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin-block-end: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-block-start: 1rem;
+}
+
+.skipBtn,
+.submitBtn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 140ms ease;
+}
+
+.skipBtn {
+  border: var(--border-default);
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.submitBtn {
+  border: none;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

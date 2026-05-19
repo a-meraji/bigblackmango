@@ -3,24 +3,21 @@ import type { User } from '@types/auth';
 
 interface AuthState {
   user: User | null;
+  isLoading: boolean; // true only during the initial /me boot check
   isAuthenticated: boolean;
-  isLoading: boolean;
-  setUser: (user: User | null) => void;
-  setLoading: (loading: boolean) => void;
-  logout: () => void;
+  setUser: (user: User) => void;
+  clearUser: () => void;
+  setLoading: (v: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  isAuthenticated: false,
   isLoading: true,
+  isAuthenticated: false,
 
-  setUser: (user) =>
-    set({ user, isAuthenticated: user !== null, isLoading: false }),
+  setUser: (user) => set({ user, isAuthenticated: true, isLoading: false }),
 
-  setLoading: (loading) =>
-    set({ isLoading: loading }),
+  clearUser: () => set({ user: null, isAuthenticated: false, isLoading: false }),
 
-  logout: () =>
-    set({ user: null, isAuthenticated: false, isLoading: false }),
+  setLoading: (v) => set({ isLoading: v }),
 }));

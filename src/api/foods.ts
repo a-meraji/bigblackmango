@@ -1,22 +1,21 @@
 import { apiClient } from './client';
 import type { ApiResponse, PaginationMeta } from '@types/api';
-import type { Food } from '@types/food';
-import type { Review } from '@types/review';
-
-export interface FoodTodayAvailability {
-  menuItemId: string;
-  stock: number;
-  isAvailable: boolean;
-}
+import type {
+  FoodRating,
+  FoodTodayAvailability,
+  PublicFoodDetail,
+  PublicFoodSummary,
+} from '@types/food';
+import type { PublicReview } from '@types/review';
 
 export interface FoodDetailPayload {
-  food: Food;
-  todayAvailability: FoodTodayAvailability | null;
+  food: PublicFoodDetail;
+  todayAvailability: FoodTodayAvailability;
   reviews: {
-    items: Review[];
-    summary: { average: number; count: number };
+    items: PublicReview[];
+    summary: FoodRating;
   };
-  relatedFoods: Food[];
+  relatedFoods: PublicFoodSummary[];
 }
 
 export async function getFoodDetail(foodId: string): Promise<FoodDetailPayload> {
@@ -27,10 +26,13 @@ export async function getFoodDetail(foodId: string): Promise<FoodDetailPayload> 
 export async function getFoodReviews(
   foodId: string,
   params?: { page?: number; limit?: number },
-): Promise<{ items: Review[]; meta: PaginationMeta }> {
-  const res = await apiClient.get<ApiResponse<{ items: Review[]; meta: PaginationMeta }>>(
-    `/foods/${foodId}/reviews`,
-    { params },
-  );
-  return res.data.data;
+): Promise<{ items: PublicReview[]; summary: FoodRating; meta: PaginationMeta }> {
+  const res = await apiClient.get<
+    ApiResponse<{ items: PublicReview[]; summary: FoodRating }>
+  >(`/foods/${foodId}/reviews`, { params });
+  return {
+    items: res.data.data.items,
+    summary: res.data.data.summary,
+    meta: (res.data.meta ?? { page: 1, limit: 10, total: 0 }) as PaginationMeta,
+  };
 }

@@ -3,15 +3,22 @@ export interface FaqItem {
   answer: string;
 }
 
-export interface PartyServicePage {
+export interface ServiceItem {
+  title: string;
+  description?: string;
+}
+
+export interface PartyServiceSummary {
   id: string;
   title: string;
-  heroImageUrl: string;
+  heroImageUrl: string | null;
+  summary: string | null;
+  serviceItems: ServiceItem[];
+  contactPhone: string | null;
+}
+
+export interface PartyServicePage extends PartyServiceSummary {
   gallery: string[];
-  summary: string;
-  description: string;
-  serviceItems: string[];
+  description: string | null;
   faq: FaqItem[];
-  contactPhone: string;
-  isActive: boolean;
 }

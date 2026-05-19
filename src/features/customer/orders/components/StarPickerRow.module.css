@@ -1,0 +1,60 @@
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
+  border-block-end: var(--border-hairline);
+}
+
+.row:last-of-type {
+  border-block-end: none;
+}
+
+.foodName {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.stars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.star {
+  padding: 0.125rem;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--star-empty);
+  cursor: pointer;
+  transition: color 100ms ease, transform 80ms ease;
+}
+
+.star.lit {
+  color: var(--star-filled);
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.comment {
+  inline-size: 100%;
+  padding: 0.625rem 0.75rem;
+  border: var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  resize: vertical;
+  min-block-size: 3rem;
+}
+
+.comment:focus {
+  outline: none;
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
+}

@@ -1,0 +1,39 @@
+/* Shared layout utilities — token-driven, RTL-safe */
+
+.pageStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--page-section-gap);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sectionTitle {
+  font-size: var(--text-size-lg);
+  font-weight: 700;
+  color: var(--text-heading);
+  padding-inline: var(--page-inline-padding);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.page-fallback {
+  display: flex;
+  justify-content: center;
+  padding-block-start: 4rem;
+}

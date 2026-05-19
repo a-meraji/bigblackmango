@@ -1,0 +1,36 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-block-start: 1.25rem;
+  padding-block: 0.5rem;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface-raised);
+  color: var(--text-body);
+  cursor: pointer;
+  min-block-size: var(--btn-min-touch, 44px);
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--state-hover-brand-bg);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.info {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  min-inline-size: 5rem;
+  text-align: center;
+}

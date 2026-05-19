@@ -1,0 +1,11 @@
+.heroThumb {
+  inline-size: 3.75rem;
+  block-size: 2.5rem;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+}
+
+.inactiveRow {
+  opacity: 0.72;
+}

@@ -37,6 +37,38 @@ export interface CartValidateResult {
 }
 
 export async function validateCart(): Promise<CartValidateResult> {
-  const res = await apiClient.post<ApiResponse<CartValidateResult>>('/cart/validate');
-  return res.data.data;
+  try {
+    const res = await apiClient.post<ApiResponse<CartValidateResult>>('/cart/validate');
+    return res.data.data;
+  } catch (err: unknown) {
+    const apiErr = err as { code?: string; details?: CartValidateResult['changes'] };
+    if (apiErr.code === 'OUT_OF_STOCK' || apiErr.code === 'INACTIVE_RESOURCE') {
+      return { valid: false, changes: apiErr.details ?? [] };
+    }
+    throw err;
+  }
+}
+
+export async function validateCartItems(
+  items: Array<{ menuItemId: string; quantity: number }>,
+): Promise<CartValidateResult> {
+  try {
+    const res = await apiClient.post<ApiResponse<CartValidateResult>>('/cart/validate-items', {
+      items,
+    });
+    return res.data.data;
+  } catch (err: unknown) {
+    const apiErr = err as { code?: string; details?: CartValidateResult['changes'] };
+    if (apiErr.code === 'OUT_OF_STOCK' || apiErr.code === 'INACTIVE_RESOURCE') {
+      return { valid: false, changes: apiErr.details ?? [] };
+    }
+    throw err;
+  }
+}
+
+export async function importCartItems(
+  items: Array<{ menuItemId: string; quantity: number }>,
+): Promise<Cart> {
+  const res = await apiClient.post<ApiResponse<{ cart: Cart }>>('/cart/import', { items });
+  return res.data.data.cart;
 }

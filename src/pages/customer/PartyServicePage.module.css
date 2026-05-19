@@ -1,0 +1,23 @@
+.page {
+  padding-block-start: 0;
+}
+
+.loadingWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 50vh;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-block-start: var(--space-4);
+}
+
+.description {
+  font-size: var(--text-size-base);
+  color: var(--text-secondary);
+  line-height: 1.7;
+}

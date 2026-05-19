@@ -1,0 +1,81 @@
+/* Closed <dialog> must stay hidden — display:flex on .overlay overrides UA display:none */
+.overlay:not([open]) {
+  display: none;
+}
+
+/* Full-viewport transparent overlay — clicks here (outside panel) close the modal */
+.overlay[open] {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  padding: var(--space-4);
+  border: none;
+  background: transparent;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  max-block-size: none;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-body);
+  font-family: inherit;
+}
+
+.overlay[open]::backdrop {
+  background: var(--modal-scrim);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Visible modal card */
+.panel {
+  position: relative;
+  margin: 0;
+  background: var(--modal-bg);
+  border: none;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-2xl);
+  padding: 0;
+  inline-size: min(calc(100vw - 2 * var(--space-8)), 480px);
+  max-block-size: min(90dvh, calc(100% - 2 * var(--space-8)));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sm {
+  inline-size: min(calc(100vw - 2 * var(--space-8)), 360px);
+}
+
+.md {
+  inline-size: min(calc(100vw - 2 * var(--space-8)), 480px);
+}
+
+.lg {
+  inline-size: min(calc(100vw - 2 * var(--space-8)), 640px);
+}
+
+.header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: var(--modal-header-bg);
+  border-block-end: var(--border-subtle);
+}
+
+.title {
+  font-size: var(--text-size-lg);
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0;
+}
+
+.body {
+  padding: var(--space-5);
+  overflow-y: auto;
+}

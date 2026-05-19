@@ -1,0 +1,16 @@
+.icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.sm {
+  stroke-width: 2;
+}
+
+.md {
+  stroke-width: 2;
+}
+
+.lg {
+  stroke-width: 2;
+}

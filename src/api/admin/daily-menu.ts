@@ -1,13 +1,6 @@
 import { apiClient } from '../client';
 import type { ApiResponse } from '@types/api';
-import type { Food } from '@types/food';
-
-export interface AdminDailyMenuItem {
-  menuItemId: string;
-  stock: number;
-  isFeaturedInStory: boolean;
-  food: Pick<Food, 'id' | 'name' | 'thumbnailUrl' | 'basePrice'>;
-}
+import type { AdminDailyMenu, AdminDailyMenuItem } from '@types/admin-catalog';
 
 export interface DailyMenuPayload {
   menuDate: string;
@@ -18,35 +11,27 @@ export interface DailyMenuPayload {
   }>;
 }
 
-export async function adminGetDailyMenu(params?: {
-  date?: string;
-}): Promise<{ menuDate: string; items: AdminDailyMenuItem[] }> {
-  const res = await apiClient.get<ApiResponse<{ menuDate: string; items: AdminDailyMenuItem[] }>>(
-    '/admin/daily-menu',
-    { params },
-  );
+export async function adminGetDailyMenu(date: string): Promise<AdminDailyMenu> {
+  const res = await apiClient.get<ApiResponse<AdminDailyMenu>>('/admin/daily-menu', {
+    params: { date },
+  });
   return res.data.data;
 }
 
-export async function adminSetDailyMenu(
-  payload: DailyMenuPayload,
-): Promise<AdminDailyMenuItem[]> {
-  const res = await apiClient.put<ApiResponse<{ items: AdminDailyMenuItem[] }>>(
-    '/admin/daily-menu',
-    payload,
-  );
-  return res.data.data.items;
+export async function adminSetDailyMenu(payload: DailyMenuPayload): Promise<AdminDailyMenu> {
+  const res = await apiClient.put<ApiResponse<AdminDailyMenu>>('/admin/daily-menu', payload);
+  return res.data.data;
 }
 
 export async function adminUpdateMenuItemStock(
   menuItemId: string,
   payload: { stock?: number; isFeaturedInStory?: boolean },
 ): Promise<AdminDailyMenuItem> {
-  const res = await apiClient.patch<ApiResponse<AdminDailyMenuItem>>(
+  const res = await apiClient.patch<ApiResponse<{ item: AdminDailyMenuItem }>>(
     `/admin/daily-menu/items/${menuItemId}`,
     payload,
   );
-  return res.data.data;
+  return res.data.data.item;
 }
 
 export async function adminRemoveMenuItem(menuItemId: string): Promise<void> {

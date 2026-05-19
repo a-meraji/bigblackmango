@@ -1,8 +1,11 @@
-export interface CartItemFood {
+export interface CartFoodSummary {
   id: string;
   name: string;
-  thumbnailUrl: string;
+  thumbnailUrl: string | null;
 }
+
+/** @deprecated Use CartFoodSummary */
+export type CartItemFood = CartFoodSummary;
 
 export interface CartItem {
   id: string;
@@ -10,7 +13,7 @@ export interface CartItem {
   quantity: number;
   unitPrice: number;
   lineTotal: number;
-  food: CartItemFood;
+  food: CartFoodSummary;
 }
 
 export interface Cart {

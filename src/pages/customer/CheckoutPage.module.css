@@ -1,0 +1,6 @@
+.title {
+  font-size: var(--text-size-2xl);
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-block-end: var(--space-4);
+}

@@ -1,18 +1,83 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { lazy } from 'react';
+import RequireAuth from '@components/require-auth/RequireAuth';
+import RequireAdmin from '@components/require-auth/RequireAdmin';
+import RouteError from '@components/error-boundary/RouteError';
+import { lazyPage } from './router/pageBoundary';
 
-// Routes are added incrementally in each phase.
-// Phase 1: design system primitives (no routes)
-// Phase 2: /auth/otp + RequireAuth/RequireAdmin guards
-// Phase 3: / (CustomerLayout + HomePage)
-// Phase 4: /foods/:foodId, /party-services/:serviceId
-// Phase 5: /checkout
-// Phase 6: /payment, /payment/callback, /orders
-// Phase 7+: /admin/*
+// Layouts
+import CustomerLayout from '@layouts/CustomerLayout';
+import AdminLayout from '@layouts/AdminLayout';
+
+// Auth — eager (small, always needed)
+import OtpPage from '@pages/auth/OtpPage';
+
+// Customer pages — lazy loaded
+const HomePage = lazy(() => import('@pages/customer/HomePage'));
+const FoodDetailPage = lazy(() => import('@pages/customer/FoodDetailPage'));
+const PartyServicePage = lazy(() => import('@pages/customer/PartyServicePage'));
+const CheckoutPage = lazy(() => import('@pages/customer/CheckoutPage'));
+const PaymentPage = lazy(() => import('@pages/customer/PaymentPage'));
+const PaymentCallbackPage = lazy(() => import('@pages/customer/PaymentCallbackPage'));
+const OrdersPage = lazy(() => import('@pages/customer/OrdersPage'));
+
+// Admin pages — lazy loaded
+const DashboardPage = lazy(() => import('@pages/admin/DashboardPage'));
+const CategoriesPage = lazy(() => import('@pages/admin/CategoriesPage'));
+const FoodsPage = lazy(() => import('@pages/admin/FoodsPage'));
+const DailyMenuPage = lazy(() => import('@pages/admin/DailyMenuPage'));
+const StoriesPage = lazy(() => import('@pages/admin/StoriesPage'));
+const BannersPage = lazy(() => import('@pages/admin/BannersPage'));
+const PartyServicesPage = lazy(() => import('@pages/admin/PartyServicesPage'));
+const AdminOrdersPage = lazy(() => import('@pages/admin/OrdersPage'));
+const AdminReviewsPage = lazy(() => import('@pages/admin/ReviewsPage'));
+const AdminReportsPage = lazy(() => import('@pages/admin/ReportsPage'));
 
 export const router = createBrowserRouter([
-  // placeholder — will be replaced in Phase 2
   {
-    path: '*',
-    element: null,
+    path: '/',
+    element: <CustomerLayout />,
+    errorElement: <RouteError />,
+    children: [
+      { index: true, element: lazyPage(<HomePage />) },
+      { path: 'foods/:foodId', element: lazyPage(<FoodDetailPage />) },
+      { path: 'party-services/:serviceId', element: lazyPage(<PartyServicePage />) },
+      { path: 'checkout', element: lazyPage(<CheckoutPage />) },
+      {
+        path: 'payment',
+        element: (
+          <RequireAuth>{lazyPage(<PaymentPage />)}</RequireAuth>
+        ),
+      },
+      { path: 'payment/callback', element: lazyPage(<PaymentCallbackPage />) },
+      {
+        path: 'orders',
+        element: <RequireAuth>{lazyPage(<OrdersPage />)}</RequireAuth>,
+      },
+    ],
+  },
+
+  { path: '/auth/otp', element: <OtpPage />, errorElement: <RouteError /> },
+
+  {
+    path: '/admin',
+    element: (
+      <RequireAdmin>
+        <AdminLayout />
+      </RequireAdmin>
+    ),
+    errorElement: <RouteError />,
+    children: [
+      { index: true, element: lazyPage(<DashboardPage />) },
+      { path: 'categories', element: lazyPage(<CategoriesPage />) },
+      { path: 'foods', element: lazyPage(<FoodsPage />) },
+      { path: 'daily-menu', element: lazyPage(<DailyMenuPage />) },
+      { path: 'stories', element: lazyPage(<StoriesPage />) },
+      { path: 'banners', element: lazyPage(<BannersPage />) },
+      { path: 'party-services', element: lazyPage(<PartyServicesPage />) },
+      { path: 'orders', element: lazyPage(<AdminOrdersPage />) },
+      { path: 'reviews', element: lazyPage(<AdminReviewsPage />) },
+      { path: 'reports', element: lazyPage(<AdminReportsPage />) },
+    ],
   },
 ]);

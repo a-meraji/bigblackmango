@@ -1,0 +1,29 @@
+.wrapper {
+  min-block-size: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-canvas);
+  padding: 1.5rem;
+}
+
+.card {
+  inline-size: 100%;
+  max-inline-size: 420px;
+  background: var(--bg-surface-raised);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.logo {
+  text-align: center;
+  margin-block-end: 2rem;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--text-display);
+  letter-spacing: 0.01em;
+}

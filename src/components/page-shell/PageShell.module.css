@@ -1,0 +1,18 @@
+.shell {
+  inline-size: 100%;
+  padding-inline: var(--page-inline-padding);
+  padding-block: var(--space-4);
+}
+
+.narrow {
+  max-inline-size: var(--layout-max-width);
+  margin-inline: auto;
+}
+
+.cartInset {
+  padding-block-end: var(--layout-floating-cart-offset);
+}
+
+.bottomNavInset {
+  padding-block-end: calc(var(--layout-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+}

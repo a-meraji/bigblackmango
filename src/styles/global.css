@@ -4,40 +4,26 @@ html {
 }
 
 body {
-  font-family: 'Vazir', 'Tahoma', 'Segoe UI', sans-serif;
+  font-family: 'Vazirmatn', 'Tahoma', 'Segoe UI', sans-serif;
   background-color: var(--bg-canvas);
-  color: var(--text-primary);
+  /* --text-body is the correct token (not --text-primary) */
+  color: var(--text-body);
   line-height: 1.6;
   direction: rtl;
+  min-block-size: 100dvh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Focus visible — keyboard navigation */
+/* Focus visible — keyboard navigation ring */
 :focus-visible {
   outline: 2px solid var(--brand-primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
-/* Skip link for accessibility */
-.skip-link {
-  position: absolute;
-  inset-block-start: -100%;
-  inset-inline-start: 0;
-  background: var(--bg-surface-raised);
-  color: var(--text-primary);
-  padding: 0.5rem 1rem;
-  z-index: 9999;
-  font-weight: 700;
-  border-end-end-radius: var(--radius-md);
-}
-
-.skip-link:focus {
-  inset-block-start: 0;
-}
-
-/* Custom scrollbar — WebKit */
+/* Custom scrollbar — WebKit only; uses physical props since ::webkit-scrollbar
+   does not support logical properties */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -48,15 +34,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-default);
-  border-radius: var(--radius-full);
+  background: var(--ivory-400);
+  /* --radius-pill is the correct token (not --radius-full which doesn't exist) */
+  border-radius: var(--radius-pill);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
 
-/* Horizontal scroll containers (stories, chips) */
+/* Horizontal scroll snap containers (stories, category chips) */
 .scroll-x {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -66,4 +53,15 @@ body {
 
 .scroll-x::-webkit-scrollbar {
   display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

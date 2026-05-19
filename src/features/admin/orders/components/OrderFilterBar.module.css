@@ -1,0 +1,79 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem 0.75rem;
+  margin-block-end: 1.25rem;
+  padding: 1rem;
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.search {
+  flex: 1;
+  min-inline-size: min(100%, 12rem);
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  background: var(--input-bg);
+  color: var(--input-text);
+}
+
+.search:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
+  outline: none;
+}
+
+.select,
+.dateInput {
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  background: var(--input-bg);
+  color: var(--input-text);
+  min-inline-size: 9rem;
+}
+
+.select:focus,
+.dateInput:focus {
+  border-color: var(--input-border-focus);
+  outline: none;
+}
+
+.dateSep {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.manualBtn {
+  margin-inline-start: auto;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  padding: 0.625rem 1rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  cursor: pointer;
+  min-block-size: var(--btn-min-touch, 44px);
+  box-shadow: var(--shadow-sm);
+}
+
+.manualBtn:hover {
+  background: var(--btn-primary-bg-hover);
+}
+
+@media (max-width: 768px) {
+  .manualBtn {
+    inline-size: 100%;
+    margin-inline-start: 0;
+  }
+}

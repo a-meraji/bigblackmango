@@ -1,23 +1,14 @@
 import { apiClient } from '../client';
 import type { ApiResponse, PaginationMeta } from '@types/api';
-
-export interface AdminStory {
-  id: string;
-  title: string;
-  mediaUrl: string;
-  thumbnailUrl?: string;
-  mediaType: 'image' | 'video';
-  expiresAt: string;
-  isActive: boolean;
-  createdAt: string;
-}
+import type { AdminStory } from '@types/admin-content';
 
 export interface StoryPayload {
-  title: string;
+  title?: string;
   mediaUrl: string;
   thumbnailUrl?: string;
   mediaType: 'image' | 'video';
   expiresAt?: string;
+  isActive?: boolean;
 }
 
 export async function adminGetStories(params?: {
@@ -29,6 +20,11 @@ export async function adminGetStories(params?: {
     { params },
   );
   return res.data.data;
+}
+
+export async function adminListStories(): Promise<AdminStory[]> {
+  const { items } = await adminGetStories({ limit: 100 });
+  return items;
 }
 
 export async function adminCreateStory(payload: StoryPayload): Promise<AdminStory> {

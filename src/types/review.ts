@@ -1,18 +1,16 @@
-export interface ReviewAuthor {
-  name: string;
-}
-
-export interface ReviewAdminReply {
+/** Public review on food detail (GET /foods/:id, GET /foods/:id/reviews) */
+export interface PublicAdminReply {
   message: string;
+  repliedAt: string;
+}
+
+export interface PublicReview {
+  id: string;
+  rating: number;
+  comment: string | null;
+  adminReply: PublicAdminReply | null;
   createdAt: string;
 }
 
-export interface Review {
-  id: string;
-  author: ReviewAuthor;
-  rating: number;
-  comment: string;
-  isVisible: boolean;
-  createdAt: string;
-  adminReply: ReviewAdminReply | null;
-}
+/** @deprecated Use PublicReview for customer UI */
+export type Review = PublicReview;

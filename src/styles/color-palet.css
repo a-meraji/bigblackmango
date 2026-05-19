@@ -419,6 +419,52 @@
     --radius-2xl:    32px;   /* page-level shell, hero sections                  */
     --radius-pill:   9999px; /* badges, pills, toggles, status dots               */
   }
+
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     11b. SPACING, LAYOUT & TYPOGRAPHY
+     Mobile-first rhythm — use these instead of ad-hoc rem in feature CSS.
+     ───────────────────────────────────────────────────────────────────────────── */
+  :root {
+
+    --space-1:  0.25rem;   /* 4px  */
+    --space-2:  0.5rem;    /* 8px  */
+    --space-3:  0.75rem;   /* 12px */
+    --space-4:  1rem;      /* 16px */
+    --space-5:  1.25rem;   /* 20px */
+    --space-6:  1.5rem;    /* 24px */
+    --space-8:  2rem;      /* 32px */
+    --space-10: 2.5rem;    /* 40px */
+    --space-12: 3rem;      /* 48px */
+
+    --page-inline-padding:     var(--space-4);
+    --page-section-gap:        var(--space-6);
+    --layout-max-width:        640px;
+    --layout-bottom-nav-height: 3.5rem;
+    --layout-bottom-inset:     calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+    --layout-floating-cart-offset: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+    --layout-sticky-footer-offset: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+
+    --text-size-xs:     0.75rem;
+    --text-size-sm:     0.8125rem;
+    --text-size-base:   0.9375rem;
+    --text-size-lg:     1.0625rem;
+    --text-size-xl:     1.25rem;
+    --text-size-2xl:    1.375rem;
+    --text-size-display: 1.5rem;
+
+    --btn-min-touch:    2.75rem;   /* 44px minimum tap target */
+
+    /* Dark overlays (carousel, story viewer) */
+    --carousel-dot-inactive:  var(--text-on-dark-muted);
+    --carousel-dot-active:    var(--text-on-dark);
+    --story-progress-track:   var(--text-on-dark-muted);
+    --story-progress-fill:  var(--text-on-dark);
+
+    /* Skeleton shimmer */
+    --skeleton-base:  var(--overlay-skeleton-base);
+    --skeleton-shine: var(--overlay-skeleton-shine);
+  }
   
   
   /* ─────────────────────────────────────────────────────────────────────────────
@@ -479,6 +525,7 @@
     --btn-focus-ring:           var(--state-focus-ring-brand);
     --btn-transition:           background-color 140ms ease, box-shadow 160ms ease,
                                 transform 80ms ease, border-color 140ms ease;
+    --btn-min-height-sm:        var(--btn-min-touch);
   }
   
   
@@ -569,7 +616,17 @@
     --badge-neutral-bg:   var(--ivory-150);                  /* #F7F1E5            */
     --badge-neutral-border: var(--ivory-300);                /* #E8D9C0            */
     --badge-neutral-text: var(--onyx-400);                   /* #5E5650            */
-  
+
+    /* Error Badge */
+    --badge-error-bg:     var(--blush-100);                  /* #FDF0EE            */
+    --badge-error-border: var(--blush-300);                  /* #EDA08E            */
+    --badge-error-text:   var(--blush-600);                  /* #6E2418            */
+
+    /* Info Badge */
+    --badge-info-bg:      var(--sky-100);                    /* #EEF5FB            */
+    --badge-info-border:  var(--sky-300);                    /* #85B5E2            */
+    --badge-info-text:    var(--sky-600);                    /* #0E3670            */
+
     /* Status dot colors */
     --dot-online:         var(--sage-400);                   /* #607A5B            */
     --dot-busy:           var(--gold-500);                   /* #B88A1A            */
@@ -774,6 +831,18 @@
     /* Cancelled */
     --status-cancelled-bg:  var(--blush-100);   --status-cancelled-text: var(--blush-600);
     --status-cancelled-dot: var(--blush-400);
+
+    /* Aliases for order UI components */
+    --order-pending-bg:     var(--status-pending-bg);
+    --order-pending-text:   var(--status-pending-text);
+    --order-preparing-bg:   var(--status-preparing-bg);
+    --order-preparing-text: var(--status-preparing-text);
+    --order-ready-bg:       var(--status-ready-bg);
+    --order-ready-text:     var(--status-ready-text);
+    --order-delivered-bg:   var(--status-delivered-bg);
+    --order-delivered-text: var(--status-delivered-text);
+    --order-cancelled-bg:   var(--status-cancelled-bg);
+    --order-cancelled-text: var(--status-cancelled-text);
   }
   
   

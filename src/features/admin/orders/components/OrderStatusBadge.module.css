@@ -1,0 +1,33 @@
+.badge {
+  display: inline-flex;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-pill, 999px);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pending {
+  background: var(--order-pending-bg);
+  color: var(--order-pending-text);
+}
+
+.preparing {
+  background: var(--order-preparing-bg);
+  color: var(--order-preparing-text);
+}
+
+.dispatch {
+  background: var(--order-ready-bg);
+  color: var(--order-ready-text);
+}
+
+.delivered {
+  background: var(--order-delivered-bg);
+  color: var(--order-delivered-text);
+}
+
+.cancelled {
+  background: var(--order-cancelled-bg);
+  color: var(--order-cancelled-text);
+}

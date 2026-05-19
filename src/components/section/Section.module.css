@@ -1,0 +1,16 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.flush .title {
+  padding-inline: var(--page-inline-padding);
+}
+
+.title {
+  font-size: var(--text-size-lg);
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0;
+}

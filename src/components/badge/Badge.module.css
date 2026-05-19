@@ -1,0 +1,18 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--badge-radius, var(--radius-pill));
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.brand   { background: var(--badge-brand-bg);   color: var(--badge-brand-text);   border-color: var(--badge-brand-border); }
+.gold    { background: var(--badge-gold-bg);    color: var(--badge-gold-text);    border-color: var(--badge-gold-border); }
+.sage    { background: var(--badge-sage-bg);    color: var(--badge-sage-text);    border-color: var(--badge-sage-border); }
+.neutral { background: var(--badge-neutral-bg); color: var(--badge-neutral-text); border-color: var(--badge-neutral-border); }
+.error   { background: var(--badge-error-bg);   color: var(--badge-error-text);   border-color: var(--badge-error-border); }
+.info    { background: var(--badge-info-bg);    color: var(--badge-info-text);    border-color: var(--badge-info-border); }

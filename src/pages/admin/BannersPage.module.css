@@ -1,0 +1,23 @@
+.bannerThumb {
+  inline-size: 4rem;
+  block-size: 2.5rem;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+}
+
+.titleCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.inactiveRow {
+  opacity: 0.72;
+}

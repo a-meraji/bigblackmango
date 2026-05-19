@@ -23,6 +23,6 @@ export interface HomePayload {
   categories: Category[];
   dailyMenuSummary: {
     menuDate: string;
-    expiresAt: string;
+    expiresAt: string | null;
   };
 }

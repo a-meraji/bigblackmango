@@ -1,10 +1,14 @@
-import { Outlet } from 'react-router-dom';
+import styles from './AuthLayout.module.css';
 
-// Full implementation in Phase 2
-export default function AuthLayout() {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <Outlet />
+    <div className={styles.wrapper}>
+      <div className={styles.card}>
+        <div className={styles.logo}>
+          <span className={styles.logoText}>بیگ بلک منگو</span>
+        </div>
+        {children}
+      </div>
     </div>
   );
 }

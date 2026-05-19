@@ -1,0 +1,85 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--btn-transition, background-color 140ms ease, box-shadow 160ms ease);
+  position: relative;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+/* Sizes */
+.sm  {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  min-block-size: var(--btn-min-height-sm);
+}
+.md  { padding: 0.625rem 1.25rem;  font-size: 1rem; }
+.lg  { padding: 0.875rem 1.75rem;  font-size: 1.0625rem; }
+
+/* Variants — token names follow color-palet.css: --btn-<variant>-bg-<state> */
+.primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  box-shadow: var(--shadow-sm);
+}
+.primary:hover:not(:disabled)  { background: var(--btn-primary-bg-hover); }
+.primary:active:not(:disabled) { background: var(--btn-primary-bg-active); }
+
+.secondary {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
+}
+.secondary:hover:not(:disabled) { background: var(--btn-secondary-bg-hover); }
+
+.ghost {
+  background: var(--btn-ghost-bg, transparent);
+  color: var(--btn-ghost-text);
+  border: 1px solid var(--btn-ghost-border, transparent);
+}
+.ghost:hover:not(:disabled) { background: var(--btn-ghost-bg-hover); }
+
+.danger {
+  background: var(--btn-danger-bg);
+  color: var(--btn-danger-text);
+}
+.danger:hover:not(:disabled) { background: var(--btn-danger-bg-hover); }
+
+.sage {
+  background: var(--btn-sage-bg);
+  color: var(--btn-sage-text);
+}
+.sage:hover:not(:disabled) { background: var(--btn-sage-bg-hover); }
+
+/* States */
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.fullWidth { inline-size: 100%; }
+.loading { cursor: wait; }
+
+/* Inline spinner — centred with transform trick so it works at all button sizes */
+.spinner {
+  display: inline-block;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border: 2px solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hiddenText { visibility: hidden; }
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}

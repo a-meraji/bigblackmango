@@ -1,0 +1,55 @@
+.page {
+  padding-block-end: 2rem;
+}
+
+.hero {
+  aspect-ratio: 16 / 10;
+  background: var(--bg-section);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.body {
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lineLg,
+.lineMd,
+.lineFull,
+.footer {
+  border-radius: var(--radius-sm);
+  background: var(--bg-section);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.lineLg {
+  block-size: 1.75rem;
+  inline-size: 70%;
+}
+
+.lineMd {
+  block-size: 1rem;
+  inline-size: 40%;
+}
+
+.lineFull {
+  block-size: 0.875rem;
+  inline-size: 100%;
+}
+
+.footer {
+  block-size: 3rem;
+  margin-block-start: 0.5rem;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

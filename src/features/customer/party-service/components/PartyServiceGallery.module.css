@@ -1,0 +1,44 @@
+.wrapper {
+  padding: 1rem;
+}
+
+.mainSlide {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-section);
+}
+
+.mainImage {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.thumbRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-block-start: 0.75rem;
+  overflow-x: auto;
+}
+
+.thumb {
+  flex: 0 0 4rem;
+  block-size: 3rem;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 2px solid transparent;
+  opacity: 0.7;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+
+.thumb.active {
+  border-color: var(--brand-primary);
+  opacity: 1;
+}
+
+.thumbImg {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}

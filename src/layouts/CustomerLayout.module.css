@@ -1,0 +1,16 @@
+.wrapper {
+  min-block-size: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-canvas);
+}
+
+.main {
+  flex: 1;
+  max-inline-size: var(--layout-max-width);
+  inline-size: 100%;
+  margin-inline: auto;
+  padding-block-end: calc(
+    var(--layout-bottom-nav-height) + env(safe-area-inset-bottom, 0px)
+  );
+}

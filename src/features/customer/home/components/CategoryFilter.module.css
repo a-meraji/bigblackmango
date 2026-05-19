@@ -1,0 +1,58 @@
+.row {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+/* --border-default is a full border shorthand; use as border property directly */
+.chip {
+  flex-shrink: 0;
+  min-block-size: var(--btn-min-touch);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  font-size: 0.9375rem;
+  font-family: inherit;
+  font-weight: 500;
+  border: var(--border-default);
+  background: var(--bg-surface-raised);
+  color: var(--text-body);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+  scroll-snap-align: start;
+}
+
+.chip:hover:not(.active) {
+  background: var(--bg-subtle-hover);
+  border-color: var(--ivory-400);
+}
+
+/* Active: brand-primary highlight */
+.active {
+  background: var(--bg-brand-tint);
+  border: 1px solid var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+/* Skeleton chips */
+.skeleton {
+  flex-shrink: 0;
+  block-size: 36px;
+  border-radius: var(--radius-pill);
+  background: var(--ivory-200);
+  border: none;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% { opacity: 1; }
+  50%  { opacity: 0.4; }
+}

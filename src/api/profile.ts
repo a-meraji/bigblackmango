@@ -17,26 +17,24 @@ export interface UserProfile extends User {
 }
 
 export async function getProfile(): Promise<UserProfile> {
-  const res = await apiClient.get<ApiResponse<{ user: UserProfile }>>('/me');
-  return res.data.data.user;
+  const res = await apiClient.get<ApiResponse<UserProfile>>('/me');
+  return res.data.data;
 }
 
 export async function updateProfile(payload: {
   firstName?: string;
   lastName?: string;
-}): Promise<User> {
-  const res = await apiClient.patch<ApiResponse<{ user: User }>>('/me', payload);
-  return res.data.data.user;
+}): Promise<UserProfile> {
+  const res = await apiClient.patch<ApiResponse<UserProfile>>('/me', payload);
+  return res.data.data;
 }
 
 export async function getAddresses(): Promise<Address[]> {
-  const res = await apiClient.get<ApiResponse<{ addresses: Address[] }>>('/me/addresses');
-  return res.data.data.addresses;
+  const res = await apiClient.get<ApiResponse<Address[]>>('/me/addresses');
+  return res.data.data;
 }
 
-export async function createAddress(
-  payload: Omit<Address, 'id' | 'isDefault'>,
-): Promise<Address> {
-  const res = await apiClient.post<ApiResponse<{ address: Address }>>('/me/addresses', payload);
-  return res.data.data.address;
+export async function createAddress(payload: Omit<Address, 'id' | 'isDefault'>): Promise<Address> {
+  const res = await apiClient.post<ApiResponse<Address>>('/me/addresses', payload);
+  return res.data.data;
 }

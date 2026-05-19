@@ -23,20 +23,31 @@ export async function initiatePayment(checkoutId: string): Promise<InitiatePayme
   return res.data.data;
 }
 
-export interface VerifyPaymentResult {
+export interface ReceiptItem {
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+}
+
+export interface PaymentVerifyResult {
   checkoutId: string;
   checkoutStatus: 'paid' | 'canceled';
   orderId?: string;
   trackingCode?: string;
   paymentStatus?: string;
-  receipt?: { items: unknown[]; total: number };
+  receipt?: { items: ReceiptItem[]; total: number };
 }
 
-export async function verifyPayment(payload: {
-  paymentId: string;
-  gatewayReference: string;
-  status: 'success' | 'failed';
-}): Promise<VerifyPaymentResult> {
-  const res = await apiClient.post<ApiResponse<VerifyPaymentResult>>('/payments/verify', payload);
+export async function verifyPayment(
+  paymentId: string,
+  gatewayReference: string,
+  status: 'success' | 'failed',
+): Promise<PaymentVerifyResult> {
+  const res = await apiClient.post<ApiResponse<PaymentVerifyResult>>('/payments/verify', {
+    paymentId,
+    gatewayReference,
+    status,
+  });
   return res.data.data;
 }

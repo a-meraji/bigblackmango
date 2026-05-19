@@ -1,0 +1,62 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  background: var(--bg-surface-raised);
+  min-inline-size: 32rem;
+}
+
+.th {
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--table-header-text);
+  background: var(--table-header-bg);
+  text-align: start;
+  border-block-end: 1px solid var(--table-header-border);
+  white-space: nowrap;
+}
+
+.tr:nth-child(even) {
+  background: var(--table-row-bg-alt);
+}
+
+.tr:hover {
+  background: var(--table-row-bg-hover);
+}
+
+.td {
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  color: var(--table-cell-text);
+  border-block-end: 1px solid var(--table-row-border);
+}
+
+.empty {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-surface-raised);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.skeletonRow {
+  border-radius: var(--radius-sm);
+}
