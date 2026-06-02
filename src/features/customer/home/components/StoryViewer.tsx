@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { X } from 'lucide-react';
-import type { Story } from '@types/home';
+import { Check, Loader2, ShoppingCart, X } from 'lucide-react';
+import type { Story } from '@t/home';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
+import { formatPrice } from '@utils/format-price';
 import IconButton from '@components/icon-button/IconButton';
 import { useFocusTrap } from '@hooks/useFocusTrap';
+import { useAddToCart } from '@features/customer/cart/hooks/useAddToCart';
 import styles from './StoryViewer.module.css';
 
 interface StoryViewerProps {
@@ -18,7 +20,21 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
   const overlayRef = useRef<HTMLDivElement>(null);
   useFocusTrap(true, overlayRef);
   const [index, setIndex] = useState(initialIndex);
+  const { addToCart, addingId } = useAddToCart();
+  const [addedItemId, setAddedItemId] = useState<string | null>(null);
+  const addedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [progress, setProgress] = useState(0);
+
+  function handleAddToCart(menuItemId: string, unitPrice: number, food: { id: string; name: string; thumbnailUrl: string | null }) {
+    setAddedItemId(null);
+    if (addedTimerRef.current) clearTimeout(addedTimerRef.current);
+    addToCart({ menuItemId, unitPrice, food }).then(() => {
+      setAddedItemId(menuItemId);
+      addedTimerRef.current = setTimeout(() => setAddedItemId(null), 2500);
+    });
+  }
+
+  useEffect(() => () => { if (addedTimerRef.current) clearTimeout(addedTimerRef.current); }, []);
   const story = stories[index];
 
   const goNext = useCallback(() => {
@@ -133,6 +149,59 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
           <button type="button" className={styles.tapPrev} onClick={goPrev} aria-label="استوری قبلی" />
           <button type="button" className={styles.tapNext} onClick={goNext} aria-label="استوری بعدی" />
         </div>
+
+        {story.menuItem && (
+          <div className={styles.foodCard}>
+            {story.menuItem.imageUrl ? (
+              <img
+                src={resolveMediaUrl(story.menuItem.imageUrl)}
+                alt={story.menuItem.name}
+                className={styles.foodThumb}
+              />
+            ) : (
+              <div className={styles.foodThumbPlaceholder} aria-hidden="true" />
+            )}
+            <div className={styles.foodInfo}>
+              <span className={styles.foodLabel}>همین الان سفارش بده</span>
+              <span className={styles.foodName}>{story.menuItem.name}</span>
+              <span className={styles.foodPrice}>{formatPrice(story.menuItem.price)}</span>
+            </div>
+            {(() => {
+              const mid = story.menuItem!.menuItemId;
+              const isAdding = addingId === mid;
+              const isAdded  = !isAdding && addedItemId === mid;
+              return (
+                <button
+                  type="button"
+                  className={`${styles.foodAddBtn} ${isAdded ? styles.foodAddBtnAdded : ''}`}
+                  disabled={isAdding}
+                  onClick={() =>
+                    handleAddToCart(
+                      story.menuItem!.menuItemId,
+                      story.menuItem!.price,
+                      { id: story.menuItem!.foodId, name: story.menuItem!.name, thumbnailUrl: story.menuItem!.imageUrl },
+                    )
+                  }
+                  aria-label={isAdded ? `${story.menuItem!.name} به سبد اضافه شد` : `افزودن ${story.menuItem!.name} به سبد خرید`}
+                  aria-live="polite"
+                >
+                  <span
+                    key={isAdding ? 'loading' : isAdded ? 'added' : 'idle'}
+                    className={styles.foodAddBtnContent}
+                  >
+                    {isAdding ? (
+                      <Loader2 size={15} className={styles.spinner} />
+                    ) : isAdded ? (
+                      <><Check size={15} strokeWidth={2.5} />اضافه شد</>
+                    ) : (
+                      <><ShoppingCart size={15} />افزودن به سبد</>
+                    )}
+                  </span>
+                </button>
+              );
+            })()}
+          </div>
+        )}
       </div>
     </div>
   );

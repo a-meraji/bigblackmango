@@ -26,11 +26,42 @@ export default function AddressPicker({
   disabled,
 }: Props) {
   const [open, setOpen] = useState(false);
+  const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({});
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   const selected = addresses.find((a) => a.id === selectedId);
   const triggerLabel = selected ? selected.label?.trim() || 'آدرس ذخیره‌شده' : 'آدرس جدید';
   const triggerLine = selected ? truncateLine(selected.addressLine) : 'آدرس جدید وارد می‌کنید';
+
+  function openDropdown() {
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (!rect) { setOpen(true); return; }
+    const maxH = 320;
+    const gap = 6;
+    const spaceBelow = window.innerHeight - rect.bottom - gap;
+    const spaceAbove = rect.top - gap;
+    if (spaceBelow >= 150 || spaceBelow >= spaceAbove) {
+      setPanelStyle({
+        position: 'fixed',
+        top: rect.bottom + gap,
+        left: rect.left,
+        width: rect.width,
+        maxHeight: Math.min(spaceBelow, maxH),
+        zIndex: 200,
+      });
+    } else {
+      setPanelStyle({
+        position: 'fixed',
+        bottom: window.innerHeight - rect.top + gap,
+        left: rect.left,
+        width: rect.width,
+        maxHeight: Math.min(spaceAbove, maxH),
+        zIndex: 200,
+      });
+    }
+    setOpen(true);
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -62,9 +93,10 @@ export default function AddressPicker({
     <div className={styles.wrap} ref={rootRef}>
       <span className={styles.fieldLabel}>انتخاب آدرس</span>
       <button
+        ref={triggerRef}
         type="button"
         className={styles.trigger}
-        onClick={() => !disabled && setOpen((o) => !o)}
+        onClick={() => { if (!disabled) open ? setOpen(false) : openDropdown(); }}
         aria-expanded={open}
         aria-haspopup="listbox"
         disabled={disabled}
@@ -84,7 +116,7 @@ export default function AddressPicker({
       </button>
 
       {open && (
-        <div className={styles.panel} role="listbox">
+        <div className={styles.panel} style={panelStyle} role="listbox">
           <ul className={styles.list}>
             {addresses.map((addr) => {
               const isActive = selectedId === addr.id;

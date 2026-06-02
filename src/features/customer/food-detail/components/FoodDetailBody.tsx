@@ -1,4 +1,4 @@
-import type { PublicFoodDetail } from '@types/food';
+import type { PublicFoodDetail } from '@t/food';
 import type { NormalizedAvailability } from '@utils/food-availability';
 import StarRating from '@components/star-rating/StarRating';
 import Badge from '@components/badge/Badge';

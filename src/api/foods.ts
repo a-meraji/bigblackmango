@@ -1,12 +1,12 @@
 import { apiClient } from './client';
-import type { ApiResponse, PaginationMeta } from '@types/api';
+import type { ApiResponse, PaginationMeta } from '@t/api';
 import type {
   FoodRating,
   FoodTodayAvailability,
   PublicFoodDetail,
   PublicFoodSummary,
-} from '@types/food';
-import type { PublicReview } from '@types/review';
+} from '@t/food';
+import type { PublicReview } from '@t/review';
 
 export interface FoodDetailPayload {
   food: PublicFoodDetail;

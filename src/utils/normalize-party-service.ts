@@ -1,4 +1,4 @@
-import type { FaqItem, ServiceItem } from '@types/party-service';
+import type { FaqItem, ServiceItem } from '@t/party-service';
 
 export function normalizeServiceItems(raw: unknown): ServiceItem[] {
   if (!Array.isArray(raw)) return [];

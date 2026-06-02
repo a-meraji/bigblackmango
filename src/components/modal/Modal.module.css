@@ -38,7 +38,7 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-2xl);
   padding: 0;
-  inline-size: min(calc(100vw - 2 * var(--space-8)), 480px);
+  inline-size: min(calc(100vw - 1.5rem), 600px);
   max-block-size: min(90dvh, calc(100% - 2 * var(--space-8)));
   overflow: hidden;
   display: flex;
@@ -46,15 +46,15 @@
 }
 
 .sm {
-  inline-size: min(calc(100vw - 2 * var(--space-8)), 360px);
+  inline-size: min(calc(100vw - 1.5rem), 400px);
 }
 
 .md {
-  inline-size: min(calc(100vw - 2 * var(--space-8)), 480px);
+  inline-size: min(calc(100vw - 1.5rem), 600px);
 }
 
 .lg {
-  inline-size: min(calc(100vw - 2 * var(--space-8)), 640px);
+  inline-size: min(calc(100vw - 1.5rem), 800px);
 }
 
 .header {

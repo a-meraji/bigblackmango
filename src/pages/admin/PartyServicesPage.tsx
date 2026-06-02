@@ -12,7 +12,10 @@ import { adminListBanners } from '@api/admin/banners';
 import AdminTable, { type Column } from '@components/admin-table/AdminTable';
 import AdminToolbar from '@components/admin-toolbar/AdminToolbar';
 import PartyServiceFormModal from '@features/admin/party-services/components/PartyServiceFormModal';
-import type { AdminPartyServicePage } from '@types/admin-content';
+import HighlightsManager from '@features/admin/party-services/components/HighlightsManager';
+import ServiceItemsManager from '@features/admin/party-services/components/ServiceItemsManager';
+import TestimonialsManager from '@features/admin/party-services/components/TestimonialsManager';
+import type { AdminPartyServicePage } from '@t/admin-content';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
 import { useToast } from '@hooks/useToast';
 import shared from '@styles/admin-shared.module.css';
@@ -23,6 +26,9 @@ export default function PartyServicesPage() {
   const toast = useToast();
   const [editingService, setEditingService] = useState<AdminPartyServicePage | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [highlightsService, setHighlightsService] = useState<AdminPartyServicePage | null>(null);
+  const [serviceItemsService, setServiceItemsService] = useState<AdminPartyServicePage | null>(null);
+  const [testimonialsService, setTestimonialsService] = useState<AdminPartyServicePage | null>(null);
 
   const { data: services = [], isLoading } = useQuery({
     queryKey: ['admin', 'party-services'],
@@ -91,14 +97,18 @@ export default function PartyServicesPage() {
     {
       key: 'phone',
       label: 'تلفن',
-      render: (s) => (
-        <span dir="ltr">{s.contactPhone ?? '—'}</span>
-      ),
+      render: (s) => <span dir="ltr">{s.contactPhone ?? '—'}</span>,
+    },
+    {
+      key: 'stats',
+      label: 'آمار',
+      width: '70px',
+      render: (s) => `${s.stats.length.toLocaleString('fa-IR')} مورد`,
     },
     {
       key: 'faq',
       label: 'سوالات',
-      width: '90px',
+      width: '80px',
       render: (s) => `${s.faq.length.toLocaleString('fa-IR')} سوال`,
     },
     {
@@ -108,10 +118,7 @@ export default function PartyServicesPage() {
       render: (s) => (
         <button
           type="button"
-          className={clsx(
-            shared.toggleBtn,
-            s.isActive ? shared.active : shared.inactive,
-          )}
+          className={clsx(shared.toggleBtn, s.isActive ? shared.active : shared.inactive)}
           onClick={() => updateMutation.mutate({ id: s.id, payload: { isActive: !s.isActive } })}
           disabled={updateMutation.isPending}
         >
@@ -122,9 +129,18 @@ export default function PartyServicesPage() {
     {
       key: 'actions',
       label: 'عملیات',
-      width: '140px',
+      width: '280px',
       render: (s) => (
         <div className={shared.actions}>
+          <button type="button" className={shared.editBtn} onClick={() => setHighlightsService(s)}>
+            هایلایت‌ها
+          </button>
+          <button type="button" className={shared.editBtn} onClick={() => setServiceItemsService(s)}>
+            خدمات
+          </button>
+          <button type="button" className={shared.editBtn} onClick={() => setTestimonialsService(s)}>
+            نظرات
+          </button>
           <button type="button" className={shared.editBtn} onClick={() => openEdit(s)}>
             ویرایش
           </button>
@@ -152,20 +168,47 @@ export default function PartyServicesPage() {
         emptyMessage="سرویسی وجود ندارد."
         rowClassName={(s) => (!s.isActive ? styles.inactiveRow : undefined)}
       />
+
+      {highlightsService && (
+        <HighlightsManager
+          service={highlightsService}
+          onClose={() => setHighlightsService(null)}
+        />
+      )}
+
+      {serviceItemsService && (
+        <ServiceItemsManager
+          service={serviceItemsService}
+          onClose={() => setServiceItemsService(null)}
+        />
+      )}
+
+      {testimonialsService && (
+        <TestimonialsManager
+          service={testimonialsService}
+          onClose={() => setTestimonialsService(null)}
+        />
+      )}
+
       {showForm && (
         <PartyServiceFormModal
           initial={editingService}
           onClose={() => setShowForm(false)}
           onSave={async (payload) => {
-            if (editingService) {
-              await adminUpdatePartyService(editingService.id, payload);
-              toast.success('سرویس بروزرسانی شد.');
-            } else {
-              await adminCreatePartyService(payload as PartyServicePayload);
-              toast.success('سرویس ایجاد شد.');
+            try {
+              if (editingService) {
+                await adminUpdatePartyService(editingService.id, payload);
+                toast.success('سرویس بروزرسانی شد.');
+              } else {
+                await adminCreatePartyService(payload as PartyServicePayload);
+                toast.success('سرویس ایجاد شد.');
+              }
+              qc.invalidateQueries({ queryKey: ['admin', 'party-services'] });
+              setShowForm(false);
+            } catch {
+              toast.error('خطا در ذخیره‌سازی. لطفاً دوباره تلاش کنید.');
+              throw new Error('save_failed');
             }
-            qc.invalidateQueries({ queryKey: ['admin', 'party-services'] });
-            setShowForm(false);
           }}
         />
       )}

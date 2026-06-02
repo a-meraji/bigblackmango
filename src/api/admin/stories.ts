@@ -1,6 +1,6 @@
 import { apiClient } from '../client';
-import type { ApiResponse, PaginationMeta } from '@types/api';
-import type { AdminStory } from '@types/admin-content';
+import type { ApiResponse, PaginationMeta } from '@t/api';
+import type { AdminStory } from '@t/admin-content';
 
 export interface StoryPayload {
   title?: string;

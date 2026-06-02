@@ -2,7 +2,7 @@ import { ArrowLeft } from 'lucide-react';
 import Modal from '@components/modal/Modal';
 import Button from '@components/button/Button';
 import Icon from '@components/icon/Icon';
-import type { OrderStatus } from '@types/order';
+import type { OrderStatus } from '@t/order';
 import { statusLabel } from '@utils/order-status';
 import OrderStatusBadge from './OrderStatusBadge';
 import styles from './OrderStatusConfirmModal.module.css';

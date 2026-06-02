@@ -1,0 +1,92 @@
+/* ── Card shell — horizontal split ── */
+.card {
+  display: flex;
+  flex-direction: row;           /* RTL: start = physical right */
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  border: var(--border-default);
+  min-block-size: 140px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ── Text body — fills the left (end) side in RTL ── */
+.body {
+  flex: 1;
+  padding: 1rem 1.125rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  line-height: 1.3;
+}
+
+/* ── Accent outline badges ── */
+.badges {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--brand-primary);
+  background: var(--bg-brand-tint);
+  color: var(--brand-primary-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.description {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Image — 40% on the right (start) side in RTL ── */
+.imageWrap {
+  flex: 0 0 40%;
+  max-inline-size: 40%;
+  position: relative;
+  overflow: hidden;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imagePlaceholder {
+  flex: 0 0 40%;
+  background: var(--bg-surface-sunken);
+}

@@ -1,6 +1,6 @@
 import { apiClient } from '../client';
-import type { ApiResponse, PaginationMeta } from '@types/api';
-import type { OrderStatus } from '@types/order';
+import type { ApiResponse, PaginationMeta } from '@t/api';
+import type { OrderStatus } from '@t/order';
 import {
   parseAddressSnapshot,
   parseContactSnapshot,

@@ -11,24 +11,12 @@
   box-shadow: var(--shadow-sm);
 }
 
-.select {
-  padding: 0.625rem 0.875rem;
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius-md);
-  font-family: inherit;
-  font-size: 0.9375rem;
-  background: var(--input-bg);
-  color: var(--input-text);
+.filterSelect {
   min-inline-size: 9rem;
 }
 
-.select:focus {
-  border-color: var(--input-border-focus);
-  outline: none;
-}
-
 @media (max-width: 768px) {
-  .select {
+  .filterSelect {
     flex: 1;
     min-inline-size: min(100%, 9rem);
   }

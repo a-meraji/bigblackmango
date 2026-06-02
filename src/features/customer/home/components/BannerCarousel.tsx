@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import type { PartyServiceBannerSummary } from '@types/home';
+import type { PartyServiceBannerSummary } from '@t/home';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
 import styles from './BannerCarousel.module.css';
 

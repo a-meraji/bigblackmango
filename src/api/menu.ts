@@ -1,6 +1,6 @@
 import { apiClient } from './client';
-import type { ApiResponse } from '@types/api';
-import type { Category, DailyMenuItem } from '@types/food';
+import type { ApiResponse } from '@t/api';
+import type { Category, DailyMenuItem } from '@t/food';
 
 export interface MenuTodayPayload {
   menuDate: string;

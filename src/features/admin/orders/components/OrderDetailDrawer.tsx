@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import { adminGetOrderDetail } from '@api/admin/orders';
 import { formatPrice } from '@utils/format-price';
 import { toJalaliWithTime } from '@utils/format-date';
-import type { OrderStatus } from '@types/order';
+import type { OrderStatus } from '@t/order';
 import OrderStatusBadge from './OrderStatusBadge';
 import StatusTransitionButtons from './StatusTransitionButtons';
 import Skeleton from '@components/skeleton/Skeleton';

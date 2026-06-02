@@ -1,0 +1,157 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: right;
+  font-family: inherit;
+  overflow: hidden;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.1s;
+  position: relative;
+}
+
+.card:hover:not(:disabled) {
+  border-color: var(--brand-primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.card:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Selected state */
+.selected {
+  border-color: var(--brand-primary);
+  background: var(--bg-brand-tint);
+  box-shadow: var(--shadow-gold-glow);
+}
+
+/* Already in menu */
+.inMenu {
+  opacity: 0.55;
+  cursor: default;
+  border-color: var(--border-default);
+}
+
+/* Image area */
+.imgWrapper {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--bg-surface-sunken);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.card:hover:not(:disabled) .img {
+  transform: scale(1.04);
+}
+
+.imgPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--text-muted);
+}
+
+/* State overlay icons */
+.stateOverlay {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+}
+
+.checkCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--brand-primary);
+  color: var(--charcoal-700);
+  box-shadow: var(--shadow-sm);
+}
+
+.addCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--charcoal-600);
+  opacity: 0;
+  transition: opacity 0.15s;
+  box-shadow: var(--shadow-xs);
+}
+
+.card:hover:not(:disabled) .addCircle {
+  opacity: 1;
+}
+
+.inMenuChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border: 1px solid var(--color-success-border);
+}
+
+/* Info */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.625rem 0.75rem;
+}
+
+.name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-heading);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.price {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}

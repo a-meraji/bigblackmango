@@ -7,6 +7,12 @@ export interface Column<T> {
   label: string;
   render: (row: T) => React.ReactNode;
   width?: string;
+  /** Label shown before the value in mobile card view.
+   *  Pass false to suppress the label entirely (e.g. image columns).
+   *  Defaults to `label`. */
+  mobileLabel?: string | false;
+  /** Hide this entire column in the mobile card view. */
+  mobileHide?: boolean;
 }
 
 interface AdminTableProps<T> {
@@ -47,7 +53,7 @@ export default function AdminTable<T>({
   return (
     <div className={styles.tableWrapper}>
       <table className={styles.table}>
-        <thead>
+        <thead className={styles.thead}>
           <tr>
             {columns.map((col) => (
               <th key={col.key} style={{ width: col.width }} className={styles.th} scope="col">
@@ -56,14 +62,24 @@ export default function AdminTable<T>({
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className={styles.tbody}>
           {rows.map((row) => (
             <tr key={rowKey(row)} className={clsx(styles.tr, rowClassName?.(row))}>
-              {columns.map((col) => (
-                <td key={col.key} className={styles.td}>
-                  {col.render(row)}
-                </td>
-              ))}
+              {columns.map((col) => {
+                const mobileLabel =
+                  col.mobileLabel === false
+                    ? ''
+                    : (col.mobileLabel ?? col.label);
+                return (
+                  <td
+                    key={col.key}
+                    className={clsx(styles.td, col.mobileHide && styles.tdHideMobile)}
+                    data-label={mobileLabel}
+                  >
+                    {col.render(row)}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

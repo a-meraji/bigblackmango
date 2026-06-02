@@ -1,24 +1,74 @@
 .bar {
-  inset-block-end: calc(
-    var(--layout-bottom-nav-height) + env(safe-area-inset-bottom, 0px)
-  );
+  inset-block-end: env(safe-area-inset-bottom, 0px);
+  background: transparent;
+  border-block-start: none;
+  box-shadow: none;
 }
 
-.inner {
+.pill {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
+  background: var(--brand-primary);
+  border-radius: var(--radius-pill);
+  padding: var(--space-1);
+  box-shadow: var(--shadow-brand-glow);
 }
 
 .price {
-  font-size: var(--text-size-xl);
+  flex: 1;
+  text-align: center;
+  padding-inline: var(--space-4);
+  font-size: var(--text-size-lg);
   font-weight: 700;
-  color: var(--brand-primary);
-  flex-shrink: 0;
+  color: var(--text-on-brand);
+  white-space: nowrap;
 }
 
 .cta {
-  flex: 1;
-  max-inline-size: 12rem;
+  position: relative;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  background: var(--bg-section-dark);
+  color: var(--text-on-dark);
+  border-radius: var(--radius-pill);
+  padding: 0.875rem 1.5rem;
+  white-space: nowrap;
+  min-inline-size: 9rem;
+  transition: background 140ms ease, opacity 100ms ease;
+}
+
+.cta:hover:not(:disabled) {
+  background: var(--onyx-500);
+}
+
+.cta:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.spinner {
+  display: inline-block;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border: 2px solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hiddenText {
+  visibility: hidden;
+}
+
+@keyframes spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }

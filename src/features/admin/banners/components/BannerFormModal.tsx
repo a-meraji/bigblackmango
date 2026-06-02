@@ -2,8 +2,9 @@ import { useRef, useState } from 'react';
 import Modal from '@components/modal/Modal';
 import Input from '@components/input/Input';
 import Button from '@components/button/Button';
+import CustomSelect from '@components/custom-select/CustomSelect';
 import { uploadImage } from '@api/uploads';
-import type { AdminBanner, AdminPartyServicePage } from '@types/admin-content';
+import type { AdminBanner, AdminPartyServicePage } from '@t/admin-content';
 import type { BannerPayload } from '@api/admin/banners';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
 import styles from './BannerFormModal.module.css';
@@ -130,23 +131,17 @@ export default function BannerFormModal({
           <label className={styles.selectLabel} htmlFor="banner-service">
             صفحه سرویس *
           </label>
-          <select
+          <CustomSelect
             id="banner-service"
-            className={styles.select}
             value={servicePageId}
-            onChange={(ev) => setServicePageId(ev.target.value)}
-          >
-            <option value="">انتخاب کنید</option>
-            {services.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.title}
-                {!s.isActive ? ' (غیرفعال)' : ''}
-              </option>
-            ))}
-          </select>
-          {errors.servicePageId && (
-            <span className={styles.fieldError}>{errors.servicePageId}</span>
-          )}
+            onChange={setServicePageId}
+            placeholder="انتخاب کنید"
+            error={errors.servicePageId}
+            options={services.map((s) => ({
+              value: s.id,
+              label: s.isActive ? s.title : `${s.title} (غیرفعال)`,
+            }))}
+          />
         </div>
         <label className={styles.checkbox}>
           <input

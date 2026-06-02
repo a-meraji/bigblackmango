@@ -66,3 +66,106 @@
   color: var(--text-body);
   cursor: pointer;
 }
+
+.apiError {
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-error-border);
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* ── Stats editor ── */
+.statsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.statsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.addStatBtn {
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-body);
+  cursor: pointer;
+  transition: background 140ms;
+}
+
+.addStatBtn:hover {
+  background: var(--state-hover-brand-bg);
+}
+
+.statRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.625rem;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+
+.statRow > .statInput {
+  width: 100%;
+}
+
+.statIconPicker {
+  width: 100%;
+}
+
+.statRowActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.statInput {
+  flex: 1;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 0.875rem;
+  background: var(--input-bg);
+  color: var(--input-text);
+}
+
+.statInput:focus {
+  outline: none;
+  border-color: var(--input-border-focus);
+}
+
+.statIconInput {
+  flex: 0 0 4.5rem;
+}
+
+.removeStatBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-error-border);
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  transition: background 140ms ease;
+}
+
+.removeStatBtn:hover {
+  background: var(--color-error-solid);
+  color: var(--cream-50);
+}

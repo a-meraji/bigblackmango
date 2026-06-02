@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import type { FaqItem } from '@types/party-service';
+import type { FaqItem } from '@t/party-service';
 import styles from './FaqEditor.module.css';
 
 interface FaqEditorProps {

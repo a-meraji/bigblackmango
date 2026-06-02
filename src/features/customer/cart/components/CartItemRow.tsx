@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 import { AlertCircle, Minus, Plus, Trash2 } from 'lucide-react';
-import type { CartItem } from '@types/cart';
+import type { CartItem } from '@t/cart';
 import {
   removeItemFromCart,
   updateItemQuantity,

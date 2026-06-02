@@ -1,6 +1,6 @@
 import { apiClient } from './client';
-import type { ApiResponse } from '@types/api';
-import type { User } from '@types/auth';
+import type { ApiResponse } from '@t/api';
+import type { User } from '@t/auth';
 
 export interface Address {
   id: string;
@@ -37,4 +37,16 @@ export async function getAddresses(): Promise<Address[]> {
 export async function createAddress(payload: Omit<Address, 'id' | 'isDefault'>): Promise<Address> {
   const res = await apiClient.post<ApiResponse<Address>>('/me/addresses', payload);
   return res.data.data;
+}
+
+export async function updateAddress(
+  addressId: string,
+  payload: Partial<Omit<Address, 'id'>>,
+): Promise<Address> {
+  const res = await apiClient.patch<ApiResponse<Address>>(`/me/addresses/${addressId}`, payload);
+  return res.data.data;
+}
+
+export async function deleteAddress(addressId: string): Promise<void> {
+  await apiClient.delete(`/me/addresses/${addressId}`);
 }

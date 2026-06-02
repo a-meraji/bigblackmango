@@ -2,8 +2,16 @@
   background: var(--bg-surface-raised);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  padding: 0.75rem;
   box-shadow: var(--shadow-sm);
+  /* prevent chart overflow causing scroll */
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .wrapper {
+    padding: 1.25rem;
+  }
 }
 
 .title {

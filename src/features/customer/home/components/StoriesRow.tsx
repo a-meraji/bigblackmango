@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Story } from '@types/home';
+import type { Story } from '@t/home';
 import Skeleton from '@components/skeleton/Skeleton';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
 import StoryViewer from './StoryViewer';
@@ -41,7 +41,7 @@ export default function StoriesRow({ stories, loading }: StoriesRowProps) {
             >
               <div className={styles.ring}>
                 <img
-                  src={resolveMediaUrl(story.thumbnailUrl)}
+                  src={resolveMediaUrl(story.thumbnailUrl || story.mediaUrl)}
                   alt=""
                   className={styles.avatar}
                   loading="lazy"

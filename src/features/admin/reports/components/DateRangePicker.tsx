@@ -1,3 +1,5 @@
+import clsx from 'clsx';
+import JalaliDateInput from './JalaliDateInput';
 import styles from './DateRangePicker.module.css';
 
 interface DateRangePickerProps {
@@ -20,12 +22,24 @@ function toIsoDate(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
+function getActiveDays(dateFrom: string, dateTo: string): number | null {
+  if (!dateFrom || !dateTo) return null;
+  const from = new Date(dateFrom + 'T12:00:00');
+  const to = new Date(dateTo + 'T12:00:00');
+  const today = toIsoDate(new Date());
+  if (dateTo !== today) return null;
+  const diff = Math.round((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
 export default function DateRangePicker({
   dateFrom,
   dateTo,
   onFromChange,
   onToChange,
 }: DateRangePickerProps) {
+  const activeDays = getActiveDays(dateFrom, dateTo);
+
   function applyQuickRange(days: number) {
     const to = new Date();
     const from = new Date();
@@ -41,7 +55,8 @@ export default function DateRangePicker({
           <button
             key={r.days}
             type="button"
-            className={styles.quickBtn}
+            className={clsx(styles.quickBtn, activeDays === r.days && styles.quickActive)}
+            aria-pressed={activeDays === r.days}
             onClick={() => applyQuickRange(r.days)}
           >
             {r.label}
@@ -49,21 +64,9 @@ export default function DateRangePicker({
         ))}
       </div>
       <div className={styles.inputs}>
-        <input
-          type="date"
-          className={styles.dateInput}
-          value={dateFrom}
-          onChange={(e) => onFromChange(e.target.value)}
-          aria-label="از تاریخ"
-        />
+        <JalaliDateInput value={dateFrom} onChange={onFromChange} label="از تاریخ" />
         <span className={styles.sep}>تا</span>
-        <input
-          type="date"
-          className={styles.dateInput}
-          value={dateTo}
-          onChange={(e) => onToChange(e.target.value)}
-          aria-label="تا تاریخ"
-        />
+        <JalaliDateInput value={dateTo} onChange={onToChange} label="تا تاریخ" />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { apiClient } from '../client';
-import type { ApiResponse } from '@types/api';
+import type { ApiResponse } from '@t/api';
 
 export type ChartType = 'total_trend' | 'food_compare' | 'food_trend' | 'category_share';
 export type ChartInterval = 'day' | 'week' | 'month';

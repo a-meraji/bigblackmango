@@ -2,8 +2,9 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-lg);
-  margin: 0.75rem 1rem;
-  block-size: 180px;
+  margin-block: 0.5rem;
+  margin-inline: calc(-1 * var(--page-inline-padding));
+  block-size: 220px;
 }
 
 .track {
@@ -21,7 +22,7 @@
 
 .image {
   inline-size: 100%;
-  block-size: 180px;
+  block-size: 220px;
   object-fit: cover;
   display: block;
 }
@@ -77,7 +78,7 @@
 
 /* Skeleton */
 .skeleton {
-  background: var(--ivory-200);
+  background: var(--cream-300);
   animation: shimmer 1.4s ease-in-out infinite;
 }
 

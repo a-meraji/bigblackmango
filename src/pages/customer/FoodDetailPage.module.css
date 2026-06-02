@@ -1,3 +1,22 @@
 .page {
-  padding-block-end: calc(var(--layout-sticky-footer-offset) + var(--space-4));
+  --fd-hero-height: 260px;
+  --fd-hero-peek: 24px;
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  z-index: 200;
+  background: var(--bg-canvas);
+}
+
+.contentCard {
+  position: relative;
+  z-index: 2;
+  margin-block-start: calc(var(--fd-hero-height) - var(--fd-hero-peek));
+  border-start-start-radius: var(--radius-2xl);
+  border-start-end-radius: var(--radius-2xl);
+  background: var(--bg-surface-raised);
+  min-block-size: calc(100dvh - var(--fd-hero-height) + var(--fd-hero-peek));
+  padding-block-end: calc(5.5rem + env(safe-area-inset-bottom, 0px));
 }

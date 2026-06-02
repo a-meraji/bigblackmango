@@ -1,3 +1,9 @@
+.linkWrapper {
+  display: contents;
+  text-decoration: none;
+  color: inherit;
+}
+
 .card {
   background: var(--bg-surface-raised);
   border-radius: var(--radius-lg);
@@ -8,6 +14,32 @@
   gap: 0.5rem;
   border: 1px solid var(--border-default);
   min-block-size: 6.5rem;
+  position: relative;
+}
+
+.linked {
+  cursor: pointer;
+  transition: box-shadow 160ms ease, border-color 160ms ease, transform 120ms ease;
+}
+
+.linked:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--brand-primary);
+  transform: translateY(-1px);
+}
+
+.arrow {
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-start: 1rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+  transition: opacity 160ms ease;
+}
+
+.linked:hover .arrow {
+  opacity: 1;
+  color: var(--brand-primary);
 }
 
 .label {

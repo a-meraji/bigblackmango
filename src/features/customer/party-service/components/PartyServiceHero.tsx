@@ -15,9 +15,15 @@ export default function PartyServiceHero({ title, heroImageUrl, summary }: Props
       ) : (
         <div className={styles.placeholder} aria-hidden="true" />
       )}
+
       <div className={styles.overlay}>
-        <h1 className={styles.title}>{title}</h1>
-        {summary && <p className={styles.summary}>{summary}</p>}
+        <div className={styles.content}>
+          <h1 className={styles.title}>{title}</h1>
+          {summary && <p className={styles.summary}>{summary}</p>}
+        </div>
+        <div className={styles.vipBadge} aria-hidden="true">
+          سفارش VIP
+        </div>
       </div>
     </header>
   );

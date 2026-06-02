@@ -9,7 +9,7 @@ import {
 import AdminTable, { type Column } from '@components/admin-table/AdminTable';
 import AdminToolbar from '@components/admin-toolbar/AdminToolbar';
 import StoryFormModal from '@features/admin/stories/components/StoryFormModal';
-import type { AdminStory } from '@types/admin-content';
+import type { AdminStory } from '@t/admin-content';
 import { toJalaliWithTime } from '@utils/format-date';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
 import { useToast } from '@hooks/useToast';

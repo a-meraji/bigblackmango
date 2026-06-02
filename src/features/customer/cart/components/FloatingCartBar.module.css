@@ -8,7 +8,29 @@
   max-inline-size: calc(var(--layout-max-width) - 2 * var(--page-inline-padding));
   margin-inline: auto;
   z-index: 200;
+  /* allow absolutely positioned dismiss button to overlap */
 }
+
+.dismiss {
+  position: absolute;
+  top: -8px; /* tiny negative margin to sit on the card edge */
+  left: -8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background: #FFFFFF;
+  color: #000000;
+  border: 1px solid rgba(0,0,0,0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  z-index: 210;
+}
+
+.dismiss:active{ transform: translateY(1px); }
 
 .btn {
   inline-size: 100%;
@@ -18,16 +40,18 @@
   gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
   min-block-size: var(--btn-min-touch);
-  background: var(--bg-section-dark);
+  /* Modern, minimal glassy surface for a sleek floating card */
+  background: var(--surface-glass-dark-bg);
   color: var(--text-on-dark);
-  border: none;
-  border-radius: var(--radius-xl);
+  border: 1px solid var(--surface-glass-dark-border);
+  border-radius: 16px;
   font-family: inherit;
   font-size: var(--text-size-base);
   font-weight: 600;
   cursor: pointer;
-  box-shadow: var(--shadow-xl);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  backdrop-filter: var(--surface-glass-dark-blur);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 @media (hover: hover) {
@@ -59,5 +83,13 @@
 
 .total {
   font-weight: 700;
-  color: var(--brand-secondary);
+  /* Emphasize price with brand accent so it is always visible on dark background */
+  color: var(--brand-primary);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 480px) {
+  .label { display: none; }
+  .count { font-size: 0.95rem; }
+  .total { font-size: 1rem; }
 }

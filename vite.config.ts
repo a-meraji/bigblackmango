@@ -9,8 +9,11 @@ export default defineConfig({
     react(),
     svgr(),
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico'],
+      includeAssets: ['favicon.ico', 'icons/*.png'],
       manifest: {
         name: 'بیگ بلک منگو',
         short_name: 'منگو',
@@ -25,26 +28,30 @@ export default defineConfig({
         scope: '/',
         icons: [
           {
+            src: '/icons/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/icons/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+          {
+            src: '/icons/apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png',
+          },
+          {
             src: 'favicon.ico',
             sizes: '64x64',
             type: 'image/x-icon',
           },
         ],
       },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,woff2,ico}'],
-        navigateFallbackDenylist: [/^\/admin/],
-        runtimeCaching: [
-          {
-            urlPattern: /\/api\/v1\/(home|menu\/today|categories)/,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-menu',
-              expiration: { maxAgeSeconds: 60 * 60 },
-              networkTimeoutSeconds: 10,
-            },
-          },
-        ],
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,woff2,ico,png,svg}'],
       },
     }),
   ],
@@ -59,7 +66,7 @@ export default defineConfig({
       '@pages': path.resolve(__dirname, './src/pages'),
       '@store': path.resolve(__dirname, './src/store'),
       '@styles': path.resolve(__dirname, './src/styles'),
-      '@types': path.resolve(__dirname, './src/types'),
+      '@t': path.resolve(__dirname, './src/types'),
       '@utils': path.resolve(__dirname, './src/utils'),
       '@assets': path.resolve(__dirname, './src/assets'),
     },

@@ -1,4 +1,4 @@
-import type { Order, OrderStatus, ReviewStatus } from '@types/order';
+import type { Order, OrderStatus, ReviewStatus } from '@t/order';
 import { statusLabel } from '@utils/order-status';
 
 export interface BackendOrderSummary {

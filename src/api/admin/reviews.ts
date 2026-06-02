@@ -1,5 +1,5 @@
 import { apiClient } from '../client';
-import type { ApiResponse, PaginationMeta } from '@types/api';
+import type { ApiResponse, PaginationMeta } from '@t/api';
 
 export interface AdminReview {
   id: string;

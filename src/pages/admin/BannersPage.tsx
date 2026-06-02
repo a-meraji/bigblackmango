@@ -12,7 +12,7 @@ import { adminListPartyServices } from '@api/admin/party-services';
 import AdminTable, { type Column } from '@components/admin-table/AdminTable';
 import AdminToolbar from '@components/admin-toolbar/AdminToolbar';
 import BannerFormModal from '@features/admin/banners/components/BannerFormModal';
-import type { AdminBanner } from '@types/admin-content';
+import type { AdminBanner } from '@t/admin-content';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
 import { useToast } from '@hooks/useToast';
 import shared from '@styles/admin-shared.module.css';

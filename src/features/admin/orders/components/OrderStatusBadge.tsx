@@ -1,4 +1,4 @@
-import type { OrderStatus } from '@types/order';
+import type { OrderStatus } from '@t/order';
 import { statusLabel } from '@utils/order-status';
 import styles from './OrderStatusBadge.module.css';
 

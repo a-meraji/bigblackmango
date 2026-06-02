@@ -7,19 +7,11 @@ interface StarRatingProps {
 }
 
 export default function StarRating({ average, count, size = 'md' }: StarRatingProps) {
+  const formatted = Number.isInteger(average) ? average.toString() : average.toFixed(1);
   return (
     <div className={`${styles.wrapper} ${styles[size]}`} aria-label={`امتیاز ${average} از ۵`}>
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          className={
-            average >= star ? styles.filled : average >= star - 0.5 ? styles.half : styles.empty
-          }
-          aria-hidden="true"
-        >
-          ★
-        </span>
-      ))}
+      <span className={styles.star} aria-hidden="true">★</span>
+      <span className={styles.average}>{formatted}</span>
       {count !== undefined && (
         <span className={styles.count}>({count.toLocaleString('fa-IR')})</span>
       )}

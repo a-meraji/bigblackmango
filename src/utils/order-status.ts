@@ -1,4 +1,4 @@
-import type { OrderStatus } from '@types/order';
+import type { OrderStatus } from '@t/order';
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   pending_confirmation: 'در انتظار تایید',

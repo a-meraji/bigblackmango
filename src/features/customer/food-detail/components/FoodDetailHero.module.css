@@ -1,8 +1,10 @@
 .hero {
-  position: relative;
-  aspect-ratio: 16 / 10;
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: var(--fd-hero-height, 260px);
+  z-index: 1;
   background: var(--bg-section);
-  overflow: hidden;
 }
 
 .image {
@@ -24,11 +26,30 @@
   align-items: center;
   justify-content: center;
   background: var(--bg-section-dark);
-  opacity: 0.85;
+  opacity: 0.82;
 }
 
 .soldOutOverlay span {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-on-dark);
+}
+
+.buttons {
+  position: absolute;
+  inset-block-start: calc(env(safe-area-inset-top, 0px) + var(--space-3));
+  inset-inline-start: var(--page-inline-padding);
+  inset-inline-end: var(--page-inline-padding);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.circleBtn {
+  border-radius: var(--radius-pill) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  border: none !important;
+  box-shadow: var(--shadow-md) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }

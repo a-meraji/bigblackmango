@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { AdminOrderFilters } from '@api/admin/orders';
-import type { OrderStatus } from '@types/order';
+import type { OrderStatus } from '@t/order';
 import { ORDER_STATUS_LABELS } from '@utils/order-status';
+import CustomSelect from '@components/custom-select/CustomSelect';
 import styles from './OrderFilterBar.module.css';
 
 interface OrderFilterBarProps {
@@ -52,36 +53,32 @@ export default function OrderFilterBar({
         dir="ltr"
       />
 
-      <select
-        className={styles.select}
+      <CustomSelect
         value={filters.status ?? ''}
-        onChange={(e) =>
-          update({ status: (e.target.value as OrderStatus) || undefined })
-        }
+        onChange={(v) => update({ status: (v as OrderStatus) || undefined })}
+        placeholder="همه وضعیت‌ها"
         aria-label="فیلتر وضعیت"
-      >
-        <option value="">همه وضعیت‌ها</option>
-        {ALL_STATUSES.map((s) => (
-          <option key={s} value={s}>
-            {ORDER_STATUS_LABELS[s]}
-          </option>
-        ))}
-      </select>
+        size="sm"
+        className={styles.filterSelect}
+        options={[
+          { value: '', label: 'همه وضعیت‌ها' },
+          ...ALL_STATUSES.map((s) => ({ value: s, label: ORDER_STATUS_LABELS[s] })),
+        ]}
+      />
 
-      <select
-        className={styles.select}
+      <CustomSelect
         value={filters.paymentStatus ?? ''}
-        onChange={(e) =>
-          update({
-            paymentStatus: (e.target.value as 'paid' | 'unpaid') || undefined,
-          })
-        }
+        onChange={(v) => update({ paymentStatus: (v as 'paid' | 'unpaid') || undefined })}
+        placeholder="همه پرداخت‌ها"
         aria-label="فیلتر پرداخت"
-      >
-        <option value="">همه پرداخت‌ها</option>
-        <option value="paid">پرداخت‌شده</option>
-        <option value="unpaid">پرداخت‌نشده</option>
-      </select>
+        size="sm"
+        className={styles.filterSelect}
+        options={[
+          { value: '', label: 'همه پرداخت‌ها' },
+          { value: 'paid', label: 'پرداخت‌شده' },
+          { value: 'unpaid', label: 'پرداخت‌نشده' },
+        ]}
+      />
 
       <input
         type="date"

@@ -34,7 +34,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--ivory-400);
+  background: var(--cream-500);
   /* --radius-pill is the correct token (not --radius-full which doesn't exist) */
   border-radius: var(--radius-pill);
 }

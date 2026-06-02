@@ -1,4 +1,4 @@
-import type { Cart, CartItem } from '@types/cart';
+import type { Cart, CartItem } from '@t/cart';
 
 import type { GuestCartStorage } from './guest-cart.types';
 

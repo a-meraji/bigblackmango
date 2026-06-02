@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { UtensilsCrossed } from 'lucide-react';
 import PageShell from '@components/page-shell/PageShell';
-import BackButton from '@components/back-button/BackButton';
 import EmptyState from '@components/empty-state/EmptyState';
 import { useFoodDetail } from '@features/customer/food-detail/hooks/useFoodDetail';
 import FoodDetailHero from '@features/customer/food-detail/components/FoodDetailHero';
@@ -37,10 +36,9 @@ export default function FoodDetailPage() {
   const availability = normalizeTodayAvailability(data.todayAvailability);
 
   return (
-    <>
-      <PageShell withCartInset narrow className={styles.page}>
-        <BackButton />
-        <FoodDetailHero food={data.food} availability={availability} />
+    <div className={styles.page}>
+      <FoodDetailHero food={data.food} availability={availability} />
+      <div className={styles.contentCard}>
         <FoodDetailBody food={data.food} availability={availability} />
         <ReviewsSection
           summary={data.reviews.summary}
@@ -48,8 +46,8 @@ export default function FoodDetailPage() {
           foodId={foodId!}
         />
         {data.relatedFoods.length > 0 && <RelatedFoods foods={data.relatedFoods} />}
-      </PageShell>
+      </div>
       <FoodDetailStickyBar food={data.food} availability={availability} />
-    </>
+    </div>
   );
 }

@@ -10,7 +10,8 @@ import {
 import AdminTable, { type Column } from '@components/admin-table/AdminTable';
 import AdminToolbar from '@components/admin-toolbar/AdminToolbar';
 import CategoryFormModal from '@features/admin/categories/components/CategoryFormModal';
-import type { AdminCategory } from '@types/admin-catalog';
+import type { AdminCategory } from '@t/admin-catalog';
+import { resolveMediaUrl } from '@utils/resolve-media-url';
 import { useToast } from '@hooks/useToast';
 import shared from '@styles/admin-shared.module.css';
 import styles from './CategoriesPage.module.css';
@@ -70,12 +71,65 @@ export default function CategoriesPage() {
       key: 'sortOrder',
       label: 'ترتیب',
       width: '80px',
+      mobileHide: true,
       render: (cat) => <span dir="ltr">{cat.sortOrder.toLocaleString('fa-IR')}</span>,
+    },
+    {
+      key: 'image',
+      label: 'تصویر',
+      width: '64px',
+      mobileHide: true,
+      render: (cat) => {
+        const src = resolveMediaUrl(cat.imageUrl);
+        return src ? (
+          <img src={src} alt="" className={styles.thumb} />
+        ) : (
+          <div className={styles.thumbPlaceholder} aria-hidden="true" />
+        );
+      },
     },
     {
       key: 'name',
       label: 'نام',
-      render: (cat) => <strong>{cat.name}</strong>,
+      mobileLabel: false,
+      render: (cat) => {
+        const src = resolveMediaUrl(cat.imageUrl);
+        return (
+          <div className={styles.nameCell}>
+            {/* thumbnail shown only on mobile card view */}
+            <div className={styles.mobileThumb} aria-hidden="true">
+              {src ? (
+                <img src={src} alt="" className={styles.thumb} />
+              ) : (
+                <div className={styles.thumbPlaceholder} />
+              )}
+            </div>
+            <div>
+              <strong>{cat.name}</strong>
+              {cat.slug && (
+                <span className={styles.slug} dir="ltr">/{cat.slug}</span>
+              )}
+              {/* sort + layout meta shown only on mobile */}
+              <span className={styles.mobileMeta}>
+                ترتیب {cat.sortOrder.toLocaleString('fa-IR')}
+                {' · '}
+                {cat.layoutWidth === '2col' ? 'نیمه عرض' : 'عرض کامل'}
+              </span>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      key: 'layoutWidth',
+      label: 'عرض',
+      width: '90px',
+      mobileHide: true,
+      render: (cat) => (
+        <span className={styles.layoutBadge}>
+          {cat.layoutWidth === '2col' ? 'نیمه' : 'کامل'}
+        </span>
+      ),
     },
     {
       key: 'isActive',
@@ -102,13 +156,13 @@ export default function CategoriesPage() {
       label: 'عملیات',
       width: '140px',
       render: (cat) => (
-        <div className={shared.actions}>
-          <button type="button" className={shared.editBtn} onClick={() => openEdit(cat)}>
+        <div className={styles.rowActions}>
+          <button type="button" className={clsx(styles.actionBtn, styles.editAction)} onClick={() => openEdit(cat)}>
             ویرایش
           </button>
           <button
             type="button"
-            className={shared.deleteBtn}
+            className={clsx(styles.actionBtn, styles.deleteAction)}
             onClick={() => handleDelete(cat)}
             disabled={deleteMutation.isPending}
           >

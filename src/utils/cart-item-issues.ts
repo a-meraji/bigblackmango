@@ -1,4 +1,4 @@
-import type { Cart } from '@types/cart';
+import type { Cart } from '@t/cart';
 
 export type CartItemIssue =
   | { type: 'unavailable' }

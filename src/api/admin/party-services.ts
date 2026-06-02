@@ -1,7 +1,8 @@
 import { apiClient } from '../client';
-import type { ApiResponse, PaginationMeta } from '@types/api';
-import type { AdminPartyServicePage } from '@types/admin-content';
-import { normalizeFaq, normalizeServiceItems } from '@utils/normalize-party-service';
+import type { ApiResponse, PaginationMeta } from '@t/api';
+import type { AdminPartyServicePage } from '@t/admin-content';
+import type { FaqItem, ServiceStat } from '@t/party-service';
+import { normalizeFaq } from '@utils/normalize-party-service';
 
 export interface PartyServicePayload {
   title: string;
@@ -9,7 +10,7 @@ export interface PartyServicePayload {
   gallery?: string[];
   summary?: string;
   description?: string;
-  serviceItems?: string[];
+  stats?: ServiceStat[];
   faq?: Array<{ question: string; answer: string }>;
   contactPhone?: string;
   isActive: boolean;
@@ -22,24 +23,38 @@ type RawAdminPartyService = {
   gallery: unknown;
   summary: string | null;
   description: string | null;
-  serviceItems: unknown;
+  stats: unknown;
   faq: unknown;
   contactPhone: string | null;
   isActive: boolean;
 };
+
+function toStringArray(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((u): u is string => typeof u === 'string');
+}
+
+function normalizeStats(raw: unknown): ServiceStat[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((s): s is Record<string, unknown> => !!s && typeof s === 'object')
+    .map((s) => ({
+      label: String(s.label ?? ''),
+      value: String(s.value ?? ''),
+      icon: typeof s.icon === 'string' ? s.icon : null,
+    }));
+}
 
 export function mapAdminPartyServicePage(raw: RawAdminPartyService): AdminPartyServicePage {
   return {
     id: raw.id,
     title: raw.title,
     heroImageUrl: raw.heroImageUrl,
-    gallery: Array.isArray(raw.gallery)
-      ? raw.gallery.filter((u): u is string => typeof u === 'string')
-      : [],
+    gallery: toStringArray(raw.gallery),
     summary: raw.summary,
     description: raw.description,
-    serviceItems: normalizeServiceItems(raw.serviceItems).map((s) => s.title),
-    faq: normalizeFaq(raw.faq),
+    stats: normalizeStats(raw.stats),
+    faq: normalizeFaq(raw.faq) as FaqItem[],
     contactPhone: raw.contactPhone,
     isActive: raw.isActive,
   };

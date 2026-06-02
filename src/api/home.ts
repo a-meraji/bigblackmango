@@ -1,7 +1,7 @@
 import { apiClient } from './client';
-import type { ApiResponse } from '@types/api';
-import type { HomePayload } from '@types/home';
-import type { Story } from '@types/home';
+import type { ApiResponse } from '@t/api';
+import type { HomePayload } from '@t/home';
+import type { Story } from '@t/home';
 
 export async function getHome(): Promise<HomePayload> {
   const res = await apiClient.get<ApiResponse<HomePayload>>('/home');

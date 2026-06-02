@@ -1,13 +1,10 @@
+import { Loader2, Plus, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { DailyMenuItem } from '@types/food';
+import type { DailyMenuItem } from '@t/food';
 import { formatPrice } from '@utils/format-price';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
-import StarRating from '@components/star-rating/StarRating';
-import Badge from '@components/badge/Badge';
-import Button from '@components/button/Button';
-import styles from './FoodCard.module.css';
-
 import type { GuestCartItemInput } from '@features/customer/cart/guest-cart.types';
+import styles from './FoodCard.module.css';
 
 interface FoodCardProps {
   item: DailyMenuItem;
@@ -28,7 +25,7 @@ export default function FoodCard({ item, onAddToCart, addingId }: FoodCardProps)
       className={`${styles.card} ${isOutOfStock ? styles.outOfStock : ''}`}
       aria-label={`${food.name}، ${formatPrice(food.price)}`}
     >
-      <Link to={`/foods/${food.id}`} className={styles.imageLink}>
+      <Link to={`/foods/${food.id}`} className={styles.imageWrap} tabIndex={-1} aria-hidden>
         {food.imageUrl ? (
           <img
             src={resolveMediaUrl(food.imageUrl)}
@@ -37,58 +34,55 @@ export default function FoodCard({ item, onAddToCart, addingId }: FoodCardProps)
             loading="lazy"
           />
         ) : (
-          <div className={styles.imagePlaceholder} aria-hidden="true" />
+          <div className={styles.imagePlaceholder} />
         )}
       </Link>
 
-      <div className={styles.body}>
+      <div className={styles.content}>
         <div className={styles.topRow}>
           <Link to={`/foods/${food.id}`} className={styles.nameLink}>
             <h3 className={styles.name}>{food.name}</h3>
           </Link>
-          <div className={styles.badges}>
-            {isOutOfStock && <Badge variant="neutral">تمام شد</Badge>}
-            {isLowStock && <Badge variant="gold">فقط {stock.toLocaleString('fa-IR')} عدد</Badge>}
+          <div className={styles.rating} aria-label={`امتیاز ${food.rating.average.toFixed(1)}`}>
+            <Star className={styles.starIcon} size={13} fill="currentColor" strokeWidth={0} />
+            <span className={styles.ratingNum}>{food.rating.average.toFixed(1)}</span>
           </div>
         </div>
 
-        {food.shortDescription && <p className={styles.description}>{food.shortDescription}</p>}
-
-        {food.tags.length > 0 && (
-          <div className={styles.tags}>
-            {food.tags.map((tag) => (
-              <span key={tag} className={styles.tag}>
-                {tag}
-              </span>
-            ))}
-          </div>
+        {food.shortDescription && (
+          <p className={styles.description}>{food.shortDescription}</p>
         )}
 
-        <div className={styles.footer}>
-          <div className={styles.meta}>
-            <StarRating average={food.rating.average} count={food.rating.count} size="sm" />
+        <div className={styles.bottomRow}>
+          <div className={styles.priceBlock}>
+            {isOutOfStock && <span className={styles.stockLabel}>تمام شد</span>}
+            {isLowStock && (
+              <span className={styles.stockLabel}>
+                فقط {stock.toLocaleString('fa-IR')} عدد
+              </span>
+            )}
             <span className={styles.price}>{formatPrice(food.price)}</span>
           </div>
-          <Button
-            size="sm"
-            variant="primary"
-            disabled={isOutOfStock}
-            loading={isAdding}
+
+          <button
+            type="button"
+            className={styles.addBtn}
+            disabled={isOutOfStock || isAdding}
             onClick={() =>
               onAddToCart({
                 menuItemId,
                 unitPrice: food.price,
-                food: {
-                  id: food.id,
-                  name: food.name,
-                  thumbnailUrl: food.imageUrl,
-                },
+                food: { id: food.id, name: food.name, thumbnailUrl: food.imageUrl },
               })
             }
             aria-label={`افزودن ${food.name} به سبد خرید`}
           >
-            افزودن
-          </Button>
+            {isAdding ? (
+              <Loader2 size={16} className={styles.spinner} />
+            ) : (
+              <Plus size={18} strokeWidth={2.5} />
+            )}
+          </button>
         </div>
       </div>
     </article>

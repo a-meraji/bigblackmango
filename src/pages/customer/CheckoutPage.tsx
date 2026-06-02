@@ -9,7 +9,7 @@ import DeliveryForm from '@features/customer/checkout/components/DeliveryForm';
 import CheckoutAuthGate from '@features/customer/checkout/components/CheckoutAuthGate';
 import StockConflictAlert from '@features/customer/checkout/components/StockConflictAlert';
 import { useToast } from '@hooks/useToast';
-import type { CheckoutPayload } from '@types/checkout';
+import type { CheckoutPayload } from '@t/checkout';
 import styles from './CheckoutPage.module.css';
 
 type Step = 'auth' | 'delivery' | 'submitting';

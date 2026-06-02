@@ -1,9 +1,12 @@
-import type { FoodRating } from '@types/food';
+import type { FoodRating } from '@t/food';
 
 /** Admin category row (GET /admin/categories) */
 export interface AdminCategory {
   id: string;
   name: string;
+  slug: string | null;
+  imageUrl: string | null;
+  layoutWidth: '1col' | '2col';
   sortOrder: number;
   isActive: boolean;
   createdAt?: string;

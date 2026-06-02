@@ -1,0 +1,88 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: var(--bg-section-dark);
+  display: flex;
+  flex-direction: column;
+}
+
+.progressRow {
+  display: flex;
+  gap: 4px;
+  padding: 0.75rem 0.75rem 0;
+}
+
+.progressTrack {
+  flex: 1;
+  block-size: 3px;
+  background: var(--story-progress-track);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.progressBar {
+  block-size: 100%;
+  background: var(--story-progress-fill);
+  transition: inline-size 0.1s linear;
+  border-radius: var(--radius-pill);
+}
+
+.header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0.875rem;
+}
+
+.highlightTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-on-dark);
+}
+
+.closeBtn {
+  color: var(--text-on-dark) !important;
+  flex-shrink: 0;
+}
+
+.closeBtn:hover:not(:disabled) {
+  background: var(--text-on-dark-muted);
+}
+
+.media {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.video {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+.tapZones {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  pointer-events: none;
+}
+
+.tapPrev,
+.tapNext {
+  flex: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.tapPrev { order: 2; }
+.tapNext { order: 1; }

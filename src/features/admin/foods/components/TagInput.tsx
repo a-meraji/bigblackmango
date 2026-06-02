@@ -26,7 +26,7 @@ export default function TagInput({ label, tags, onChange }: TagInputProps) {
 
   return (
     <div className={styles.field}>
-      <label className={styles.label}>{label}</label>
+      {label && <label className={styles.label}>{label}</label>}
       <div className={styles.wrapper}>
         {tags.map((tag) => (
           <span key={tag} className={styles.tag}>

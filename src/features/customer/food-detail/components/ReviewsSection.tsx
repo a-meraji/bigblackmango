@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getFoodReviews } from '@api/foods';
-import type { PublicReview } from '@types/review';
+import type { PublicReview } from '@t/review';
 import StarRating from '@components/star-rating/StarRating';
 import { toJalali } from '@utils/format-date';
 import styles from './ReviewsSection.module.css';
@@ -67,7 +67,7 @@ export default function ReviewsSection({ foodId, summary, initialItems }: Props)
             {review.adminReply && (
               <div className={styles.adminReply}>
                 <span className={styles.replyLabel}>پاسخ فروشگاه:</span>
-                <p>{review.adminReply.message}</p>
+                <p className={styles.replyText}>{review.adminReply.message}</p>
               </div>
             )}
           </li>

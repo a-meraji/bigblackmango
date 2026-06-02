@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { adminGetFoods } from '@api/admin/foods';
+import CustomSelect from '@components/custom-select/CustomSelect';
 import styles from './MetricSelector.module.css';
 
 interface FoodSelectorProps {
@@ -17,22 +18,20 @@ export default function FoodSelector({ value, onChange }: FoodSelectorProps) {
   const foods = data?.items ?? [];
 
   return (
-    <label className={styles.field}>
+    <div className={styles.field}>
       <span className={styles.label}>غذا</span>
-      <select
-        className={styles.select}
+      <CustomSelect
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={isLoading}
+        onChange={onChange}
+        placeholder="انتخاب غذا..."
         aria-label="انتخاب غذا"
-      >
-        <option value="">انتخاب غذا...</option>
-        {foods.map((f) => (
-          <option key={f.id} value={f.id}>
-            {f.name}
-          </option>
-        ))}
-      </select>
-    </label>
+        size="sm"
+        disabled={isLoading}
+        options={[
+          { value: '', label: 'انتخاب غذا...' },
+          ...foods.map((f) => ({ value: f.id, label: f.name })),
+        ]}
+      />
+    </div>
   );
 }

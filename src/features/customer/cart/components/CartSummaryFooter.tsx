@@ -1,4 +1,4 @@
-import type { Cart } from '@types/cart';
+import type { Cart } from '@t/cart';
 import { formatPrice } from '@utils/format-price';
 import Button from '@components/button/Button';
 import { useNavigate } from 'react-router-dom';

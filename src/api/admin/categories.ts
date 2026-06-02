@@ -1,9 +1,12 @@
 import { apiClient } from '../client';
-import type { ApiResponse } from '@types/api';
-import type { AdminCategory } from '@types/admin-catalog';
+import type { ApiResponse } from '@t/api';
+import type { AdminCategory } from '@t/admin-catalog';
 
 export interface CategoryPayload {
   name: string;
+  slug?: string;
+  imageUrl?: string;
+  layoutWidth?: '1col' | '2col';
   sortOrder?: number;
   isActive?: boolean;
 }

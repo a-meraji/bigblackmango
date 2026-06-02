@@ -1,9 +1,31 @@
+/* ── Loading skeleton ── */
 .wrapper {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
+.skeletonRow {
+  border-radius: var(--radius-sm);
+}
+
+/* ── Empty state ── */
+.empty {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-surface-raised);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+}
+
+.empty p {
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════
+   DESKTOP TABLE  (≥ 640 px)
+   ══════════════════════════════════════════ */
 .tableWrapper {
   overflow-x: auto;
   border-radius: var(--radius-lg);
@@ -44,19 +66,106 @@
   border-block-end: 1px solid var(--table-row-border);
 }
 
-.empty {
-  padding: 3rem 1.5rem;
-  text-align: center;
-  color: var(--text-muted);
-  background: var(--bg-surface-raised);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-default);
-}
+/* ══════════════════════════════════════════
+   MOBILE CARD LIST  (< 640 px)
+   ══════════════════════════════════════════ */
+@media (max-width: 639px) {
+  .tableWrapper {
+    border: none;
+    background: transparent;
+    overflow-x: visible;
+    border-radius: 0;
+  }
 
-.empty p {
-  margin: 0;
-}
+  .table {
+    display: block;
+    min-inline-size: 0;
+    background: transparent;
+  }
 
-.skeletonRow {
-  border-radius: var(--radius-sm);
+  .thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .tbody {
+    display: block;
+  }
+
+  /* Row → card */
+  .tr {
+    display: block;
+    background: var(--bg-surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    margin-block-end: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .tr:last-child {
+    margin-block-end: 0;
+  }
+
+  .tr:nth-child(even) {
+    background: var(--bg-surface-raised);
+  }
+
+  .tr:hover {
+    background: var(--bg-surface-raised);
+  }
+
+  /* ── Standard data cell: label ⟷ value (space-between) ── */
+  .td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-block-end: 1px solid var(--table-row-border);
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    min-block-size: 3rem;
+  }
+
+  /* Label pinned to inline-start (right in RTL) */
+  .td::before {
+    content: attr(data-label);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* ── No-label cell: content fills the full width ── */
+  .td[data-label=''] {
+    justify-content: flex-start;
+    padding: 1rem;
+  }
+
+  .td[data-label='']::before {
+    display: none;
+  }
+
+  /* ── mobileHide columns ── */
+  .tdHideMobile {
+    display: none;
+  }
+
+  /* ── Actions footer: zero padding, page controls the buttons ── */
+  .td:last-child {
+    padding: 0;
+    border-block-end: none;
+    background: var(--table-row-bg-alt);
+    justify-content: flex-start;
+    min-block-size: 0;
+  }
+
+  .td:last-child::before {
+    display: none;
+  }
 }

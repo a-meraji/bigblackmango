@@ -9,7 +9,7 @@ import {
   type CartValidateResult,
 } from '@api/cart';
 import { useAuthStore } from '@store/auth.store';
-import type { Cart } from '@types/cart';
+import type { Cart } from '@t/cart';
 
 import { clearGuestCart, loadGuestCart, saveGuestCart } from './guest-cart.storage';
 import { mapGuestCartToCart, mapGuestCartItemsForApi } from './guest-cart.mapper';

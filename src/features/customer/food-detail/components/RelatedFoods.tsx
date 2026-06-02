@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { PublicFoodSummary } from '@types/food';
+import type { PublicFoodSummary } from '@t/food';
 import { formatPrice } from '@utils/format-price';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
 import styles from './RelatedFoods.module.css';

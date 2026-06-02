@@ -21,7 +21,7 @@ export default function AdminToolbar({
 }: AdminToolbarProps) {
   return (
     <div className={styles.toolbar}>
-      <div className={styles.start}>
+      <div className={styles.mainRow}>
         {onSearchChange != null && (
           <input
             className={styles.search}
@@ -32,14 +32,14 @@ export default function AdminToolbar({
             aria-label={searchPlaceholder ?? 'جستجو'}
           />
         )}
-        {children}
+        {onAdd && (
+          <Button type="button" className={styles.addBtn} onClick={onAdd}>
+            <Plus size={18} aria-hidden="true" />
+            {addLabel ?? 'افزودن'}
+          </Button>
+        )}
       </div>
-      {onAdd && (
-        <Button type="button" className={styles.addBtn} onClick={onAdd}>
-          <Plus size={18} aria-hidden="true" />
-          {addLabel ?? 'افزودن'}
-        </Button>
-      )}
+      {children && <div className={styles.filtersRow}>{children}</div>}
     </div>
   );
 }

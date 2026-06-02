@@ -1,0 +1,47 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  padding: 0;
+}
+
+/* Full-width tile: spans both columns (layoutWidth = "1col") */
+.full {
+  grid-column: span 2;
+}
+
+/* Half-width tile: stays in one column (layoutWidth = "2col") */
+.half {
+  grid-column: span 1;
+}
+
+/* Full-width cards are taller for visual hierarchy */
+.full > * {
+  min-block-size: 160px;
+}
+
+/* Half-width cards are slightly shorter */
+.half > * {
+  min-block-size: 130px;
+}
+
+/* Skeleton tiles */
+.skeleton {
+  border-radius: var(--radius-lg);
+  background: var(--cream-300);
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton.full {
+  block-size: 160px;
+}
+
+.skeleton.half {
+  block-size: 130px;
+}
+
+@keyframes shimmer {
+  0%,
+  100% { opacity: 1; }
+  50%  { opacity: 0.45; }
+}

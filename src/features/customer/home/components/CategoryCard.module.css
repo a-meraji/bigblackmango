@@ -1,0 +1,71 @@
+.card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: scale(1.02);
+}
+
+.inner {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  position: relative;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  text-align: start;
+  min-block-size: 140px;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.imageFallback {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-section-dark);
+}
+
+/* Gradient overlay: transparent → dark bottom, matching BannerCarousel pattern */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(20, 20, 20, 0.78) 0%,
+    rgba(20, 20, 20, 0.18) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.title {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  padding: var(--space-3) var(--space-4);
+  color: var(--text-on-dark);
+  font-size: var(--text-size-base);
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: end;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

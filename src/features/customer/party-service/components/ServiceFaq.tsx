@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import type { FaqItem } from '@types/party-service';
+import type { FaqItem } from '@t/party-service';
 import Icon from '@components/icon/Icon';
 import styles from './ServiceFaq.module.css';
 
@@ -13,7 +13,10 @@ export default function ServiceFaq({ faq }: Props) {
 
   return (
     <section className={styles.section}>
-      <h2 className={styles.title}>سوالات متداول</h2>
+      <div className={styles.header}>
+        <span className={styles.headerAccent} aria-hidden="true" />
+        <h2 className={styles.title}>سوالات متداول</h2>
+      </div>
       <dl className={styles.list}>
         {faq.map((item, i) => (
           <div key={`${item.question}-${i}`} className={styles.item}>

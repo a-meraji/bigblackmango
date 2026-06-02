@@ -12,7 +12,6 @@ import { useToast } from '@hooks/useToast';
 export function useAddToCart() {
   const [addingId, setAddingId] = useState<string | null>(null);
   const syncCart = useCartStore((s) => s.syncCart);
-  const openCart = useCartStore((s) => s.openCart);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const toast = useToast();
   const qc = useQueryClient();
@@ -25,7 +24,6 @@ export function useAddToCart() {
       if (isAuthenticated) {
         qc.setQueryData(['cart'], cart);
       }
-      openCart();
     } catch (err: unknown) {
       const apiErr = err as { code?: string };
       if (apiErr.code === 'OUT_OF_STOCK' || apiErr.code === 'INACTIVE_RESOURCE') {

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { validNextStatuses, statusLabel } from '@utils/order-status';
-import type { OrderStatus } from '@types/order';
+import type { OrderStatus } from '@t/order';
 import styles from './StatusTransitionButtons.module.css';
 
 const TRANSITION_VARIANT: Record<OrderStatus, string> = {

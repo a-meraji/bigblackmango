@@ -1,23 +1,26 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { WifiOff } from 'lucide-react';
 import PageShell from '@components/page-shell/PageShell';
 import Section from '@components/section/Section';
 import EmptyState from '@components/empty-state/EmptyState';
 import StoriesRow from '@features/customer/home/components/StoriesRow';
 import BannerCarousel from '@features/customer/home/components/BannerCarousel';
-import CategoryFilter from '@features/customer/home/components/CategoryFilter';
-import FoodGrid from '@features/customer/home/components/FoodGrid';
+import CategoryGrid from '@features/customer/home/components/CategoryGrid';
 import { useHomeData } from '@features/customer/home/hooks/useHomeData';
 import styles from './HomePage.module.css';
 
 export default function HomePage() {
   const { data: home, isLoading: homeLoading, isError, refetch } = useHomeData();
-  const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(undefined);
+  const navigate = useNavigate();
 
   const stories = home?.stories ?? [];
   const partyBanners = home?.partyServiceBanners ?? [];
   const showStories = homeLoading || stories.length > 0;
   const showPartyBanners = homeLoading || partyBanners.length > 0;
+
+  function handleCategorySelect(id: string | undefined) {
+    navigate(id ? `/menu?categoryId=${id}` : '/menu');
+  }
 
   if (isError && !home) {
     return (
@@ -48,17 +51,13 @@ export default function HomePage() {
           </Section>
         )}
 
-        <Section title="دسته‌بندی" flush>
-          <CategoryFilter
+        <Section title="دسته‌بندی‌ها" flush>
+          <CategoryGrid
             categories={home?.categories ?? []}
-            activeId={activeCategoryId}
-            onSelect={setActiveCategoryId}
+            activeId={undefined}
+            onSelect={handleCategorySelect}
             loading={homeLoading}
           />
-        </Section>
-
-        <Section title="منوی امروز" flush>
-          <FoodGrid categoryId={activeCategoryId} />
         </Section>
       </div>
     </PageShell>

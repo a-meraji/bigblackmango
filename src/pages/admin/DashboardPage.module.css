@@ -1,10 +1,10 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 2rem;
 }
 
-.error {
+.fetchError {
   margin: 0;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
@@ -14,6 +14,18 @@
   font-size: 0.9375rem;
 }
 
+/* ── Section heading ── */
+.sectionHeading {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+  padding-block-end: 0.5rem;
+  border-block-end: 1px solid var(--border-default);
+}
+
+/* ── KPI grid ── */
 .kpiGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -30,4 +42,85 @@
   .kpiGrid {
     gap: 1.25rem;
   }
+}
+
+/* ── Quick access ── */
+
+/* Mobile: horizontal scroll strip */
+.quickScroll {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-block-end: 0.5rem;
+  scrollbar-width: none;
+}
+
+.quickScroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Desktop: grid */
+@media (min-width: 640px) {
+  .quickScroll {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow-x: visible;
+    padding-block-end: 0;
+    scroll-snap-type: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .quickScroll {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.quickCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 1rem 0.75rem;
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--text-body);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 160ms ease, border-color 160ms ease, transform 120ms ease,
+    background 160ms ease;
+  /* mobile: fixed-width snap cards */
+  flex: 0 0 auto;
+  inline-size: 5.5rem;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 640px) {
+  .quickCard {
+    flex: unset;
+    inline-size: auto;
+    scroll-snap-align: none;
+  }
+}
+
+.quickCard:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--brand-primary);
+  background: var(--state-hover-brand-bg);
+  transform: translateY(-2px);
+}
+
+.quickIcon {
+  color: var(--brand-primary);
+}
+
+.quickLabel {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
 }

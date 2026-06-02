@@ -1,3 +1,4 @@
+import CustomSelect from '@components/custom-select/CustomSelect';
 import styles from './MetricSelector.module.css';
 
 interface CompareLimitSelectorProps {
@@ -9,20 +10,15 @@ const LIMITS = [5, 10, 15, 20];
 
 export default function CompareLimitSelector({ value, onChange }: CompareLimitSelectorProps) {
   return (
-    <label className={styles.field}>
+    <div className={styles.field}>
       <span className={styles.label}>تعداد غذا</span>
-      <select
-        className={styles.select}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+      <CustomSelect
+        value={String(value)}
+        onChange={(v) => onChange(Number(v))}
         aria-label="تعداد غذاهای برتر"
-      >
-        {LIMITS.map((n) => (
-          <option key={n} value={n}>
-            {n.toLocaleString('fa-IR')} مورد
-          </option>
-        ))}
-      </select>
-    </label>
+        size="sm"
+        options={LIMITS.map((n) => ({ value: String(n), label: `${n.toLocaleString('fa-IR')} مورد` }))}
+      />
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 import { apiClient } from './client';
-import type { ApiResponse } from '@types/api';
-import type { Cart } from '@types/cart';
+import type { ApiResponse } from '@t/api';
+import type { Cart } from '@t/cart';
 
 export async function getCart(): Promise<Cart> {
   const res = await apiClient.get<ApiResponse<{ cart: Cart }>>('/cart');

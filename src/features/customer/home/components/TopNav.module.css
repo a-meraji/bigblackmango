@@ -1,86 +1,59 @@
 .nav {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 100;
+  position: relative;
   background: var(--nav-bg);
   backdrop-filter: var(--nav-blur);
   -webkit-backdrop-filter: var(--nav-blur);
-  border-block-end: 1px solid var(--nav-border);
+  padding-block: var(--space-5);
+}
+
+.nav::after {
+  content: '';
+  display: block;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold-300) 35%,
+    var(--gold-300) 65%,
+    transparent
+  );
 }
 
 .inner {
   max-inline-size: var(--layout-max-width);
   margin-inline: auto;
-  padding: var(--space-3) var(--page-inline-padding);
+  padding-inline: var(--page-inline-padding);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
+  justify-content: center;
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+}
+
+.logoPlaceholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: var(--radius-md);
+  background: var(--terra-100);
+  border: 1.5px solid var(--terra-300);
   font-size: var(--text-size-lg);
+  font-weight: 900;
+  color: var(--terra-500);
+  flex-shrink: 0;
+  box-shadow: var(--shadow-xs);
+}
+
+.brandName {
+  font-size: var(--text-size-xl);
   font-weight: 900;
   color: var(--text-display);
   letter-spacing: 0.01em;
-}
-
-.actions {
-  display: flex;
-  gap: var(--space-2);
-  align-items: center;
-}
-
-.iconAction {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--btn-min-touch);
-  block-size: var(--btn-min-touch);
-  border: none;
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--text-heading);
-  cursor: pointer;
-  transition: background 140ms ease;
-}
-
-.iconAction:hover {
-  background: var(--nav-item-bg-hover);
-}
-
-.badge {
-  position: absolute;
-  inset-block-start: 0.25rem;
-  inset-inline-end: 0.25rem;
-  min-inline-size: 1.125rem;
-  block-size: 1.125rem;
-  padding-inline: 0.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.625rem;
-  font-weight: 700;
-  color: var(--text-on-brand);
-  background: var(--brand-primary);
-  border-radius: var(--radius-pill);
-}
-
-.textLink {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  min-block-size: var(--btn-min-touch);
-  padding-inline: var(--space-2);
-  font-size: var(--text-size-base);
-  font-weight: 500;
-  color: var(--text-secondary);
-  border-radius: var(--radius-sm);
-  transition: color 0.15s ease, background 0.15s ease;
-}
-
-.textLink:hover {
-  color: var(--text-heading);
-  background: var(--nav-item-bg-hover);
 }

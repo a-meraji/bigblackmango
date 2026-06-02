@@ -1,16 +1,20 @@
 import { create } from 'zustand';
-import type { Cart } from '@types/cart';
+import type { Cart } from '@t/cart';
 import type { CartItemIssue } from '@utils/cart-item-issues';
 import { pruneItemIssues } from '@utils/cart-item-issues';
 
 interface CartState {
   cart: Cart | null;
   isOpen: boolean;
+  /** When true the floating cart bar is temporarily dismissed by the user */
+  dismissedFloatingBar: boolean;
   itemCount: number;
   total: number;
   itemIssues: Record<string, CartItemIssue>;
   openCart: () => void;
   closeCart: () => void;
+  dismissFloatingBar: () => void;
+  resetDismissedFloatingBar: () => void;
   syncCart: (cart: Cart) => void;
   clearCart: () => void;
   setItemIssue: (cartItemId: string, issue: CartItemIssue) => void;
@@ -26,23 +30,32 @@ function deriveCount(cart: Cart): number {
 export const useCartStore = create<CartState>((set, get) => ({
   cart: null,
   isOpen: false,
+  dismissedFloatingBar: false,
   itemCount: 0,
   total: 0,
   itemIssues: {},
 
   openCart: () => set({ isOpen: true }),
   closeCart: () => set({ isOpen: false }),
+  dismissFloatingBar: () => set({ dismissedFloatingBar: true, isOpen: false }),
+  resetDismissedFloatingBar: () => set({ dismissedFloatingBar: false }),
 
   syncCart: (cart) =>
-    set((state) => ({
-      cart,
-      itemCount: deriveCount(cart),
-      total: cart.total,
-      itemIssues: pruneItemIssues(state.itemIssues, cart),
-    })),
+    set((state) => {
+      const newCount = deriveCount(cart);
+      // If user previously dismissed the floating bar, re-show it when items are added
+      const resetDismiss = state.dismissedFloatingBar && newCount > state.itemCount;
+      return {
+        cart,
+        itemCount: newCount,
+        total: cart.total,
+        itemIssues: pruneItemIssues(state.itemIssues, cart),
+        dismissedFloatingBar: resetDismiss ? false : state.dismissedFloatingBar,
+      };
+    }),
 
   clearCart: () =>
-    set({ cart: null, itemCount: 0, total: 0, isOpen: false, itemIssues: {} }),
+    set({ cart: null, itemCount: 0, total: 0, isOpen: false, itemIssues: {}, dismissedFloatingBar: false }),
 
   setItemIssue: (cartItemId, issue) =>
     set((state) => ({

@@ -2,6 +2,9 @@
 export interface Category {
   id: string;
   name: string;
+  slug: string;
+  imageUrl: string | null;
+  layoutWidth: '1col' | '2col';
   sortOrder: number;
   isActive: boolean;
 }
@@ -34,10 +37,17 @@ export interface FoodTodayAvailability {
   isAvailable: boolean;
 }
 
+export interface DailyMenuItemCategory {
+  id: string;
+  name: string;
+  slug: string | null;
+}
+
 export interface DailyMenuItem {
   menuItemId: string;
   stock: number;
   food: PublicFoodSummary;
+  category: DailyMenuItemCategory;
 }
 
 /** Admin catalog shape (GET/POST /admin/foods) */

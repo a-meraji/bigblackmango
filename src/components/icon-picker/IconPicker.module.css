@@ -1,0 +1,222 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--input-label);
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.previewBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-md);
+  background: var(--input-bg);
+  color: var(--input-text);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  text-align: start;
+  transition: border-color 140ms ease, box-shadow 160ms ease;
+  min-height: 2.75rem;
+}
+
+.previewBtn:hover {
+  border-color: var(--input-border-hover);
+}
+
+.previewBtn:focus-visible {
+  outline: none;
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
+}
+
+.iconName {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  font-family: monospace;
+}
+
+.placeholder {
+  color: var(--input-text-placeholder);
+  font-size: 0.875rem;
+}
+
+.clearBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+
+.clearBtn:hover {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  border-color: var(--color-error-border);
+}
+
+/* ── Panel ── */
+
+.panel {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-md);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  padding: 0.375rem 0.625rem;
+  background: var(--input-bg);
+  transition: border-color 140ms ease, box-shadow 160ms ease;
+}
+
+.searchRow:focus-within {
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
+}
+
+.searchIcon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--input-text);
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--input-text-placeholder);
+}
+
+.searchClear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
+}
+
+.searchClear:hover {
+  background: var(--state-hover-bg);
+  color: var(--text-body);
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Icon grid ── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2.5rem, 1fr));
+  gap: 0.25rem;
+  max-height: 15rem;
+  overflow-y: auto;
+  padding-right: 0.125rem;
+}
+
+.grid::-webkit-scrollbar {
+  width: 4px;
+}
+
+.grid::-webkit-scrollbar-track {
+  background: var(--bg-surface-sunken);
+  border-radius: var(--radius-pill);
+}
+
+.grid::-webkit-scrollbar-thumb {
+  background: var(--cream-400);
+  border-radius: var(--radius-pill);
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease, border-color 100ms ease;
+}
+
+.iconBtn:hover {
+  background: var(--state-hover-brand-bg);
+  color: var(--text-heading);
+  border-color: var(--border-default);
+}
+
+.iconBtnSelected {
+  background: var(--state-selected-bg);
+  border-color: var(--state-selected-border);
+  color: var(--charcoal-700);
+}
+
+.noResult {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  padding: 1rem 0;
+  margin: 0;
+}
+
+.searchHint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-hairline);
+}

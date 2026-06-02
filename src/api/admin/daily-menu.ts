@@ -1,6 +1,6 @@
 import { apiClient } from '../client';
-import type { ApiResponse } from '@types/api';
-import type { AdminDailyMenu, AdminDailyMenuItem } from '@types/admin-catalog';
+import type { ApiResponse } from '@t/api';
+import type { AdminDailyMenu, AdminDailyMenuItem } from '@t/admin-catalog';
 
 export interface DailyMenuPayload {
   menuDate: string;

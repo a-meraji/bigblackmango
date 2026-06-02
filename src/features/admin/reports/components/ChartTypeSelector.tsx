@@ -16,19 +16,39 @@ interface ChartTypeSelectorProps {
 
 export default function ChartTypeSelector({ value, onChange }: ChartTypeSelectorProps) {
   return (
-    <div className={styles.tabs} role="tablist" aria-label="نوع نمودار">
-      {CHART_TYPES.map((t) => (
-        <button
-          key={t.value}
-          type="button"
-          role="tab"
-          aria-selected={value === t.value}
-          className={clsx(styles.tab, value === t.value && styles.active)}
-          onClick={() => onChange(t.value)}
+    <>
+      {/* Mobile: native dropdown */}
+      <div className={styles.mobileWrap}>
+        <span className={styles.mobileLabel}>نوع نمودار</span>
+        <select
+          className={styles.mobileSelect}
+          value={value}
+          onChange={(e) => onChange(e.target.value as ChartType)}
+          aria-label="نوع نمودار"
         >
-          {t.label}
-        </button>
-      ))}
-    </div>
+          {CHART_TYPES.map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Desktop: pill tabs */}
+      <div className={styles.tabs} role="tablist" aria-label="نوع نمودار">
+        {CHART_TYPES.map((t) => (
+          <button
+            key={t.value}
+            type="button"
+            role="tab"
+            aria-selected={value === t.value}
+            className={clsx(styles.tab, value === t.value && styles.active)}
+            onClick={() => onChange(t.value)}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+    </>
   );
 }

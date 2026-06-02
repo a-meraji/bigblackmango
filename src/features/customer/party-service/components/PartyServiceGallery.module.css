@@ -1,44 +1,113 @@
+/* ── Gallery wrapper — relative so arrows can be positioned inside it ── */
 .wrapper {
-  padding: 1rem;
+  position: relative;
+  user-select: none;
 }
 
-.mainSlide {
+/* ── Scrollable peek strip ─────────────────────────────────────────────
+   padding-inline creates side spaces; the slides fill 64% of the track
+   so adjacent slides peek in from each side.
+   scroll-padding-inline tells the snap algorithm to center within the
+   same inset region, so snap:center lands on the visual center.
+   ──────────────────────────────────────────────────────────────────── */
+.track {
+  display: flex;
+  gap: 0.625rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-inline: 18%;
+  scroll-padding-inline: 18%;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Individual slide ── */
+.slide {
+  flex: 0 0 64%;
+  scroll-snap-align: center;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  aspect-ratio: 16 / 10;
-  background: var(--bg-section);
+  aspect-ratio: 4 / 3;
+  cursor: pointer;
+  background: var(--bg-surface-sunken);
 }
 
-.mainImage {
+.slideImg {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
+  display: block;
+  pointer-events: none;
 }
 
-.thumbRow {
+/* ── Circular navigation arrows ── */
+.arrow {
+  position: absolute;
+  inset-block-start: 50%;
+  transform: translateY(calc(-50% - 0.875rem)); /* offset for dots row below */
+  z-index: 2;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  box-shadow: var(--shadow-md);
   display: flex;
-  gap: 0.5rem;
-  margin-block-start: 0.75rem;
-  overflow-x: auto;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-heading);
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
 }
 
-.thumb {
-  flex: 0 0 4rem;
-  block-size: 3rem;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  border: 2px solid transparent;
-  opacity: 0.7;
-  transition: opacity 0.15s, border-color 0.15s;
+.arrow:hover {
+  background: var(--cream-50);
+  box-shadow: var(--shadow-lg);
 }
 
-.thumb.active {
-  border-color: var(--brand-primary);
-  opacity: 1;
+/* RTL-aware: inline-start = physical right */
+.arrowPrev {
+  inset-inline-start: 0.25rem;
 }
 
-.thumbImg {
-  inline-size: 100%;
-  block-size: 100%;
-  object-fit: cover;
+/* RTL-aware: inline-end = physical left */
+.arrowNext {
+  inset-inline-end: 0.25rem;
+}
+
+/* ── Dot indicators ── */
+.dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.375rem;
+  padding-block: 0.75rem 0;
+}
+
+.dot {
+  block-size: 6px;
+  inline-size: 6px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--cream-400);
+  cursor: pointer;
+  padding: 0;
+  transition: inline-size 0.25s ease, background 0.25s ease;
+}
+
+.dotActive {
+  inline-size: 20px;
+  background: var(--brand-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot,
+  .dotActive {
+    transition: none;
+  }
 }

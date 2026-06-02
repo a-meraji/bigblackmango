@@ -1,6 +1,6 @@
 import { apiClient } from './client';
-import type { ApiResponse } from '@types/api';
-import type { CheckoutPayload, CheckoutResponse } from '@types/checkout';
+import type { ApiResponse } from '@t/api';
+import type { CheckoutPayload, CheckoutResponse } from '@t/checkout';
 
 export async function submitCheckout(payload: CheckoutPayload): Promise<CheckoutResponse> {
   const res = await apiClient.post<ApiResponse<{ checkout: CheckoutResponse }>>(

@@ -2,7 +2,7 @@
   display: flex;
   gap: 1rem;
   overflow-x: auto;
-  padding: 1rem 1rem 0.5rem;
+  padding: 0.75rem 0 0.5rem;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
 }
@@ -27,11 +27,11 @@
   padding: 0;
 }
 
-/* Gold-to-terra gradient ring — matches Phase 3 spec */
+/* Mono yellow accent ring — modern flat */
 .ring {
   padding: 2px;
   border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, var(--gold-400), var(--terra-400));
+  background: linear-gradient(135deg, var(--yellow-400) 0%, var(--yellow-500) 100%);
   display: inline-flex;
 }
 
@@ -67,7 +67,7 @@
   inline-size: 64px;
   block-size: 64px;
   border-radius: var(--radius-pill);
-  background: var(--ivory-200);
+  background: var(--cream-300);
   animation: shimmer 1.4s ease-in-out infinite;
 }
 
@@ -75,7 +75,7 @@
   inline-size: 48px;
   block-size: 12px;
   border-radius: var(--radius-pill);
-  background: var(--ivory-200);
+  background: var(--cream-300);
   animation: shimmer 1.4s ease-in-out infinite;
 }
 

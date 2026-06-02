@@ -2,6 +2,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import type { CategoryShareResponse } from '@api/admin/reports';
 import { useChartTheme, TOOLTIP_CONTENT_STYLE } from '../chart-colors';
 import { formatPrice } from '@utils/format-price';
+import { useMediaQuery } from '@hooks/useMediaQuery';
 import chartStyles from './chart-shared.module.css';
 import styles from './CategoryShareChart.module.css';
 
@@ -13,6 +14,7 @@ export default function CategoryShareChart({ data }: CategoryShareChartProps) {
   const theme = useChartTheme();
   const items = data.chart.items;
   const isMonetary = data.chart.metric !== 'quantity';
+  const isMobile = !useMediaQuery('(min-width: 640px)');
 
   if (items.length === 0) {
     return (
@@ -27,7 +29,7 @@ export default function CategoryShareChart({ data }: CategoryShareChartProps) {
     <section className={chartStyles.wrapper}>
       <h3 className={chartStyles.title}>سهم دسته‌بندی‌ها</h3>
       <div className={styles.chartAndLegend}>
-        <ResponsiveContainer width="100%" height={280}>
+        <ResponsiveContainer width="100%" height={isMobile ? 220 : 280}>
           <PieChart>
             <Pie
               data={items}
@@ -35,8 +37,8 @@ export default function CategoryShareChart({ data }: CategoryShareChartProps) {
               nameKey="categoryName"
               cx="50%"
               cy="50%"
-              innerRadius={70}
-              outerRadius={110}
+              innerRadius={isMobile ? 50 : 70}
+              outerRadius={isMobile ? 85 : 110}
               paddingAngle={3}
             >
               {items.map((_, i) => (

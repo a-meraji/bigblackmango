@@ -6,6 +6,7 @@ import { adminCreateManualOrder, type ManualOrderPayload } from '@api/admin/orde
 import Modal from '@components/modal/Modal';
 import Input from '@components/input/Input';
 import Button from '@components/button/Button';
+import CustomSelect from '@components/custom-select/CustomSelect';
 import { formatPrice } from '@utils/format-price';
 import styles from './ManualOrderModal.module.css';
 
@@ -182,15 +183,15 @@ export default function ManualOrderModal({ onClose, onSuccess }: ManualOrderModa
           <label className={styles.selectLabel} htmlFor="manual-payment">
             وضعیت پرداخت
           </label>
-          <select
+          <CustomSelect
             id="manual-payment"
-            className={styles.select}
             value={paymentStatus}
-            onChange={(e) => setPaymentStatus(e.target.value as 'paid' | 'unpaid')}
-          >
-            <option value="paid">پرداخت‌شده (نقدی / حضوری)</option>
-            <option value="unpaid">پرداخت‌نشده</option>
-          </select>
+            onChange={(v) => setPaymentStatus(v as 'paid' | 'unpaid')}
+            options={[
+              { value: 'paid', label: 'پرداخت‌شده (نقدی / حضوری)' },
+              { value: 'unpaid', label: 'پرداخت‌نشده' },
+            ]}
+          />
         </div>
 
         <Input

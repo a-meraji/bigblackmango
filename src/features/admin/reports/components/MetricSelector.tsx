@@ -1,4 +1,5 @@
 import type { ChartMetric, ChartType } from '@api/admin/reports';
+import CustomSelect from '@components/custom-select/CustomSelect';
 import styles from './MetricSelector.module.css';
 
 const METRICS: Array<{ value: ChartMetric; label: string }> = [
@@ -22,20 +23,15 @@ export default function MetricSelector({ value, onChange, chartType }: MetricSel
       : METRICS;
 
   return (
-    <label className={styles.field}>
+    <div className={styles.field}>
       <span className={styles.label}>معیار</span>
-      <select
-        className={styles.select}
+      <CustomSelect
         value={value}
-        onChange={(e) => onChange(e.target.value as ChartMetric)}
+        onChange={(v) => onChange(v as ChartMetric)}
         aria-label="معیار نمودار"
-      >
-        {available.map((m) => (
-          <option key={m.value} value={m.value}>
-            {m.label}
-          </option>
-        ))}
-      </select>
-    </label>
+        size="sm"
+        options={available.map((m) => ({ value: m.value, label: m.label }))}
+      />
+    </div>
   );
 }

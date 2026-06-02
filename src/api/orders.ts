@@ -1,6 +1,6 @@
 import { apiClient } from './client';
-import type { ApiResponse, PaginationMeta } from '@types/api';
-import type { Order, OrderDetail } from '@types/order';
+import type { ApiResponse, PaginationMeta } from '@t/api';
+import type { Order, OrderDetail } from '@t/order';
 import {
   filterOrdersByTab,
   mapOrderDetail,

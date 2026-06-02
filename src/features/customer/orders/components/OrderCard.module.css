@@ -1,62 +1,118 @@
+/* ── Card shell ── */
 .card {
   list-style: none;
   padding: 1rem;
   border-radius: var(--radius-lg);
   background: var(--bg-surface);
   border: var(--card-border);
+  border-inline-start: 3px solid var(--card-accent, var(--cream-400));
   box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 150ms ease, transform 150ms ease;
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
+/* status-tinted accent stripe */
+.card[data-status="pending_confirmation"] { --card-accent: var(--yellow-400); }
+.card[data-status="preparing"]            { --card-accent: var(--yellow-500); }
+.card[data-status="handed_to_courier"]    { --card-accent: var(--emerald-400); }
+.card[data-status="delivered"]            { --card-accent: var(--charcoal-200); }
+.card[data-status="cancelled"]            { --card-accent: var(--red-300); }
+
+/* ── Header ── */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.75rem;
-  margin-block-end: 0.75rem;
+  gap: 0.5rem;
+  margin-block-end: 0;
 }
 
 .tracking {
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--text-heading);
-  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
 }
 
-.details {
+.status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+.statusPending   { background: var(--order-pending-bg);   color: var(--order-pending-text);   }
+.statusPreparing { background: var(--order-preparing-bg); color: var(--order-preparing-text); }
+.statusReady     { background: var(--order-ready-bg);     color: var(--order-ready-text);     }
+.statusDelivered { background: var(--order-delivered-bg); color: var(--order-delivered-text); }
+.statusCancelled { background: var(--order-cancelled-bg); color: var(--order-cancelled-text); }
+
+/* ── Illustration ── */
+.illustration {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  margin-block-end: 0.75rem;
+  align-items: center;
+  gap: 0.375rem;
+  padding-block: 1rem 0.75rem;
 }
 
-.date {
+.statusLabel {
   font-size: 0.8125rem;
+  font-weight: 600;
   color: var(--text-secondary);
 }
 
-.preview {
+/* ── Meta info ── */
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-block: 0.75rem;
+  border-block-start: var(--border-hairline);
+  border-block-end: var(--border-hairline);
+  margin-block-end: 0.75rem;
+}
+
+.metaRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+
+.metaIcon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: var(--text-secondary);
+  margin-block-start: 1px;
+}
+
+.metaDate {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.metaItems {
   font-size: 0.8125rem;
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
+/* ── Footer ── */
 .footer {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.75rem;
-  padding-block-start: 0.75rem;
-  border-block-start: var(--border-hairline);
-}
-
-.total {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--terra-500);
 }
 
 .receiptBtn {
-  padding: 0.5rem 0.875rem;
+  flex: 1;
+  padding: 0.5625rem 1rem;
   border: var(--border-brand);
   border-radius: var(--radius-md);
   background: transparent;
@@ -64,42 +120,8 @@
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 140ms ease;
+  transition: background 140ms ease, color 140ms ease;
+  text-align: center;
 }
-
-.receiptBtn:hover {
-  background: var(--bg-brand-tint);
-}
-
-.status {
-  font-size: var(--text-size-sm);
-  font-weight: 600;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  flex-shrink: 0;
-}
-
-.statusPending {
-  background: var(--order-pending-bg);
-  color: var(--order-pending-text);
-}
-
-.statusPreparing {
-  background: var(--order-preparing-bg);
-  color: var(--order-preparing-text);
-}
-
-.statusReady {
-  background: var(--order-ready-bg);
-  color: var(--order-ready-text);
-}
-
-.statusDelivered {
-  background: var(--order-delivered-bg);
-  color: var(--order-delivered-text);
-}
-
-.statusCancelled {
-  background: var(--order-cancelled-bg);
-  color: var(--order-cancelled-text);
-}
+.receiptBtn:hover  { background: var(--bg-brand-tint); }
+.receiptBtn:active { background: var(--yellow-200); }

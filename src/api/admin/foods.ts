@@ -1,6 +1,6 @@
 import { apiClient } from '../client';
-import type { ApiResponse, PaginationMeta } from '@types/api';
-import type { AdminFood } from '@types/admin-catalog';
+import type { ApiResponse, PaginationMeta } from '@t/api';
+import type { AdminFood } from '@t/admin-catalog';
 
 export interface FoodPayload {
   categoryId: string;

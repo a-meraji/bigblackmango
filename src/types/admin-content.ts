@@ -1,4 +1,4 @@
-import type { FaqItem } from '@types/party-service';
+import type { FaqItem, ServiceStat } from '@t/party-service';
 
 export interface AdminStory {
   id: string;
@@ -32,8 +32,45 @@ export interface AdminPartyServicePage {
   gallery: string[];
   summary: string | null;
   description: string | null;
-  serviceItems: string[];
+  stats: ServiceStat[];
   faq: FaqItem[];
   contactPhone: string | null;
   isActive: boolean;
+}
+
+export interface AdminPartyServiceHighlight {
+  id: string;
+  servicePageId: string;
+  title: string;
+  videoUrl: string;
+  thumbnailUrl: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface AdminServiceItem {
+  id: string;
+  servicePageId: string;
+  title: string;
+  description: string | null;
+  gallery: string[];
+  features: string[];
+  icon: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface AdminServiceTestimonial {
+  id: string;
+  servicePageId: string;
+  authorName: string;
+  role: string | null;
+  text: string;
+  rating: number;
+  avatarUrl: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
 }

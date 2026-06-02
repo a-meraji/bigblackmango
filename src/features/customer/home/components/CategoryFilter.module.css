@@ -31,7 +31,7 @@
 
 .chip:hover:not(.active) {
   background: var(--bg-subtle-hover);
-  border-color: var(--ivory-400);
+  border-color: var(--cream-500);
 }
 
 /* Active: brand-primary highlight */
@@ -46,7 +46,7 @@
   flex-shrink: 0;
   block-size: 36px;
   border-radius: var(--radius-pill);
-  background: var(--ivory-200);
+  background: var(--cream-300);
   border: none;
   animation: shimmer 1.4s ease-in-out infinite;
 }

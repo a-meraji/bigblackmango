@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@store/auth.store';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getProfile, createAddress } from '@api/profile';
+import { getProfile, createAddress, updateProfile } from '@api/profile';
 import Input from '@components/input/Input';
 import Button from '@components/button/Button';
-import type { CheckoutPayload } from '@types/checkout';
+import type { CheckoutPayload } from '@t/checkout';
 import { isValidIranianMobile } from '@utils/validators';
 import AddressPicker from './AddressPicker';
 import styles from './DeliveryForm.module.css';
@@ -127,6 +127,15 @@ export default function DeliveryForm({ onSubmit, loading }: Props) {
           notes: newAddressNotes.trim() || undefined,
         },
       };
+    }
+
+    // Persist name back to profile for future autofill
+    const fn = firstName.trim();
+    const ln = lastName.trim();
+    if (fn && ln && (fn !== (profile?.firstName ?? '') || ln !== (profile?.lastName ?? ''))) {
+      updateProfile({ firstName: fn, lastName: ln })
+        .then(() => qc.invalidateQueries({ queryKey: ['me'] }))
+        .catch(() => {});
     }
 
     await onSubmit(payload);

@@ -1,4 +1,4 @@
-import type { Category } from '@types/food';
+import type { Category } from '@t/food';
 import styles from './CategoryFilter.module.css';
 
 interface CategoryFilterProps {
@@ -6,6 +6,7 @@ interface CategoryFilterProps {
   activeId: string | undefined;
   onSelect: (id: string | undefined) => void;
   loading: boolean;
+  showAll?: boolean;
 }
 
 export default function CategoryFilter({
@@ -13,6 +14,7 @@ export default function CategoryFilter({
   activeId,
   onSelect,
   loading,
+  showAll = true,
 }: CategoryFilterProps) {
   if (loading) {
     return (
@@ -26,14 +28,16 @@ export default function CategoryFilter({
 
   return (
     <div className={styles.row} role="group" aria-label="فیلتر دسته‌بندی">
-      <button
-        className={`${styles.chip} ${!activeId ? styles.active : ''}`}
-        onClick={() => onSelect(undefined)}
-        aria-pressed={!activeId}
-        type="button"
-      >
-        همه
-      </button>
+      {showAll && (
+        <button
+          className={`${styles.chip} ${!activeId ? styles.active : ''}`}
+          onClick={() => onSelect(undefined)}
+          aria-pressed={!activeId}
+          type="button"
+        >
+          همه
+        </button>
+      )}
       {categories.map((cat) => (
         <button
           key={cat.id}

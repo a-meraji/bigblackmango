@@ -1,3 +1,159 @@
 .inactiveRow {
   opacity: 0.72;
 }
+
+/* ── Thumbnail ── */
+.thumb {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  display: block;
+  flex-shrink: 0;
+}
+
+.thumbPlaceholder {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-sunken);
+  border: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+
+/* ── Slug ── */
+.slug {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-block-start: 0.125rem;
+}
+
+/* ── Layout badge ── */
+.layoutBadge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-sunken);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* ══════════════════════════════════════════
+   NAME CELL
+   Desktop: plain text. Mobile: thumb + text.
+   ══════════════════════════════════════════ */
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Thumbnail injected into name cell — hidden on desktop */
+.mobileThumb {
+  display: none;
+  flex-shrink: 0;
+}
+
+/* Meta line (sort order + layout) — hidden on desktop */
+.mobileMeta {
+  display: none;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-block-start: 0.25rem;
+  font-weight: 400;
+}
+
+/* ══════════════════════════════════════════
+   ACTION BUTTONS
+   Desktop: small inline buttons.
+   Mobile: full-width split footer.
+   ══════════════════════════════════════════ */
+.rowActions {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.actionBtn {
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.editAction {
+  background: var(--bg-surface);
+  color: var(--text-body);
+  border-color: var(--border-default);
+}
+
+.editAction:hover {
+  background: var(--state-hover-brand-bg);
+}
+
+.deleteAction {
+  background: transparent;
+  color: var(--color-error-text);
+  border-color: var(--color-error-border);
+}
+
+.deleteAction:hover {
+  background: var(--color-error-bg);
+}
+
+/* ══════════════════════════════════════════
+   MOBILE OVERRIDES  (< 640 px)
+   ══════════════════════════════════════════ */
+@media (max-width: 639px) {
+  .mobileThumb {
+    display: block;
+  }
+
+  .mobileMeta {
+    display: block;
+  }
+
+  /* Name cell fills the full no-label row */
+  .nameCell {
+    width: 100%;
+  }
+
+  /* Action buttons become equal-width, full-card-width footer */
+  .rowActions {
+    width: 100%;
+    gap: 0;
+  }
+
+  .actionBtn {
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    border-radius: 0;
+    border: none;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  /* Vertical divider between buttons */
+  .actionBtn + .actionBtn {
+    border-inline-start: 1px solid var(--border-default);
+  }
+
+  /* Keep delete danger colour, but no outer border */
+  .deleteAction {
+    border-color: transparent;
+  }
+
+  .deleteAction:hover {
+    background: var(--color-error-bg);
+  }
+
+  /* Desktop hover state overrides (touch has no hover) */
+  .editAction:hover {
+    background: var(--state-hover-brand-bg);
+  }
+}

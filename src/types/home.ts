@@ -1,12 +1,21 @@
 import type { Category } from './food';
 
+export interface StoryMenuItemSummary {
+  menuItemId: string;
+  foodId: string;
+  name: string;
+  price: number;
+  imageUrl: string | null;
+}
+
 export interface Story {
   id: string;
   title: string;
   mediaType: 'image' | 'video';
   mediaUrl: string;
-  thumbnailUrl: string;
+  thumbnailUrl: string | null;
   expiresAt: string;
+  menuItem: StoryMenuItemSummary | null;
 }
 
 export interface PartyServiceBannerSummary {

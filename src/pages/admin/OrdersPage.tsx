@@ -18,7 +18,7 @@ import OrderStatusConfirmModal, {
 } from '@features/admin/orders/components/OrderStatusConfirmModal';
 import { formatPrice } from '@utils/format-price';
 import { toJalaliWithTime } from '@utils/format-date';
-import type { OrderStatus } from '@types/order';
+import type { OrderStatus } from '@t/order';
 import { useToast } from '@hooks/useToast';
 import styles from './OrdersPage.module.css';
 

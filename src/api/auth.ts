@@ -1,12 +1,12 @@
 import { apiClient } from './client';
-import type { ApiResponse } from '@types/api';
+import type { ApiResponse } from '@t/api';
 import type {
   OtpRequestPayload,
   OtpRequestResponse,
   OtpVerifyPayload,
   OtpVerifyResponse,
   User,
-} from '@types/auth';
+} from '@t/auth';
 
 export async function requestOtp(payload: OtpRequestPayload): Promise<OtpRequestResponse> {
   const res = await apiClient.post<ApiResponse<OtpRequestResponse>>('/auth/otp/request', payload);

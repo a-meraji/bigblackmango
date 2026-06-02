@@ -1,4 +1,4 @@
-import type { FoodTodayAvailability } from '@types/food';
+import type { FoodTodayAvailability } from '@t/food';
 
 export type NormalizedAvailability = {
   menuItemId: string;

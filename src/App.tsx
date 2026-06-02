@@ -4,6 +4,8 @@ import { router } from './router';
 import { useAuthInit } from '@hooks/useAuthInit';
 import SkipLink from '@components/skip-link/SkipLink';
 import ToastContainer from '@components/toast/ToastContainer';
+import PwaInstallModal from '@components/pwa-install-modal/PwaInstallModal';
+import NotificationPermissionModal from '@components/notification-permission-modal/NotificationPermissionModal';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +34,8 @@ function AppInner() {
       <SkipLink />
       <RouterProvider router={router} />
       <ToastContainer />
+      <PwaInstallModal />
+      <NotificationPermissionModal />
     </>
   );
 }

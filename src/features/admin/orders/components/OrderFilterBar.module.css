@@ -29,19 +29,21 @@
   outline: none;
 }
 
-.select,
+.filterSelect {
+  min-inline-size: 9rem;
+}
+
 .dateInput {
-  padding: 0.625rem 0.875rem;
+  padding: 0.4375rem 0.75rem;
   border: 1px solid var(--input-border);
   border-radius: var(--radius-md);
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   background: var(--input-bg);
   color: var(--input-text);
   min-inline-size: 9rem;
 }
 
-.select:focus,
 .dateInput:focus {
   border-color: var(--input-border-focus);
   outline: none;

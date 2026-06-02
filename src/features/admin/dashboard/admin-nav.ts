@@ -9,7 +9,7 @@ import {
   PartyPopper,
   ShoppingBag,
   MessageSquare,
-  BarChart3,
+  Bell,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -27,12 +27,12 @@ export const ADMIN_NAV_OPERATIONS: AdminNavItem[] = [
   { label: 'استوری‌ها و بنرها', path: '/admin/stories', icon: CirclePlay },
   { label: 'بنرهای کیترینگ', path: '/admin/banners', icon: Image },
   { label: 'سرویس‌های کیترینگ', path: '/admin/party-services', icon: PartyPopper },
+  { label: 'نوتیفیکیشن‌ها', path: '/admin/notifications', icon: Bell },
 ];
 
 export const ADMIN_NAV_MANAGEMENT: AdminNavItem[] = [
   { label: 'سفارش‌ها', path: '/admin/orders', icon: ShoppingBag },
   { label: 'نظرات', path: '/admin/reviews', icon: MessageSquare },
-  { label: 'گزارش فروش', path: '/admin/reports', icon: BarChart3 },
 ];
 
 export const ADMIN_PAGE_TITLES: Record<string, string> = {
@@ -43,9 +43,9 @@ export const ADMIN_PAGE_TITLES: Record<string, string> = {
   '/admin/stories': 'استوری‌ها و بنرها',
   '/admin/banners': 'بنرهای کیترینگ',
   '/admin/party-services': 'سرویس‌های کیترینگ',
+  '/admin/notifications': 'نوتیفیکیشن‌ها',
   '/admin/orders': 'سفارش‌ها',
   '/admin/reviews': 'نظرات',
-  '/admin/reports': 'گزارش فروش',
 };
 
 export function getAdminPageTitle(pathname: string): string {

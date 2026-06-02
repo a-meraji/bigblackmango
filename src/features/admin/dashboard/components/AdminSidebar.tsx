@@ -55,14 +55,14 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
   return (
     <>
-      {isOpen && (
-        <button
-          type="button"
-          className={styles.overlay}
-          onClick={onClose}
-          aria-label="بستن منو"
-        />
-      )}
+      <button
+        type="button"
+        className={clsx(styles.overlay, isOpen && styles.overlayVisible)}
+        onClick={onClose}
+        aria-label="بستن منو"
+        aria-hidden={!isOpen}
+        tabIndex={isOpen ? 0 : -1}
+      />
 
       <aside
         className={clsx(styles.sidebar, isOpen && styles.open)}

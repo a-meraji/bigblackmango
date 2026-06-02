@@ -1,20 +1,26 @@
 .wrapper {
   display: inline-flex;
   align-items: center;
-  gap: 0.125rem;
+  gap: 0.25rem;
   direction: ltr;
 }
 
-.sm { font-size: 0.875rem; }
-.md { font-size: 1.125rem; }
+.sm { font-size: 0.8125rem; }
+.md { font-size: 1rem; }
 
-.filled { color: var(--star-filled); }
-.half   { color: var(--star-half); }
-.empty  { color: var(--star-empty); }
+.star {
+  color: var(--star-filled);
+  line-height: 1;
+}
+
+.average {
+  font-weight: 700;
+  color: var(--text-heading);
+  line-height: 1;
+}
 
 .count {
   font-size: 0.8125rem;
   color: var(--text-muted);
-  margin-inline-start: 0.25rem;
-  direction: rtl;
+  font-weight: 400;
 }

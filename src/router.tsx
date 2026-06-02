@@ -14,12 +14,14 @@ import OtpPage from '@pages/auth/OtpPage';
 
 // Customer pages — lazy loaded
 const HomePage = lazy(() => import('@pages/customer/HomePage'));
+const MenuPage = lazy(() => import('@pages/customer/MenuPage'));
 const FoodDetailPage = lazy(() => import('@pages/customer/FoodDetailPage'));
 const PartyServicePage = lazy(() => import('@pages/customer/PartyServicePage'));
 const CheckoutPage = lazy(() => import('@pages/customer/CheckoutPage'));
 const PaymentPage = lazy(() => import('@pages/customer/PaymentPage'));
 const PaymentCallbackPage = lazy(() => import('@pages/customer/PaymentCallbackPage'));
 const OrdersPage = lazy(() => import('@pages/customer/OrdersPage'));
+const ProfilePage = lazy(() => import('@pages/customer/ProfilePage'));
 
 // Admin pages — lazy loaded
 const DashboardPage = lazy(() => import('@pages/admin/DashboardPage'));
@@ -31,7 +33,7 @@ const BannersPage = lazy(() => import('@pages/admin/BannersPage'));
 const PartyServicesPage = lazy(() => import('@pages/admin/PartyServicesPage'));
 const AdminOrdersPage = lazy(() => import('@pages/admin/OrdersPage'));
 const AdminReviewsPage = lazy(() => import('@pages/admin/ReviewsPage'));
-const AdminReportsPage = lazy(() => import('@pages/admin/ReportsPage'));
+const NotificationsPage = lazy(() => import('@pages/admin/NotificationsPage'));
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +42,7 @@ export const router = createBrowserRouter([
     errorElement: <RouteError />,
     children: [
       { index: true, element: lazyPage(<HomePage />) },
+      { path: 'menu', element: lazyPage(<MenuPage />) },
       { path: 'foods/:foodId', element: lazyPage(<FoodDetailPage />) },
       { path: 'party-services/:serviceId', element: lazyPage(<PartyServicePage />) },
       { path: 'checkout', element: lazyPage(<CheckoutPage />) },
@@ -53,6 +56,10 @@ export const router = createBrowserRouter([
       {
         path: 'orders',
         element: <RequireAuth>{lazyPage(<OrdersPage />)}</RequireAuth>,
+      },
+      {
+        path: 'profile',
+        element: <RequireAuth>{lazyPage(<ProfilePage />)}</RequireAuth>,
       },
     ],
   },
@@ -77,7 +84,7 @@ export const router = createBrowserRouter([
       { path: 'party-services', element: lazyPage(<PartyServicesPage />) },
       { path: 'orders', element: lazyPage(<AdminOrdersPage />) },
       { path: 'reviews', element: lazyPage(<AdminReviewsPage />) },
-      { path: 'reports', element: lazyPage(<AdminReportsPage />) },
+      { path: 'notifications', element: lazyPage(<NotificationsPage />) },
     ],
   },
 ]);

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import clsx from 'clsx';
+import CustomSelect from '@components/custom-select/CustomSelect';
 import {
   adminGetFoods,
   adminCreateFood,
@@ -13,7 +15,7 @@ import AdminToolbar from '@components/admin-toolbar/AdminToolbar';
 import FoodFormModal from '@features/admin/foods/components/FoodFormModal';
 import { formatPrice } from '@utils/format-price';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
-import type { AdminFood } from '@types/admin-catalog';
+import type { AdminFood } from '@t/admin-catalog';
 import { useToast } from '@hooks/useToast';
 import shared from '@styles/admin-shared.module.css';
 import styles from './FoodsPage.module.css';
@@ -74,29 +76,59 @@ export default function FoodsPage() {
       key: 'image',
       label: 'تصویر',
       width: '72px',
+      mobileHide: true,
       render: (food) => {
         const src = resolveMediaUrl(food.imageUrl);
         return src ? (
           <img src={src} alt={food.name} className={shared.thumb} loading="lazy" />
         ) : (
-          <span className={shared.thumbPlaceholder} aria-hidden="true">
-            —
-          </span>
+          <span className={shared.thumbPlaceholder} aria-hidden="true">—</span>
         );
       },
     },
-    { key: 'name', label: 'نام', render: (food) => <strong>{food.name}</strong> },
-    { key: 'category', label: 'دسته‌بندی', render: (food) => food.category.name },
+    {
+      key: 'name',
+      label: 'نام',
+      mobileLabel: false,
+      render: (food) => {
+        const src = resolveMediaUrl(food.imageUrl);
+        return (
+          <div className={styles.nameCell}>
+            <div className={styles.mobileThumb} aria-hidden="true">
+              {src ? (
+                <img src={src} alt="" className={shared.thumb} loading="lazy" />
+              ) : (
+                <span className={shared.thumbPlaceholder}>—</span>
+              )}
+            </div>
+            <div>
+              <strong>{food.name}</strong>
+              <span className={styles.mobileMeta}>
+                {food.category.name}
+                {' · '}
+                <span dir="ltr">{formatPrice(food.price)}</span>
+              </span>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      key: 'category',
+      label: 'دسته‌بندی',
+      mobileHide: true,
+      render: (food) => food.category.name,
+    },
     {
       key: 'price',
       label: 'قیمت',
-      render: (food) => (
-        <span dir="ltr">{formatPrice(food.price)}</span>
-      ),
+      mobileHide: true,
+      render: (food) => <span dir="ltr">{formatPrice(food.price)}</span>,
     },
     {
       key: 'tags',
       label: 'تگ‌ها',
+      mobileHide: true,
       render: (food) =>
         food.tags.length > 0 ? (
           <span className={styles.tags}>{food.tags.join('، ')}</span>
@@ -119,13 +151,17 @@ export default function FoodsPage() {
       label: 'عملیات',
       width: '140px',
       render: (food) => (
-        <div className={shared.actions}>
-          <button type="button" className={shared.editBtn} onClick={() => openEdit(food)}>
+        <div className={styles.rowActions}>
+          <button
+            type="button"
+            className={clsx(styles.actionBtn, styles.editAction)}
+            onClick={() => openEdit(food)}
+          >
             ویرایش
           </button>
           <button
             type="button"
-            className={shared.deleteBtn}
+            className={clsx(styles.actionBtn, styles.deleteAction)}
             onClick={() => handleDelete(food)}
             disabled={deleteMutation.isPending}
           >
@@ -145,29 +181,29 @@ export default function FoodsPage() {
         onAdd={openCreate}
         addLabel="غذای جدید"
       >
-        <select
+        <CustomSelect
           value={filterCategoryId}
-          onChange={(e) => setFilterCategoryId(e.target.value)}
-          className={shared.filter}
+          onChange={setFilterCategoryId}
+          placeholder="همه دسته‌بندی‌ها"
           aria-label="فیلتر دسته‌بندی"
-        >
-          <option value="">همه دسته‌بندی‌ها</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-        <select
+          size="sm"
+          options={[
+            { value: '', label: 'همه دسته‌بندی‌ها' },
+            ...categories.map((c) => ({ value: c.id, label: c.name })),
+          ]}
+        />
+        <CustomSelect
           value={filterActive}
-          onChange={(e) => setFilterActive(e.target.value)}
-          className={shared.filter}
+          onChange={setFilterActive}
+          placeholder="همه وضعیت‌ها"
           aria-label="فیلتر وضعیت"
-        >
-          <option value="">همه وضعیت‌ها</option>
-          <option value="true">فعال</option>
-          <option value="false">غیرفعال</option>
-        </select>
+          size="sm"
+          options={[
+            { value: '', label: 'همه وضعیت‌ها' },
+            { value: 'true', label: 'فعال' },
+            { value: 'false', label: 'غیرفعال' },
+          ]}
+        />
       </AdminToolbar>
 
       <AdminTable

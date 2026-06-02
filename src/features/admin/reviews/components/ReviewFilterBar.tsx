@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { adminGetFoods } from '@api/admin/foods';
 import type { AdminReviewFilters } from '@api/admin/reviews';
+import CustomSelect from '@components/custom-select/CustomSelect';
 import styles from './ReviewFilterBar.module.css';
 
 interface ReviewFilterBarProps {
@@ -23,65 +24,63 @@ export default function ReviewFilterBar({ filters, onFiltersChange }: ReviewFilt
 
   return (
     <div className={styles.bar}>
-      <select
-        className={styles.select}
+      <CustomSelect
         value={filters.foodId ?? ''}
-        onChange={(e) => update({ foodId: e.target.value || undefined })}
+        onChange={(v) => update({ foodId: v || undefined })}
+        placeholder="همه غذاها"
         aria-label="فیلتر غذا"
-      >
-        <option value="">همه غذاها</option>
-        {foods.map((f) => (
-          <option key={f.id} value={f.id}>
-            {f.name}
-          </option>
-        ))}
-      </select>
+        size="sm"
+        className={styles.filterSelect}
+        options={[
+          { value: '', label: 'همه غذاها' },
+          ...foods.map((f) => ({ value: f.id, label: f.name })),
+        ]}
+      />
 
-      <select
-        className={styles.select}
-        value={filters.rating ?? ''}
-        onChange={(e) =>
-          update({ rating: e.target.value ? Number(e.target.value) : undefined })
-        }
+      <CustomSelect
+        value={filters.rating !== undefined ? String(filters.rating) : ''}
+        onChange={(v) => update({ rating: v ? Number(v) : undefined })}
+        placeholder="همه امتیازها"
         aria-label="فیلتر امتیاز"
-      >
-        <option value="">همه امتیازها</option>
-        {[1, 2, 3, 4, 5].map((r) => (
-          <option key={r} value={r}>
-            {r.toLocaleString('fa-IR')} ستاره
-          </option>
-        ))}
-      </select>
+        size="sm"
+        className={styles.filterSelect}
+        options={[
+          { value: '', label: 'همه امتیازها' },
+          { value: '1', label: '۱ ستاره' },
+          { value: '2', label: '۲ ستاره' },
+          { value: '3', label: '۳ ستاره' },
+          { value: '4', label: '۴ ستاره' },
+          { value: '5', label: '۵ ستاره' },
+        ]}
+      />
 
-      <select
-        className={styles.select}
+      <CustomSelect
         value={filters.isVisible === undefined ? '' : String(filters.isVisible)}
-        onChange={(e) =>
-          update({
-            isVisible: e.target.value === '' ? undefined : e.target.value === 'true',
-          })
-        }
+        onChange={(v) => update({ isVisible: v === '' ? undefined : v === 'true' })}
+        placeholder="همه (نمایان + پنهان)"
         aria-label="فیلتر نمایش"
-      >
-        <option value="">همه (نمایان + پنهان)</option>
-        <option value="true">فقط نمایان</option>
-        <option value="false">فقط پنهان</option>
-      </select>
+        size="sm"
+        className={styles.filterSelect}
+        options={[
+          { value: '', label: 'همه (نمایان + پنهان)' },
+          { value: 'true', label: 'فقط نمایان' },
+          { value: 'false', label: 'فقط پنهان' },
+        ]}
+      />
 
-      <select
-        className={styles.select}
+      <CustomSelect
         value={filters.hasAdminReply === undefined ? '' : String(filters.hasAdminReply)}
-        onChange={(e) =>
-          update({
-            hasAdminReply: e.target.value === '' ? undefined : e.target.value === 'true',
-          })
-        }
+        onChange={(v) => update({ hasAdminReply: v === '' ? undefined : v === 'true' })}
+        placeholder="همه (با/بدون پاسخ)"
         aria-label="فیلتر پاسخ مدیر"
-      >
-        <option value="">همه (با/بدون پاسخ)</option>
-        <option value="true">دارای پاسخ مدیر</option>
-        <option value="false">بدون پاسخ</option>
-      </select>
+        size="sm"
+        className={styles.filterSelect}
+        options={[
+          { value: '', label: 'همه (با/بدون پاسخ)' },
+          { value: 'true', label: 'دارای پاسخ مدیر' },
+          { value: 'false', label: 'بدون پاسخ' },
+        ]}
+      />
     </div>
   );
 }
