@@ -56,7 +56,7 @@ self.addEventListener('push', (event: PushEvent) => {
     data = { body: event.data.text() };
   }
 
-  const title = data.title ?? 'بیگ بلک منگو 🥭';
+  const title = data.title ?? 'بلک منگو 🥭';
   const options: NotificationOptions = {
     body: data.body ?? '',
     icon: data.icon ?? '/icons/icon-192.png',

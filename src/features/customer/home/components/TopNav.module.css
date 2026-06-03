@@ -3,7 +3,8 @@
   background: var(--nav-bg);
   backdrop-filter: var(--nav-blur);
   -webkit-backdrop-filter: var(--nav-blur);
-  padding-block: var(--space-5);
+  padding-block-start: var(--space-5);
+  padding-block-end: 0;
 }
 
 .nav::after {
@@ -17,6 +18,7 @@
     var(--gold-300) 65%,
     transparent
   );
+  margin-block-start: var(--space-2);
 }
 
 .inner {
@@ -35,20 +37,12 @@
   text-decoration: none;
 }
 
-.logoPlaceholder {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.logo {
   inline-size: 2.75rem;
   block-size: 2.75rem;
   border-radius: var(--radius-md);
-  background: var(--terra-100);
-  border: 1.5px solid var(--terra-300);
-  font-size: var(--text-size-lg);
-  font-weight: 900;
-  color: var(--terra-500);
   flex-shrink: 0;
-  box-shadow: var(--shadow-xs);
+  object-fit: cover;
 }
 
 .brandName {

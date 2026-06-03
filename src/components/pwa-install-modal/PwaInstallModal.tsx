@@ -60,7 +60,7 @@ export default function PwaInstallModal() {
         </div>
 
         <h2 id="pwa-modal-title" className={styles.title}>
-          بیگ بلک منگو رو نصب کن 🥭
+          بلک منگو رو نصب کن 🥭
         </h2>
 
         <p className={styles.subtitle}>
