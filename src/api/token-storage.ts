@@ -8,23 +8,42 @@
 const ACCESS_TOKEN_KEY = 'bm_access_token';
 const REFRESH_TOKEN_KEY = 'bm_refresh_token';
 
-export function getAccessToken(): string | null {
+function read(key: string): string | null {
   try {
-    return localStorage.getItem(ACCESS_TOKEN_KEY);
+    const value = localStorage.getItem(key);
+    // localStorage stringifies undefined to "undefined" — guard against that
+    // (catches stale storage from before the bearer-token path existed).
+    if (!value || value === 'undefined' || value === 'null') return null;
+    return value;
   } catch {
     return null;
   }
+}
+
+export function getAccessToken(): string | null {
+  return read(ACCESS_TOKEN_KEY);
 }
 
 export function getRefreshToken(): string | null {
-  try {
-    return localStorage.getItem(REFRESH_TOKEN_KEY);
-  } catch {
-    return null;
-  }
+  return read(REFRESH_TOKEN_KEY);
 }
 
-export function setAuthTokens(accessToken: string, refreshToken: string): void {
+export function setAuthTokens(
+  accessToken: string | undefined,
+  refreshToken: string | undefined,
+): void {
+  // If backend didn't return tokens (rolling deploy with mixed code, or old
+  // backend), do not overwrite storage with "undefined" — keep whatever is
+  // there and surface a console warning so the deploy mismatch is visible.
+  if (!accessToken || !refreshToken) {
+    if (typeof console !== 'undefined') {
+      // eslint-disable-next-line no-console
+      console.warn(
+        '[auth] verify/refresh response missing tokens — backend may be running pre-bearer code',
+      );
+    }
+    return;
+  }
   try {
     localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
     localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
