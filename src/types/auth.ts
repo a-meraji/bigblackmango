@@ -25,4 +25,12 @@ export interface OtpVerifyPayload {
 export interface OtpVerifyResponse {
   user: User;
   profileCompleted: boolean;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface RefreshSessionResponse {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
 }
