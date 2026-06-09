@@ -8,6 +8,7 @@ export interface DailyMenuPayload {
     foodId: string;
     stock: number;
     isFeaturedInStory?: boolean;
+    discountPercent?: number | null;
   }>;
 }
 
@@ -25,7 +26,11 @@ export async function adminSetDailyMenu(payload: DailyMenuPayload): Promise<Admi
 
 export async function adminUpdateMenuItemStock(
   menuItemId: string,
-  payload: { stock?: number; isFeaturedInStory?: boolean },
+  payload: {
+    stock?: number;
+    isFeaturedInStory?: boolean;
+    discountPercent?: number | null;
+  },
 ): Promise<AdminDailyMenuItem> {
   const res = await apiClient.patch<ApiResponse<{ item: AdminDailyMenuItem }>>(
     `/admin/daily-menu/items/${menuItemId}`,
@@ -36,4 +41,15 @@ export async function adminUpdateMenuItemStock(
 
 export async function adminRemoveMenuItem(menuItemId: string): Promise<void> {
   await apiClient.delete(`/admin/daily-menu/items/${menuItemId}`);
+}
+
+export async function adminBulkUpdateMenuDiscount(payload: {
+  menuItemIds: string[];
+  discountPercent: number | null;
+}): Promise<AdminDailyMenuItem[]> {
+  const res = await apiClient.patch<ApiResponse<{ items: AdminDailyMenuItem[] }>>(
+    '/admin/daily-menu/items/discount',
+    payload,
+  );
+  return res.data.data.items;
 }

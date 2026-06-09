@@ -24,6 +24,12 @@ export function mapGuestCartToCart(storage: GuestCartStorage): Cart {
     menuItemId: item.menuItemId,
     quantity: item.quantity,
     unitPrice: item.unitPrice,
+    ...(item.originalUnitPrice != null
+      ? { originalUnitPrice: item.originalUnitPrice }
+      : {}),
+    ...(item.menuDiscountPercent != null
+      ? { menuDiscountPercent: item.menuDiscountPercent }
+      : {}),
     lineTotal: calculateLineTotal(item.unitPrice, item.quantity),
     food: {
       id: item.food.id,

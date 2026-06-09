@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import {
   adminListPartyServices,
-  adminCreatePartyService,
   adminUpdatePartyService,
   adminDeletePartyService,
   type PartyServicePayload,
@@ -20,6 +19,7 @@ import { resolveMediaUrl } from '@utils/resolve-media-url';
 import { useToast } from '@hooks/useToast';
 import shared from '@styles/admin-shared.module.css';
 import styles from './PartyServicesPage.module.css';
+import { formatNumber } from '@utils/locale';
 
 export default function PartyServicesPage() {
   const qc = useQueryClient();
@@ -103,13 +103,13 @@ export default function PartyServicesPage() {
       key: 'stats',
       label: 'آمار',
       width: '70px',
-      render: (s) => `${s.stats.length.toLocaleString('fa-IR')} مورد`,
+      render: (s) => `${formatNumber(s.stats.length)} مورد`,
     },
     {
       key: 'faq',
       label: 'سوالات',
       width: '80px',
-      render: (s) => `${s.faq.length.toLocaleString('fa-IR')} سوال`,
+      render: (s) => `${formatNumber(s.faq.length)} سوال`,
     },
     {
       key: 'isActive',
@@ -194,22 +194,6 @@ export default function PartyServicesPage() {
         <PartyServiceFormModal
           initial={editingService}
           onClose={() => setShowForm(false)}
-          onSave={async (payload) => {
-            try {
-              if (editingService) {
-                await adminUpdatePartyService(editingService.id, payload);
-                toast.success('سرویس بروزرسانی شد.');
-              } else {
-                await adminCreatePartyService(payload as PartyServicePayload);
-                toast.success('سرویس ایجاد شد.');
-              }
-              qc.invalidateQueries({ queryKey: ['admin', 'party-services'] });
-              setShowForm(false);
-            } catch {
-              toast.error('خطا در ذخیره‌سازی. لطفاً دوباره تلاش کنید.');
-              throw new Error('save_failed');
-            }
-          }}
         />
       )}
     </div>

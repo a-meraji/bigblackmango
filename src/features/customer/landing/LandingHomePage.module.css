@@ -1,0 +1,38 @@
+.page {
+  padding-block-end: 0;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+  /* Prevent scroll jumps when lazy sections load and change height */
+  overflow-anchor: none;
+}
+
+.reveal[data-revealed='true'] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section {
+  padding-block-start: 1.5rem;
+  padding-inline: var(--page-inline-padding);
+}
+
+.sectionTight {
+  composes: section;
+  padding-block-start: 0.875rem;
+}
+
+.stickySpacer {
+  block-size: 5.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

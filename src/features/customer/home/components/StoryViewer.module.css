@@ -88,9 +88,9 @@
   pointer-events: all;
 }
 
-/* Prev is the inline-end half (RTL: right side = previous) */
-.tapPrev { order: 2; }
-.tapNext { order: 1; }
+/* RTL: left = next, right = previous */
+.tapPrev { order: 1; }
+.tapNext { order: 2; }
 
 /* Food card overlay — shown when story originates from a daily menu item */
 .foodCard {

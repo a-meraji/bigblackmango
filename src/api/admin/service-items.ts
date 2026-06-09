@@ -60,22 +60,22 @@ export async function adminListServiceItems(
 export async function adminCreateServiceItem(
   payload: ServiceItemPayload,
 ): Promise<AdminServiceItem> {
-  const res = await apiClient.post<ApiResponse<{ serviceItem: RawServiceItem }>>(
+  const res = await apiClient.post<ApiResponse<{ item: RawServiceItem }>>(
     '/admin/service-items',
     payload,
   );
-  return mapServiceItem(res.data.data.serviceItem);
+  return mapServiceItem(res.data.data.item);
 }
 
 export async function adminUpdateServiceItem(
   id: string,
   payload: Partial<Omit<ServiceItemPayload, 'servicePageId'>>,
 ): Promise<AdminServiceItem> {
-  const res = await apiClient.patch<ApiResponse<{ serviceItem: RawServiceItem }>>(
+  const res = await apiClient.patch<ApiResponse<{ item: RawServiceItem }>>(
     `/admin/service-items/${id}`,
     payload,
   );
-  return mapServiceItem(res.data.data.serviceItem);
+  return mapServiceItem(res.data.data.item);
 }
 
 export async function adminDeleteServiceItem(id: string): Promise<void> {

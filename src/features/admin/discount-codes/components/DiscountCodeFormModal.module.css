@@ -1,0 +1,42 @@
+.formGrid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.typeRow {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.typeBtn {
+  flex: 1;
+  padding: var(--space-3);
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  cursor: pointer;
+  font-size: var(--text-size-sm);
+}
+
+.typeBtnActive {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary-subtle);
+  color: var(--brand-primary);
+}
+
+.codeRow {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.codeInput {
+  flex: 1;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-size-sm);
+}

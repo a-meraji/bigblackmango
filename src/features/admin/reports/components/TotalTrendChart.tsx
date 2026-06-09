@@ -12,6 +12,7 @@ import { useChartTheme, TOOLTIP_CONTENT_STYLE } from '../chart-colors';
 import { formatPrice } from '@utils/format-price';
 import { useMediaQuery } from '@hooks/useMediaQuery';
 import chartStyles from './chart-shared.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface TotalTrendChartProps {
   data: TotalTrendResponse;
@@ -41,13 +42,13 @@ export default function TotalTrendChart({ data }: TotalTrendChartProps) {
             width={isMobile ? 44 : 60}
             tickFormatter={(v: number) =>
               isMonetary
-                ? `${Math.round(v / 1000).toLocaleString('fa-IR')}K`
-                : v.toLocaleString('fa-IR')
+                ? `${formatNumber(Math.round(v / 1000))}K`
+                : formatNumber(v)
             }
           />
           <Tooltip
             formatter={(value: number) => [
-              isMonetary ? formatPrice(value) : value.toLocaleString('fa-IR'),
+              isMonetary ? formatPrice(value) : formatNumber(value),
               'مقدار',
             ]}
             labelFormatter={(label) => `تاریخ: ${label}`}

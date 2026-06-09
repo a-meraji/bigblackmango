@@ -16,13 +16,20 @@ export interface CheckoutPayload {
   addressId?: string;
   address?: AddressInput;
   contact: ContactInput;
+  discountCode?: string;
 }
 
 export interface CheckoutResponse {
   id: string;
   status: 'pending';
   items: unknown[];
-  pricing: { subtotal: number; deliveryFee: number; total: number };
+  pricing: {
+    subtotal: number;
+    deliveryFee: number;
+    discountAmount: number;
+    discountCode?: string | null;
+    total: number;
+  };
   address: AddressInput;
   contact: ContactInput;
   createdAt: string;

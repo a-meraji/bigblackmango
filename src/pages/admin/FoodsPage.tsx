@@ -4,10 +4,7 @@ import clsx from 'clsx';
 import CustomSelect from '@components/custom-select/CustomSelect';
 import {
   adminGetFoods,
-  adminCreateFood,
-  adminUpdateFood,
   adminDeleteFood,
-  type FoodPayload,
 } from '@api/admin/foods';
 import { adminGetCategories } from '@api/admin/categories';
 import AdminTable, { type Column } from '@components/admin-table/AdminTable';
@@ -220,17 +217,6 @@ export default function FoodsPage() {
           initial={editingFood}
           categories={categories}
           onClose={() => setShowForm(false)}
-          onSave={async (payload) => {
-            if (editingFood) {
-              await adminUpdateFood(editingFood.id, payload);
-              toast.success('غذا بروزرسانی شد.');
-            } else {
-              await adminCreateFood(payload as FoodPayload);
-              toast.success('غذا ایجاد شد.');
-            }
-            qc.invalidateQueries({ queryKey: ['admin', 'foods'] });
-            setShowForm(false);
-          }}
         />
       )}
     </div>

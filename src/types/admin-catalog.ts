@@ -38,6 +38,8 @@ export interface AdminDailyMenuItem {
   id: string;
   foodId: string;
   stock: number;
+  discountPercent: number | null;
+  salePrice: number;
   isFeaturedInStory: boolean;
   food: {
     id: string;

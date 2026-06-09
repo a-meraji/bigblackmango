@@ -8,6 +8,8 @@ import Input from '@components/input/Input';
 import Button from '@components/button/Button';
 import CustomSelect from '@components/custom-select/CustomSelect';
 import { formatPrice } from '@utils/format-price';
+import { formatNumber } from '@utils/locale';
+import LocalizedQtyInput from '@components/input/LocalizedQtyInput';
 import styles from './ManualOrderModal.module.css';
 
 interface ManualOrderModalProps {
@@ -236,19 +238,17 @@ export default function ManualOrderModal({ onClose, onSuccess }: ManualOrderModa
                     />
                     <span className={styles.menuName}>{item.food.name}</span>
                     <span className={clsx(styles.menuStock, stockClass)}>
-                      {item.stock.toLocaleString('fa-IR')} موجود ·{' '}
+                      {formatNumber(item.stock)} موجود ·{' '}
                       <span dir="ltr">{formatPrice(item.food.price)}</span>
                     </span>
                   </label>
                   {sel && (
-                    <input
-                      type="number"
+                    <LocalizedQtyInput
                       min={1}
                       max={item.stock}
                       value={sel.quantity}
-                      onChange={(e) => updateQty(item.id, Number(e.target.value))}
+                      onChange={(n) => updateQty(item.id, n)}
                       className={styles.qtyInput}
-                      dir="ltr"
                       aria-label={`تعداد ${item.food.name}`}
                     />
                   )}

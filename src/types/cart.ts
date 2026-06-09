@@ -12,6 +12,8 @@ export interface CartItem {
   menuItemId: string;
   quantity: number;
   unitPrice: number;
+  originalUnitPrice?: number;
+  menuDiscountPercent?: number | null;
   lineTotal: number;
   food: CartFoodSummary;
 }

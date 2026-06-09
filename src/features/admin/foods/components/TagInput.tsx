@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import RawLocalizedInput from '@components/input/RawLocalizedInput';
 import styles from './TagInput.module.css';
 
 interface TagInputProps {
@@ -41,10 +42,10 @@ export default function TagInput({ label, tags, onChange }: TagInputProps) {
             </button>
           </span>
         ))}
-        <input
+        <RawLocalizedInput
           className={styles.input}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={setInput}
           onKeyDown={handleKeyDown}
           onBlur={() => addTag(input)}
           placeholder="تگ وارد کنید و Enter بزنید"

@@ -4,6 +4,12 @@
   gap: 1rem;
 }
 
+.fieldsetBody {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
 .imageBlock {
   display: flex;
   flex-direction: column;

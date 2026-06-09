@@ -10,11 +10,13 @@ import { useAuthStore } from '@store/auth.store';
 import { useCartStore } from '@store/cart.store';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@hooks/useToast';
+import PriceWithDiscount from '@components/price-with-discount/PriceWithDiscount';
 import { formatPrice } from '@utils/format-price';
 import { issueFromCartError } from '@utils/cart-item-issues';
 import Icon from '@components/icon/Icon';
 import Button from '@components/button/Button';
 import styles from './CartItemRow.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface Props {
   item: CartItem;
@@ -33,6 +35,10 @@ export default function CartItemRow({ item }: Props) {
   const isUnavailable = issue?.type === 'unavailable';
   const maxQuantity = issue?.type === 'limited' ? issue.maxQuantity : undefined;
   const atMax = maxQuantity != null && item.quantity >= maxQuantity;
+  const hasMenuDiscount =
+    item.menuDiscountPercent != null &&
+    item.originalUnitPrice != null &&
+    item.unitPrice < item.originalUnitPrice;
 
   async function handleRemove() {
     setLoading(true);
@@ -60,7 +66,7 @@ export default function CartItemRow({ item }: Props) {
     }
 
     if (maxQuantity != null && newQty > maxQuantity) {
-      toast.warning(`حداکثر ${maxQuantity.toLocaleString('fa-IR')} عدد از این غذا موجود است.`);
+      toast.warning(`حداکثر ${formatNumber(maxQuantity)} عدد از این غذا موجود است.`);
       return;
     }
 
@@ -91,7 +97,7 @@ export default function CartItemRow({ item }: Props) {
       } else if (parsedIssue?.type === 'limited') {
         setItemIssue(item.id, parsedIssue);
         toast.warning(
-          `فقط ${parsedIssue.maxQuantity.toLocaleString('fa-IR')} عدد از «${item.food.name}» موجود است.`,
+          `فقط ${formatNumber(parsedIssue.maxQuantity)} عدد از «${item.food.name}» موجود است.`,
         );
       } else {
         toast.error(apiErr.message ?? 'تغییر تعداد ممکن نیست. لطفاً دوباره تلاش کنید.');
@@ -134,13 +140,34 @@ export default function CartItemRow({ item }: Props) {
   return (
     <li className={clsx(styles.row, issue?.type === 'limited' && styles.limited)}>
       <div className={styles.main}>
-        <span className={styles.name}>{item.food.name}</span>
+        <div className={styles.nameRow}>
+          <span className={styles.name}>{item.food.name}</span>
+          {hasMenuDiscount && (
+            <span className={styles.discountBadge} dir="ltr">
+              −{formatNumber(item.menuDiscountPercent!)}٪
+            </span>
+          )}
+        </div>
         {issue?.type === 'limited' && (
           <p className={styles.limitedMsg} role="status">
-            فقط {maxQuantity!.toLocaleString('fa-IR')} عدد موجود است
+            فقط {formatNumber(maxQuantity!)} عدد موجود است
           </p>
         )}
-        <span className={styles.lineTotal}>{formatPrice(item.lineTotal)}</span>
+        <div className={styles.priceRow}>
+          {hasMenuDiscount ? (
+            <PriceWithDiscount
+              originalPrice={item.originalUnitPrice!}
+              salePrice={item.unitPrice}
+              discountPercent={item.menuDiscountPercent}
+              size="sm"
+              layout="inline"
+              showBadge={false}
+            />
+          ) : (
+            <span className={styles.unitPrice}>{formatPrice(item.unitPrice)}</span>
+          )}
+          <span className={styles.lineTotal}>{formatPrice(item.lineTotal)}</span>
+        </div>
       </div>
       <div className={styles.stepper}>
         <button
@@ -153,7 +180,7 @@ export default function CartItemRow({ item }: Props) {
           <Icon icon={item.quantity === 1 ? Trash2 : Minus} size="sm" decorative />
         </button>
         <span className={styles.qty} aria-live="polite">
-          {item.quantity.toLocaleString('fa-IR')}
+          {formatNumber(item.quantity)}
         </span>
         <button
           type="button"

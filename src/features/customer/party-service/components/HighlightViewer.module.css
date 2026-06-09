@@ -84,5 +84,6 @@
   pointer-events: all;
 }
 
-.tapPrev { order: 2; }
-.tapNext { order: 1; }
+/* RTL: left = next, right = previous */
+.tapPrev { order: 1; }
+.tapNext { order: 2; }

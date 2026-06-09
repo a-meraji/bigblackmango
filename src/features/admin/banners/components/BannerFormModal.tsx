@@ -1,39 +1,56 @@
 import { useRef, useState } from 'react';
+import { useScrollToFormFieldErrors } from '@hooks/useScrollToFormFieldErrors';
 import Modal from '@components/modal/Modal';
 import Input from '@components/input/Input';
 import Button from '@components/button/Button';
+import FormErrorBanner from '@components/form-error-banner/FormErrorBanner';
 import CustomSelect from '@components/custom-select/CustomSelect';
-import { uploadImage } from '@api/uploads';
-import type { AdminBanner, AdminPartyServicePage } from '@t/admin-content';
+import { MediaPickerField } from '@components/media-picker';
+import { adminCreateBanner, adminUpdateBanner } from '@api/admin/banners';
 import type { BannerPayload } from '@api/admin/banners';
-import { resolveMediaUrl } from '@utils/resolve-media-url';
+import { useAdminEntityForm } from '@hooks/useAdminEntityForm';
+import type { AdminBanner, AdminPartyServicePage } from '@t/admin-content';
 import styles from './BannerFormModal.module.css';
 
 interface BannerFormModalProps {
   initial: AdminBanner | null;
   services: AdminPartyServicePage[];
   onClose: () => void;
-  onSave: (payload: Partial<BannerPayload>) => Promise<void>;
 }
 
 export default function BannerFormModal({
   initial,
   services,
   onClose,
-  onSave,
 }: BannerFormModalProps) {
-  const fileRef = useRef<HTMLInputElement>(null);
+  const isEdit = !!initial;
+
   const [title, setTitle] = useState(initial?.title ?? '');
   const [subtitle, setSubtitle] = useState(initial?.subtitle ?? '');
   const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? '');
   const [sortOrder, setSortOrder] = useState(String(initial?.sortOrder ?? 0));
   const [servicePageId, setServicePageId] = useState(initial?.servicePage.id ?? '');
   const [isActive, setIsActive] = useState(initial?.isActive ?? true);
-  const [uploading, setUploading] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const preview = resolveMediaUrl(imageUrl);
+  useScrollToFormFieldErrors(formRef, errors);
+
+  const { submit, loading, submitError, clearSubmitError } = useAdminEntityForm<
+    Partial<BannerPayload>
+  >({
+    entity: 'banner',
+    isEdit,
+    recordId: initial?.id,
+    createFn: (payload) => adminCreateBanner(payload as BannerPayload),
+    updateFn: adminUpdateBanner,
+    invalidateKeys: [['admin', 'banners']],
+    messages: {
+      create: 'بنر ایجاد شد.',
+      update: 'بنر بروزرسانی شد.',
+    },
+    onSuccess: onClose,
+  });
 
   function validate() {
     const e: Record<string, string> = {};
@@ -44,115 +61,90 @@ export default function BannerFormModal({
     return Object.keys(e).length === 0;
   }
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      setImageUrl(await uploadImage(file, 'banners'));
-    } catch {
-      setErrors((p) => ({ ...p, imageUrl: 'آپلود ناموفق بود.' }));
-    } finally {
-      setUploading(false);
-      if (fileRef.current) fileRef.current.value = '';
-    }
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
-    setLoading(true);
-    try {
-      await onSave({
-        title: title.trim(),
-        subtitle: subtitle.trim() || undefined,
-        imageUrl: imageUrl.trim(),
-        sortOrder: Number(sortOrder) || 0,
-        servicePageId,
-        isActive,
-      });
-    } finally {
-      setLoading(false);
-    }
+
+    await submit({
+      title: title.trim(),
+      subtitle: subtitle.trim() || undefined,
+      imageUrl: imageUrl.trim(),
+      sortOrder: Number(sortOrder) || 0,
+      servicePageId,
+      isActive,
+    });
   }
 
   return (
-    <Modal isOpen onClose={onClose} title={initial ? 'ویرایش بنر' : 'بنر جدید'} size="lg">
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <Input
-          label="عنوان"
-          value={title}
-          onChange={(ev) => setTitle(ev.target.value)}
-          error={errors.title}
-          required
-        />
-        <Input
-          label="زیرعنوان"
-          value={subtitle}
-          onChange={(ev) => setSubtitle(ev.target.value)}
-        />
-        <div className={styles.imageBlock}>
+    <Modal
+      isOpen
+      onClose={onClose}
+      title={isEdit ? 'ویرایش بنر' : 'بنر جدید'}
+      size="lg"
+      preventClose={loading}
+    >
+      <form ref={formRef} onSubmit={handleSubmit} className={styles.form}>
+        <FormErrorBanner message={submitError} />
+
+        <fieldset disabled={loading} className={styles.fieldsetBody}>
           <Input
-            label="آدرس تصویر"
-            value={imageUrl}
-            onChange={(ev) => setImageUrl(ev.target.value)}
-            error={errors.imageUrl}
-            dir="ltr"
+            label="عنوان"
+            value={title}
+            onChange={(ev) => { setTitle(ev.target.value); clearSubmitError(); }}
+            error={errors.title}
             required
           />
-          <div className={styles.uploadRow}>
-            {preview && <img src={preview} alt="" className={styles.preview} loading="lazy" />}
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              className={styles.fileInput}
-              onChange={handleImageUpload}
+          <Input
+            label="زیرعنوان"
+            value={subtitle}
+            onChange={(ev) => setSubtitle(ev.target.value)}
+          />
+          <MediaPickerField
+            label="تصویر بنر"
+            value={imageUrl}
+            onChange={setImageUrl}
+            allowedTypes="image"
+            uploadFolder="banners"
+            error={errors.imageUrl}
+            required
+            allowUrlInput
+            previewAlt={title || 'تصویر بنر'}
+          />
+          <Input
+            label="ترتیب نمایش"
+            type="number"
+            value={sortOrder}
+            onChange={(ev) => setSortOrder(ev.target.value)}
+            dir="ltr"
+          />
+          <div>
+            <label className={styles.selectLabel} htmlFor="banner-service">
+              صفحه سرویس *
+            </label>
+            <CustomSelect
+              id="banner-service"
+              value={servicePageId}
+              onChange={(v) => { setServicePageId(v); clearSubmitError(); }}
+              placeholder="انتخاب کنید"
+              error={errors.servicePageId}
+              options={services.map((s) => ({
+                value: s.id,
+                label: s.isActive ? s.title : `${s.title} (غیرفعال)`,
+              }))}
             />
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              loading={uploading}
-              onClick={() => fileRef.current?.click()}
-            >
-              آپلود تصویر
-            </Button>
           </div>
-        </div>
-        <Input
-          label="ترتیب نمایش"
-          type="number"
-          value={sortOrder}
-          onChange={(ev) => setSortOrder(ev.target.value)}
-          dir="ltr"
-        />
-        <div>
-          <label className={styles.selectLabel} htmlFor="banner-service">
-            صفحه سرویس *
+          <label className={styles.checkbox}>
+            <input
+              type="checkbox"
+              checked={isActive}
+              onChange={(ev) => setIsActive(ev.target.checked)}
+            />
+            فعال (نمایش در کاروسل)
           </label>
-          <CustomSelect
-            id="banner-service"
-            value={servicePageId}
-            onChange={setServicePageId}
-            placeholder="انتخاب کنید"
-            error={errors.servicePageId}
-            options={services.map((s) => ({
-              value: s.id,
-              label: s.isActive ? s.title : `${s.title} (غیرفعال)`,
-            }))}
-          />
-        </div>
-        <label className={styles.checkbox}>
-          <input
-            type="checkbox"
-            checked={isActive}
-            onChange={(ev) => setIsActive(ev.target.checked)}
-          />
-          فعال (نمایش در کاروسل)
-        </label>
+        </fieldset>
+
         <Button type="submit" fullWidth loading={loading}>
-          {initial ? 'ذخیره تغییرات' : 'ایجاد بنر'}
+          {isEdit ? 'ذخیره تغییرات' : 'ایجاد بنر'}
         </Button>
       </form>
     </Modal>

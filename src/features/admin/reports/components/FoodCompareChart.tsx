@@ -13,6 +13,7 @@ import { useChartTheme, TOOLTIP_CONTENT_STYLE } from '../chart-colors';
 import { formatPrice } from '@utils/format-price';
 import { useMediaQuery } from '@hooks/useMediaQuery';
 import chartStyles from './chart-shared.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface FoodCompareChartProps {
   data: FoodCompareResponse;
@@ -38,8 +39,8 @@ export default function FoodCompareChart({ data }: FoodCompareChartProps) {
             tick={{ fontSize: isMobile ? 10 : 12, fill: theme.axis }}
             tickFormatter={(v: number) =>
               isMonetary
-                ? `${Math.round(v / 1000).toLocaleString('fa-IR')}K`
-                : v.toLocaleString('fa-IR')
+                ? `${formatNumber(Math.round(v / 1000))}K`
+                : formatNumber(v)
             }
           />
           <YAxis
@@ -50,7 +51,7 @@ export default function FoodCompareChart({ data }: FoodCompareChartProps) {
           />
           <Tooltip
             formatter={(value: number) => [
-              isMonetary ? formatPrice(value) : value.toLocaleString('fa-IR'),
+              isMonetary ? formatPrice(value) : formatNumber(value),
               'مقدار',
             ]}
             contentStyle={{

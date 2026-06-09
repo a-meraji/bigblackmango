@@ -1,0 +1,8 @@
+.timer {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-pill);
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--red-600);
+}

@@ -14,10 +14,11 @@ interface StoryViewerProps {
   onClose: () => void;
 }
 
-const STORY_DURATION_MS = 5000;
+const STORY_IMAGE_DURATION_MS = 5000;
 
 export default function StoryViewer({ stories, initialIndex, onClose }: StoryViewerProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   useFocusTrap(true, overlayRef);
   const [index, setIndex] = useState(initialIndex);
   const { addToCart, addingId } = useAddToCart();
@@ -36,6 +37,7 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
 
   useEffect(() => () => { if (addedTimerRef.current) clearTimeout(addedTimerRef.current); }, []);
   const story = stories[index];
+  const isVideo = story?.mediaType === 'video';
 
   const goNext = useCallback(() => {
     if (index < stories.length - 1) {
@@ -53,15 +55,17 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
     }
   }, [index]);
 
-  // Auto-advance progress bar
+  // Image auto-advance progress bar
   useEffect(() => {
+    if (!story || isVideo) return;
+
     setProgress(0);
     const startTime = performance.now();
     let raf: number;
 
     function tick(now: number) {
       const elapsed = now - startTime;
-      const pct = Math.min((elapsed / STORY_DURATION_MS) * 100, 100);
+      const pct = Math.min((elapsed / STORY_IMAGE_DURATION_MS) * 100, 100);
       setProgress(pct);
       if (pct < 100) {
         raf = requestAnimationFrame(tick);
@@ -72,7 +76,17 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [index, goNext]);
+  }, [index, goNext, story, isVideo]);
+
+  // Video progress synced to playback
+  useEffect(() => {
+    if (!isVideo) return;
+    setProgress(0);
+    const video = videoRef.current;
+    if (!video) return;
+    video.load();
+    video.play().catch(() => {});
+  }, [index, isVideo]);
 
   // Close on Escape key
   useEffect(() => {
@@ -93,6 +107,13 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
     };
   }, []);
 
+  function handleVideoTimeUpdate(e: React.SyntheticEvent<HTMLVideoElement>) {
+    const v = e.currentTarget;
+    if (v.duration && v.duration > 0) {
+      setProgress((v.currentTime / v.duration) * 100);
+    }
+  }
+
   if (!story) return null;
 
   return (
@@ -103,7 +124,6 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
       aria-modal="true"
       aria-label={`استوری: ${story.title}`}
     >
-      {/* Progress bars */}
       <div className={styles.progressRow} aria-hidden="true">
         {stories.map((_, i) => (
           <div key={i} className={styles.progressTrack}>
@@ -117,7 +137,6 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
         ))}
       </div>
 
-      {/* Header */}
       <div className={styles.header}>
         <span className={styles.storyTitle}>{story.title}</span>
         <IconButton
@@ -130,13 +149,17 @@ export default function StoryViewer({ stories, initialIndex, onClose }: StoryVie
       </div>
 
       <div className={styles.media}>
-        {story.mediaType === 'video' ? (
+        {isVideo ? (
           <video
+            ref={videoRef}
+            key={story.id}
             src={resolveMediaUrl(story.mediaUrl)}
             className={styles.mediaContent}
             autoPlay
             muted
             playsInline
+            onTimeUpdate={handleVideoTimeUpdate}
+            onEnded={goNext}
           />
         ) : (
           <img

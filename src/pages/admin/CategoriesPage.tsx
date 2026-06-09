@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import {
   adminGetCategories,
-  adminCreateCategory,
   adminUpdateCategory,
   adminDeleteCategory,
 } from '@api/admin/categories';
@@ -15,6 +14,7 @@ import { resolveMediaUrl } from '@utils/resolve-media-url';
 import { useToast } from '@hooks/useToast';
 import shared from '@styles/admin-shared.module.css';
 import styles from './CategoriesPage.module.css';
+import { formatNumber } from '@utils/locale';
 
 export default function CategoriesPage() {
   const qc = useQueryClient();
@@ -72,7 +72,7 @@ export default function CategoriesPage() {
       label: 'ترتیب',
       width: '80px',
       mobileHide: true,
-      render: (cat) => <span dir="ltr">{cat.sortOrder.toLocaleString('fa-IR')}</span>,
+      render: (cat) => <span dir="ltr">{formatNumber(cat.sortOrder)}</span>,
     },
     {
       key: 'image',
@@ -111,7 +111,7 @@ export default function CategoriesPage() {
               )}
               {/* sort + layout meta shown only on mobile */}
               <span className={styles.mobileMeta}>
-                ترتیب {cat.sortOrder.toLocaleString('fa-IR')}
+                ترتیب {formatNumber(cat.sortOrder)}
                 {' · '}
                 {cat.layoutWidth === '2col' ? 'نیمه عرض' : 'عرض کامل'}
               </span>
@@ -194,18 +194,6 @@ export default function CategoriesPage() {
         <CategoryFormModal
           initial={editingCategory}
           onClose={() => setShowForm(false)}
-          onCreate={async (payload) => {
-            await adminCreateCategory(payload);
-            qc.invalidateQueries({ queryKey: ['admin', 'categories'] });
-            setShowForm(false);
-            toast.success('دسته‌بندی ایجاد شد.');
-          }}
-          onUpdate={async (id, payload) => {
-            await adminUpdateCategory(id, payload);
-            qc.invalidateQueries({ queryKey: ['admin', 'categories'] });
-            setShowForm(false);
-            toast.success('دسته‌بندی بروزرسانی شد.');
-          }}
         />
       )}
     </div>

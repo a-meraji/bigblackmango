@@ -3,6 +3,7 @@ import { toJalaliWithTime } from '@utils/format-date';
 import clsx from 'clsx';
 import StatusIllustration from './StatusIllustration';
 import styles from './OrderCard.module.css';
+import { formatNumber, formatDigits } from '@utils/locale';
 
 const STATUS_CLASS: Record<OrderStatus, string> = {
   pending_confirmation: styles.statusPending,
@@ -20,14 +21,14 @@ interface Props {
 export default function OrderCard({ order, onShowReceipt }: Props) {
   const itemsText =
     order.itemsPreview
-      ?.map((i) => `${i.foodName} × ${i.quantity.toLocaleString('fa-IR')}`)
+      ?.map((i) => `${i.foodName} × ${formatNumber(i.quantity)}`)
       .join(' · ') ?? order.address.addressLine;
 
   return (
     <li className={styles.card} data-status={order.status}>
       <div className={styles.header}>
         <span className={styles.tracking} dir="ltr">
-          #{order.trackingCode}
+          #{formatDigits(order.trackingCode)}
         </span>
         <span className={clsx(styles.status, STATUS_CLASS[order.status])}>
           {order.statusLabel}

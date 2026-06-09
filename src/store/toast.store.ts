@@ -20,8 +20,6 @@ export const useToastStore = create<ToastStore>((set) => ({
   push: (type, message) => {
     const id = crypto.randomUUID();
     set((s) => ({ toasts: [...s.toasts, { id, type, message }] }));
-    // Auto-dismiss after 4 seconds
-    setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), 4000);
   },
 
   remove: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),

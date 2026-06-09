@@ -7,6 +7,12 @@
   padding-inline-end: 0.25rem;
 }
 
+.fieldsetBody {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
 .label {
   display: block;
   font-size: 0.875rem;
@@ -71,5 +77,25 @@
   gap: 0.5rem;
   font-size: 0.9375rem;
   color: var(--text-body);
+  cursor: pointer;
+}
+
+.mediaTypeFieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mediaTypeRadios {
+  display: flex;
+  gap: 1rem;
+  margin-block-start: 0.375rem;
+}
+
+.mediaTypeRadio {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.9375rem;
   cursor: pointer;
 }

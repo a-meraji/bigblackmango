@@ -3,6 +3,8 @@ import type { AdminOrderFilters } from '@api/admin/orders';
 import type { OrderStatus } from '@t/order';
 import { ORDER_STATUS_LABELS } from '@utils/order-status';
 import CustomSelect from '@components/custom-select/CustomSelect';
+import { JalaliDatePicker } from '@components/jalali-date-picker';
+import { useLocalizedDigits } from '@hooks/useLocalizedDigits';
 import styles from './OrderFilterBar.module.css';
 
 interface OrderFilterBarProps {
@@ -19,6 +21,7 @@ export default function OrderFilterBar({
   onManualOrder,
 }: OrderFilterBarProps) {
   const [searchInput, setSearchInput] = useState(filters.search ?? '');
+  const searchProps = useLocalizedDigits(searchInput, setSearchInput, { dir: 'ltr' });
 
   useEffect(() => {
     setSearchInput(filters.search ?? '');
@@ -47,10 +50,8 @@ export default function OrderFilterBar({
       <input
         className={styles.search}
         placeholder="کد پیگیری، موبایل یا نام..."
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
         aria-label="جستجو"
-        dir="ltr"
+        {...searchProps}
       />
 
       <CustomSelect
@@ -80,20 +81,18 @@ export default function OrderFilterBar({
         ]}
       />
 
-      <input
-        type="date"
-        className={styles.dateInput}
+      <JalaliDatePicker
         value={filters.fromDate ?? ''}
-        onChange={(e) => update({ fromDate: e.target.value || undefined })}
-        aria-label="از تاریخ"
+        onChange={(v) => update({ fromDate: v || undefined })}
+        compact
+        className={styles.datePicker}
       />
       <span className={styles.dateSep}>تا</span>
-      <input
-        type="date"
-        className={styles.dateInput}
+      <JalaliDatePicker
         value={filters.toDate ?? ''}
-        onChange={(e) => update({ toDate: e.target.value || undefined })}
-        aria-label="تا تاریخ"
+        onChange={(v) => update({ toDate: v || undefined })}
+        compact
+        className={styles.datePicker}
       />
 
       <button type="button" className={styles.manualBtn} onClick={onManualOrder}>

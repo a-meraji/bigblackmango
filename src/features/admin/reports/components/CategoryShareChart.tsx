@@ -5,6 +5,7 @@ import { formatPrice } from '@utils/format-price';
 import { useMediaQuery } from '@hooks/useMediaQuery';
 import chartStyles from './chart-shared.module.css';
 import styles from './CategoryShareChart.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface CategoryShareChartProps {
   data: CategoryShareResponse;
@@ -48,8 +49,8 @@ export default function CategoryShareChart({ data }: CategoryShareChartProps) {
             <Tooltip
               formatter={(value: number, _name: string, item) => {
                 const payload = item?.payload as { categoryName: string; percentage: number };
-                const display = isMonetary ? formatPrice(value) : value.toLocaleString('fa-IR');
-                return [`${display} (${payload.percentage.toLocaleString('fa-IR')}٪)`, payload.categoryName];
+                const display = isMonetary ? formatPrice(value) : formatNumber(value);
+                return [`${display} (${formatNumber(payload.percentage)}٪)`, payload.categoryName];
               }}
               contentStyle={{
                 ...TOOLTIP_CONTENT_STYLE,
@@ -70,7 +71,7 @@ export default function CategoryShareChart({ data }: CategoryShareChartProps) {
                 style={{ background: theme.donut[i % theme.donut.length] ?? theme.primary }}
               />
               <span className={styles.catName}>{item.categoryName}</span>
-              <span className={styles.pct}>{item.percentage.toLocaleString('fa-IR')}٪</span>
+              <span className={styles.pct}>{formatNumber(item.percentage)}٪</span>
             </li>
           ))}
         </ul>

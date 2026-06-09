@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { UtensilsCrossed, WifiOff } from 'lucide-react';
 import PageShell from '@components/page-shell/PageShell';
+import BackButton from '@components/back-button/BackButton';
 import EmptyState from '@components/empty-state/EmptyState';
 import Skeleton from '@components/skeleton/Skeleton';
 import CategoryFilter from '@features/customer/home/components/CategoryFilter';
@@ -155,6 +156,10 @@ export default function MenuPage() {
 
   return (
     <>
+      <div className={styles.backButtonWrap}>
+        <BackButton to="/" />
+      </div>
+
       <div ref={chipBarRef} className={styles.chipBar}>
         <CategoryFilter
           categories={menuCategories}

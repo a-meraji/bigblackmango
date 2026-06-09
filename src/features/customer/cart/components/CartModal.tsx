@@ -9,6 +9,7 @@ import CartItemRow from './CartItemRow';
 import CartSummaryFooter from './CartSummaryFooter';
 import CartUnavailableBanner from './CartUnavailableBanner';
 import styles from './CartModal.module.css';
+import { formatNumber } from '@utils/locale';
 
 export default function CartModal() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function CartModal() {
 
   const itemCount = cart?.items.length ?? 0;
   const title =
-    itemCount > 0 ? `سبد خرید (${itemCount.toLocaleString('fa-IR')} مورد)` : 'سبد خرید';
+    itemCount > 0 ? `سبد خرید (${formatNumber(itemCount)} مورد)` : 'سبد خرید';
 
   return (
     <Modal
@@ -26,6 +27,7 @@ export default function CartModal() {
       onClose={closeCart}
       title={title}
       size="md"
+      closeOnBackdropClick
       dialogClassName={styles.cartDialog}
       bodyClassName={styles.cartBody}
     >

@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import {
   adminListBanners,
-  adminCreateBanner,
   adminUpdateBanner,
   adminDeleteBanner,
   type BannerPayload,
@@ -17,6 +16,7 @@ import { resolveMediaUrl } from '@utils/resolve-media-url';
 import { useToast } from '@hooks/useToast';
 import shared from '@styles/admin-shared.module.css';
 import styles from './BannersPage.module.css';
+import { formatNumber } from '@utils/locale';
 
 export default function BannersPage() {
   const qc = useQueryClient();
@@ -70,7 +70,7 @@ export default function BannersPage() {
       key: 'order',
       label: 'ترتیب',
       width: '80px',
-      render: (b) => <span dir="ltr">{b.sortOrder.toLocaleString('fa-IR')}</span>,
+      render: (b) => <span dir="ltr">{formatNumber(b.sortOrder)}</span>,
     },
     {
       key: 'image',
@@ -156,17 +156,6 @@ export default function BannersPage() {
           initial={editingBanner}
           services={services}
           onClose={() => setShowForm(false)}
-          onSave={async (payload) => {
-            if (editingBanner) {
-              await adminUpdateBanner(editingBanner.id, payload);
-              toast.success('بنر بروزرسانی شد.');
-            } else {
-              await adminCreateBanner(payload as BannerPayload);
-              toast.success('بنر ایجاد شد.');
-            }
-            qc.invalidateQueries({ queryKey: ['admin', 'banners'] });
-            setShowForm(false);
-          }}
         />
       )}
     </div>

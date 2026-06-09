@@ -1,5 +1,8 @@
 .card {
   position: relative;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -22,7 +25,7 @@
   background: none;
   cursor: pointer;
   text-align: start;
-  min-block-size: 140px;
+  min-block-size: 100%;
 }
 
 .image {

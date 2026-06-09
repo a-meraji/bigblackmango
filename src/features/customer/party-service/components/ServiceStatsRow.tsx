@@ -2,13 +2,15 @@ import type { ServiceStat } from '@t/party-service';
 import { useCountUp } from '@hooks/useCountUp';
 import LucideIcon from '@components/lucide-icon/LucideIcon';
 import styles from './ServiceStatsRow.module.css';
+import { formatNumber, toPersianDigits, toEnglishDigits } from '@utils/locale';
 
 interface StatItemProps {
   stat: ServiceStat;
 }
 
 function parseValue(value: string): { num: number; suffix: string } {
-  const match = value.match(/^(\d[\d,]*)(.*)$/);
+  const normalized = toEnglishDigits(value);
+  const match = normalized.match(/^(\d[\d,]*)(.*)$/);
   if (match) {
     const num = parseInt(match[1].replace(/,/g, ''), 10);
     return { num, suffix: match[2] };
@@ -31,8 +33,8 @@ function StatItem({ stat }: StatItemProps) {
         </span>
       )}
       <span className={styles.number}>
-        {count.toLocaleString('fa-IR')}
-        <span className={styles.suffix}>{suffix}</span>
+        {formatNumber(count)}
+        <span className={styles.suffix}>{toPersianDigits(suffix)}</span>
       </span>
       <span className={styles.label}>{stat.label}</span>
     </li>

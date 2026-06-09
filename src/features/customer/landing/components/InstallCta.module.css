@@ -1,0 +1,52 @@
+@keyframes stickySlideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.bar {
+  position: sticky;
+  inset-block-end: 0;
+  padding: 0.5rem var(--page-inline-padding)
+    max(var(--space-3), env(safe-area-inset-bottom));
+  z-index: 100;
+  animation: stickySlideUp 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+.inner {
+  max-inline-size: var(--layout-max-width);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-surface);
+  border: var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 1rem 1.25rem 1.125rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.sub {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    animation: none;
+  }
+}

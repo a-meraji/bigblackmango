@@ -31,7 +31,9 @@ const DailyMenuPage = lazy(() => import('@pages/admin/DailyMenuPage'));
 const StoriesPage = lazy(() => import('@pages/admin/StoriesPage'));
 const BannersPage = lazy(() => import('@pages/admin/BannersPage'));
 const PartyServicesPage = lazy(() => import('@pages/admin/PartyServicesPage'));
+const LandingAdminPage = lazy(() => import('@pages/admin/LandingPage'));
 const AdminOrdersPage = lazy(() => import('@pages/admin/OrdersPage'));
+const DiscountCodesPage = lazy(() => import('@pages/admin/DiscountCodesPage'));
 const AdminReviewsPage = lazy(() => import('@pages/admin/ReviewsPage'));
 const NotificationsPage = lazy(() => import('@pages/admin/NotificationsPage'));
 
@@ -82,7 +84,9 @@ export const router = createBrowserRouter([
       { path: 'stories', element: lazyPage(<StoriesPage />) },
       { path: 'banners', element: lazyPage(<BannersPage />) },
       { path: 'party-services', element: lazyPage(<PartyServicesPage />) },
+      { path: 'landing', element: lazyPage(<LandingAdminPage />) },
       { path: 'orders', element: lazyPage(<AdminOrdersPage />) },
+      { path: 'discount-codes', element: lazyPage(<DiscountCodesPage />) },
       { path: 'reviews', element: lazyPage(<AdminReviewsPage />) },
       { path: 'notifications', element: lazyPage(<NotificationsPage />) },
     ],

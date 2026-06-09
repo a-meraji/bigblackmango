@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import JalaliDateInput from './JalaliDateInput';
+import { JalaliDatePicker } from '@components/jalali-date-picker';
+import { isoToGregorianDate } from '@utils/locale';
 import styles from './DateRangePicker.module.css';
 
 interface DateRangePickerProps {
@@ -16,10 +17,7 @@ const QUICK_RANGES = [
 ];
 
 function toIsoDate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
+  return isoToGregorianDate(d.toISOString());
 }
 
 function getActiveDays(dateFrom: string, dateTo: string): number | null {
@@ -64,9 +62,9 @@ export default function DateRangePicker({
         ))}
       </div>
       <div className={styles.inputs}>
-        <JalaliDateInput value={dateFrom} onChange={onFromChange} label="از تاریخ" />
+        <JalaliDatePicker value={dateFrom} onChange={onFromChange} label="از تاریخ" compact />
         <span className={styles.sep}>تا</span>
-        <JalaliDateInput value={dateTo} onChange={onToChange} label="تا تاریخ" />
+        <JalaliDatePicker value={dateTo} onChange={onToChange} label="تا تاریخ" compact />
       </div>
     </div>
   );

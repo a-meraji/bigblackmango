@@ -1,0 +1,103 @@
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+}
+
+.rootInline {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.4rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.badgeSm {
+  font-size: 0.625rem;
+  padding: 0.1rem 0.35rem;
+}
+
+.badgeMd {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.45rem;
+}
+
+.badgeLg {
+  font-size: 0.8125rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.original {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.originalSm {
+  font-size: 0.75rem;
+}
+
+.originalMd {
+  font-size: 0.8125rem;
+}
+
+.originalLg {
+  font-size: 0.875rem;
+}
+
+.sale {
+  color: var(--color-error-text);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.saleSm {
+  font-size: 0.875rem;
+}
+
+.saleMd {
+  font-size: 1rem;
+}
+
+.saleLg {
+  font-size: 1.125rem;
+}
+
+.regular {
+  color: var(--text-heading);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.regularSm {
+  font-size: 0.875rem;
+}
+
+.regularMd {
+  font-size: 1rem;
+}
+
+.regularLg {
+  font-size: 1.125rem;
+}
+
+.badgeRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}

@@ -5,6 +5,7 @@ import { useAuthStore } from '@store/auth.store';
 import { useCartStore } from '@store/cart.store';
 import { useQueryClient } from '@tanstack/react-query';
 import Input from '@components/input/Input';
+import { formatDigits } from '@utils/locale';
 import Button from '@components/button/Button';
 import styles from './OtpVerifyForm.module.css';
 
@@ -85,7 +86,7 @@ export default function OtpVerifyForm({
       <p className={styles.subtitle}>
         کد ارسال شده به{' '}
         <span dir="ltr" className={styles.mobile}>
-          {mobile}
+          {formatDigits(mobile)}
         </span>{' '}
         را وارد کنید
       </p>
@@ -96,7 +97,8 @@ export default function OtpVerifyForm({
         inputMode="numeric"
         maxLength={6}
         value={code}
-        onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+        onChange={(e) => setCode(e.target.value)}
+        digitsOnly
         error={error}
         ref={codeRef}
         dir="ltr"

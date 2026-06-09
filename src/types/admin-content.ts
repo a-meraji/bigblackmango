@@ -42,7 +42,8 @@ export interface AdminPartyServiceHighlight {
   id: string;
   servicePageId: string;
   title: string;
-  videoUrl: string;
+  mediaType: 'image' | 'video';
+  mediaUrl: string;
   thumbnailUrl: string | null;
   sortOrder: number;
   isActive: boolean;

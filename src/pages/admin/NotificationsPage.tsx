@@ -16,6 +16,8 @@ import Button from '@components/button/Button';
 import Spinner from '@components/spinner/Spinner';
 import { useToast } from '@hooks/useToast';
 import { toJalaliWithTime } from '@utils/format-date';
+import RawLocalizedInput from '@components/input/RawLocalizedInput';
+import { useLocalizedDigits } from '@hooks/useLocalizedDigits';
 import styles from './NotificationsPage.module.css';
 
 const PLACEHOLDERS = '{food1}، {food2}، {food3}';
@@ -36,6 +38,7 @@ function TemplateForm({ initial, onSave, onCancel, saving }: TemplateFormProps) 
   const [actionUrl, setActionUrl] = useState(initial?.actionUrl ?? '/menu');
   const [actionLabel, setActionLabel] = useState(initial?.actionLabel ?? 'مشاهده منو');
   const [tag, setTag] = useState(initial?.tag ?? '');
+  const bodyProps = useLocalizedDigits(body, setBody);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -46,10 +49,10 @@ function TemplateForm({ initial, onSave, onCancel, saving }: TemplateFormProps) 
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formRow}>
         <label className={styles.label}>کلید (key) *</label>
-        <input
+        <RawLocalizedInput
           className={styles.input}
           value={key}
-          onChange={(e) => setKey(e.target.value)}
+          onChange={setKey}
           placeholder="daily_menu"
           required
           disabled={!!initial}
@@ -60,10 +63,10 @@ function TemplateForm({ initial, onSave, onCancel, saving }: TemplateFormProps) 
 
       <div className={styles.formRow}>
         <label className={styles.label}>عنوان *</label>
-        <input
+        <RawLocalizedInput
           className={styles.input}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={setTitle}
           placeholder="منوی امروز آماده‌ست 🍛"
           required
           maxLength={120}
@@ -75,12 +78,11 @@ function TemplateForm({ initial, onSave, onCancel, saving }: TemplateFormProps) 
         <label className={styles.label}>متن اصلی *</label>
         <textarea
           className={styles.textarea}
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
           placeholder="{food1} و {food2} روی منوئه — بزن بریم!"
           required
           maxLength={400}
           rows={3}
+          {...bodyProps}
         />
         <span className={styles.hint}>پلیس‌هولدرها با نام غذاهای امروز جایگزین می‌شن</span>
       </div>
@@ -88,15 +90,15 @@ function TemplateForm({ initial, onSave, onCancel, saving }: TemplateFormProps) 
       <div className={styles.formGrid}>
         <div className={styles.formRow}>
           <label className={styles.label}>لینک باز شدن</label>
-          <input className={styles.input} value={actionUrl} onChange={(e) => setActionUrl(e.target.value)} placeholder="/menu" dir="ltr" />
+          <RawLocalizedInput className={styles.input} value={actionUrl} onChange={setActionUrl} placeholder="/menu" dir="ltr" />
         </div>
         <div className={styles.formRow}>
           <label className={styles.label}>متن دکمه</label>
-          <input className={styles.input} value={actionLabel} onChange={(e) => setActionLabel(e.target.value)} placeholder="مشاهده منو" />
+          <RawLocalizedInput className={styles.input} value={actionLabel} onChange={setActionLabel} placeholder="مشاهده منو" />
         </div>
         <div className={styles.formRow}>
           <label className={styles.label}>تگ (tag)</label>
-          <input className={styles.input} value={tag} onChange={(e) => setTag(e.target.value)} placeholder="daily-menu" dir="ltr" />
+          <RawLocalizedInput className={styles.input} value={tag} onChange={setTag} placeholder="daily-menu" dir="ltr" />
         </div>
       </div>
 
@@ -121,6 +123,7 @@ function SendForm({ templates, onSend, sending }: SendFormProps) {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [actionUrl, setActionUrl] = useState('/menu');
+  const bodyProps = useLocalizedDigits(body, setBody);
 
   function handleTemplateChange(key: string) {
     setSelectedKey(key);
@@ -155,17 +158,17 @@ function SendForm({ templates, onSend, sending }: SendFormProps) {
       <div className={styles.sendGrid}>
         <div className={styles.formRow}>
           <label className={styles.label}>عنوان *</label>
-          <input className={styles.input} value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={120} placeholder="عنوان نوتیفیکیشن" />
+          <RawLocalizedInput className={styles.input} value={title} onChange={setTitle} required maxLength={120} placeholder="عنوان نوتیفیکیشن" />
         </div>
         <div className={styles.formRow}>
           <label className={styles.label}>لینک باز شدن</label>
-          <input className={styles.input} value={actionUrl} onChange={(e) => setActionUrl(e.target.value)} dir="ltr" />
+          <RawLocalizedInput className={styles.input} value={actionUrl} onChange={setActionUrl} dir="ltr" />
         </div>
       </div>
 
       <div className={styles.formRow}>
         <label className={styles.label}>متن *</label>
-        <textarea className={styles.textarea} value={body} onChange={(e) => setBody(e.target.value)} required maxLength={400} rows={2} placeholder="متن نوتیفیکیشن..." />
+        <textarea className={styles.textarea} required maxLength={400} rows={2} placeholder="متن نوتیفیکیشن..." {...bodyProps} />
       </div>
 
       <div className={styles.sendFooter}>

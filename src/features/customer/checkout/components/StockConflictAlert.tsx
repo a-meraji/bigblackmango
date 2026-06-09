@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '@store/cart.store';
 import styles from './StockConflictAlert.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface Conflict {
   menuItemId: string;
@@ -32,8 +33,8 @@ export default function StockConflictAlert({ conflicts, onDismiss }: Props) {
       <ul className={styles.list}>
         {conflicts.map((c) => (
           <li key={c.menuItemId}>
-            درخواست: {c.requestedQuantity.toLocaleString('fa-IR')} — موجود:{' '}
-            {c.availableQuantity.toLocaleString('fa-IR')}
+            درخواست: {formatNumber(c.requestedQuantity)} — موجود:{' '}
+            {formatNumber(c.availableQuantity)}
           </li>
         ))}
       </ul>

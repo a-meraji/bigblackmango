@@ -12,10 +12,21 @@ export function useRevealOnScroll<T extends HTMLElement>() {
       return;
     }
 
+    const reveal = () => {
+      el.dataset.revealed = 'true';
+    };
+
+    const rect = el.getBoundingClientRect();
+    const alreadyVisible = rect.top < window.innerHeight && rect.bottom > 0;
+    if (alreadyVisible) {
+      reveal();
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          el.dataset.revealed = 'true';
+          reveal();
           observer.disconnect();
         }
       },

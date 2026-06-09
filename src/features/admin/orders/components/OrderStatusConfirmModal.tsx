@@ -5,6 +5,7 @@ import Icon from '@components/icon/Icon';
 import type { OrderStatus } from '@t/order';
 import { statusLabel } from '@utils/order-status';
 import OrderStatusBadge from './OrderStatusBadge';
+import { formatDigits } from '@utils/locale';
 import styles from './OrderStatusConfirmModal.module.css';
 
 export interface OrderStatusConfirmPayload {
@@ -46,7 +47,7 @@ export default function OrderStatusConfirmModal({
         <p className={styles.lead}>
           آیا وضعیت سفارش{' '}
           <span className={styles.tracking} dir="ltr">
-            {payload.trackingCode}
+            {formatDigits(payload.trackingCode)}
           </span>{' '}
           را تغییر می‌دهید؟
         </p>

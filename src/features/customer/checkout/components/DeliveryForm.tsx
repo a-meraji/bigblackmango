@@ -5,16 +5,36 @@ import { getProfile, createAddress, updateProfile } from '@api/profile';
 import Input from '@components/input/Input';
 import Button from '@components/button/Button';
 import type { CheckoutPayload } from '@t/checkout';
+import type { DiscountValidationResult } from '@t/discount-code';
 import { isValidIranianMobile } from '@utils/validators';
 import AddressPicker from './AddressPicker';
+import CheckoutOrderSummary from './CheckoutOrderSummary';
+import DiscountCodeInput from './DiscountCodeInput';
 import styles from './DeliveryForm.module.css';
+
+interface CartPricing {
+  subtotal: number;
+  deliveryFee: number;
+  total: number;
+}
 
 interface Props {
   onSubmit: (payload: CheckoutPayload) => void | Promise<void>;
   loading: boolean;
+  cartPricing: CartPricing | null;
+  appliedDiscount: DiscountValidationResult | null;
+  onDiscountApplied: (result: DiscountValidationResult) => void;
+  onDiscountClear: () => void;
 }
 
-export default function DeliveryForm({ onSubmit, loading }: Props) {
+export default function DeliveryForm({
+  onSubmit,
+  loading,
+  cartPricing,
+  appliedDiscount,
+  onDiscountApplied,
+  onDiscountClear,
+}: Props) {
   const { isAuthenticated } = useAuthStore();
   const qc = useQueryClient();
 
@@ -138,8 +158,13 @@ export default function DeliveryForm({ onSubmit, loading }: Props) {
         .catch(() => {});
     }
 
-    await onSubmit(payload);
+    await onSubmit({
+      ...payload,
+      ...(appliedDiscount ? { discountCode: appliedDiscount.discount.code } : {}),
+    });
   }
+
+  const displayPricing = appliedDiscount?.pricing ?? cartPricing;
 
   const hasSavedAddresses = Boolean(profile?.addresses.length);
   const showNewAddressFields = !hasSavedAddresses || addressMode === 'new';
@@ -244,6 +269,15 @@ export default function DeliveryForm({ onSubmit, loading }: Props) {
           </>
         )}
       </section>
+
+      {displayPricing && <CheckoutOrderSummary pricing={displayPricing} />}
+
+      <DiscountCodeInput
+        appliedCode={appliedDiscount?.discount.code ?? null}
+        onApplied={onDiscountApplied}
+        onClear={onDiscountClear}
+        disabled={loading}
+      />
 
       <Button type="submit" fullWidth loading={loading}>
         تایید و پرداخت

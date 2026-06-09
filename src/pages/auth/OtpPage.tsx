@@ -21,11 +21,10 @@ export default function OtpPage() {
   }
 
   function handleVerifySuccess() {
-    // Read fresh store state — React subscription may not have updated yet
     const user = useAuthStore.getState().user;
     const from = (location.state as { from?: { pathname?: string } })?.from?.pathname;
     if (user?.role === 'admin') {
-      navigate('/admin', { replace: true });
+      navigate(from ?? '/admin', { replace: true });
     } else {
       navigate(from ?? '/', { replace: true });
     }

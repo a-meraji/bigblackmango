@@ -1,6 +1,6 @@
 import type { PublicFoodDetail } from '@t/food';
 import type { NormalizedAvailability } from '@utils/food-availability';
-import { formatPrice } from '@utils/format-price';
+import PriceWithDiscount from '@components/price-with-discount/PriceWithDiscount';
 import StickyFooter from '@components/sticky-footer/StickyFooter';
 import { useAddToCart } from '@features/customer/cart/hooks/useAddToCart';
 import styles from './FoodDetailStickyBar.module.css';
@@ -14,11 +14,24 @@ export default function FoodDetailStickyBar({ food, availability }: Props) {
   const { addToCart, addingId } = useAddToCart();
   const isOutOfStock = !availability || !availability.isAvailable;
   const isLoading = availability ? addingId === availability.menuItemId : false;
+  const salePrice = availability?.salePrice ?? food.price;
+  const hasMenuDiscount =
+    availability != null &&
+    availability.discountPercent != null &&
+    availability.discountPercent > 0 &&
+    salePrice < food.price;
 
   return (
     <StickyFooter className={styles.bar}>
       <div className={styles.pill}>
-        <span className={styles.price}>{formatPrice(food.price)}</span>
+        <PriceWithDiscount
+          originalPrice={food.price}
+          salePrice={salePrice}
+          discountPercent={availability?.discountPercent}
+          size="lg"
+          layout="inline"
+          className={styles.price}
+        />
         {availability && (
           <button
             className={styles.cta}
@@ -27,7 +40,11 @@ export default function FoodDetailStickyBar({ food, availability }: Props) {
             onClick={() =>
               addToCart({
                 menuItemId: availability.menuItemId,
-                unitPrice: food.price,
+                unitPrice: salePrice,
+                originalUnitPrice: hasMenuDiscount ? food.price : undefined,
+                menuDiscountPercent: hasMenuDiscount
+                  ? availability.discountPercent
+                  : undefined,
                 food: {
                   id: food.id,
                   name: food.name,

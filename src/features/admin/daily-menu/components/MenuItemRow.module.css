@@ -7,11 +7,35 @@
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xs);
-  transition: box-shadow 0.15s;
+  transition: box-shadow 0.15s, border-color 0.15s;
 }
 
 .row:hover {
   box-shadow: var(--shadow-sm);
+}
+
+.discountedRow {
+  border-color: var(--color-error-border);
+  background: color-mix(in srgb, var(--color-error-bg) 35%, var(--bg-surface));
+}
+
+.topRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+.selectWrap {
+  display: flex;
+  align-items: center;
+  padding-block-start: 0.15rem;
+}
+
+.checkbox {
+  inline-size: 1rem;
+  block-size: 1rem;
+  accent-color: var(--brand-primary);
+  cursor: pointer;
 }
 
 /* Info block */
@@ -20,6 +44,23 @@
   flex-direction: column;
   gap: 0.15rem;
   min-width: 0;
+  flex: 1;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.discountPill {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.125rem 0.4rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
 }
 
 .name {
@@ -36,9 +77,29 @@
   color: var(--text-muted);
 }
 
-.price {
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
+.discountGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.discountInput {
+  width: 3.5rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  background: var(--input-bg);
+  color: var(--input-text);
+  text-align: center;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+.discountInput:focus {
+  border-color: var(--brand-primary);
+  box-shadow: var(--state-focus-ring);
+  outline: none;
 }
 
 /* Controls row */

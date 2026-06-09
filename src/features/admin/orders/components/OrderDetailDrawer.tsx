@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { X } from 'lucide-react';
 import { adminGetOrderDetail } from '@api/admin/orders';
+import PriceWithDiscount from '@components/price-with-discount/PriceWithDiscount';
 import { formatPrice } from '@utils/format-price';
 import { toJalaliWithTime } from '@utils/format-date';
 import type { OrderStatus } from '@t/order';
@@ -9,6 +10,7 @@ import OrderStatusBadge from './OrderStatusBadge';
 import StatusTransitionButtons from './StatusTransitionButtons';
 import Skeleton from '@components/skeleton/Skeleton';
 import styles from './OrderDetailDrawer.module.css';
+import { formatNumber, formatDigits } from '@utils/locale';
 
 interface OrderDetailDrawerProps {
   orderId: string;
@@ -76,7 +78,7 @@ export default function OrderDetailDrawer({
           <div className={styles.body}>
             <div className={styles.trackingRow}>
               <span className={styles.tracking} dir="ltr">
-                {order.trackingCode}
+                {formatDigits(order.trackingCode)}
               </span>
               <OrderStatusBadge status={order.status} />
             </div>
@@ -86,7 +88,7 @@ export default function OrderDetailDrawer({
               <p>{order.contact.displayName}</p>
               {order.contact.mobile && (
                 <p dir="ltr" className={styles.mobile}>
-                  {order.contact.mobile}
+                  {formatDigits(order.contact.mobile)}
                 </p>
               )}
             </section>
@@ -103,14 +105,32 @@ export default function OrderDetailDrawer({
             <section className={styles.section}>
               <h3 className={styles.sectionTitle}>اقلام</h3>
               <ul className={styles.items}>
-                {order.items.map((item) => (
-                  <li key={item.id} className={styles.item}>
-                    <span>
-                      {item.foodName} × {item.quantity.toLocaleString('fa-IR')}
-                    </span>
-                    <span dir="ltr">{formatPrice(item.lineTotal)}</span>
-                  </li>
-                ))}
+                {order.items.map((item) => {
+                  const hasMenuDiscount =
+                    item.menuDiscountPercent != null &&
+                    item.originalUnitPrice != null &&
+                    item.unitPrice < item.originalUnitPrice;
+
+                  return (
+                    <li key={item.id} className={styles.item}>
+                      <div className={styles.itemMain}>
+                        <span>
+                          {item.foodName} × {formatNumber(item.quantity)}
+                        </span>
+                        {hasMenuDiscount && (
+                          <PriceWithDiscount
+                            originalPrice={item.originalUnitPrice!}
+                            salePrice={item.unitPrice}
+                            discountPercent={item.menuDiscountPercent}
+                            size="sm"
+                            layout="inline"
+                          />
+                        )}
+                      </div>
+                      <span dir="ltr">{formatPrice(item.lineTotal)}</span>
+                    </li>
+                  );
+                })}
               </ul>
               <div className={styles.pricing}>
                 <div className={styles.pricingRow}>
@@ -121,6 +141,15 @@ export default function OrderDetailDrawer({
                   <span>هزینه ارسال</span>
                   <span dir="ltr">{formatPrice(order.deliveryFee)}</span>
                 </div>
+                {(order.discountAmount ?? 0) > 0 && (
+                  <div className={styles.pricingRow}>
+                    <span>
+                      تخفیف
+                      {order.discountCode ? ` (${order.discountCode})` : ''}
+                    </span>
+                    <span dir="ltr">−{formatPrice(order.discountAmount ?? 0)}</span>
+                  </div>
+                )}
                 <div className={`${styles.pricingRow} ${styles.totalRow}`}>
                   <span>جمع کل</span>
                   <span dir="ltr">{formatPrice(order.total)}</span>

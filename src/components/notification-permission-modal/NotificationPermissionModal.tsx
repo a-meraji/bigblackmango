@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bell, X } from 'lucide-react';
 import { isInStandaloneMode } from '@hooks/usePwaInstall';
+import { useIsLandingPage } from '@hooks/useIsLandingPage';
 import { usePushNotifications } from '@hooks/usePushNotifications';
 import styles from './NotificationPermissionModal.module.css';
 
@@ -24,10 +25,12 @@ function dismissForever(): void {
 }
 
 export default function NotificationPermissionModal() {
+  const isLandingPage = useIsLandingPage();
   const { permission, isSubscribed, isSupported, subscribe, isLoading } = usePushNotifications();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    if (isLandingPage) return;
     if (!isSupported) return;
     if (isSubscribed) return;
     if (permission !== 'default') return;
@@ -44,7 +47,7 @@ export default function NotificationPermissionModal() {
     // In standalone, show after 3s
     const t = setTimeout(() => setIsOpen(true), 3000);
     return () => clearTimeout(t);
-  }, [isSupported, isSubscribed, permission]);
+  }, [isSupported, isSubscribed, permission, isLandingPage]);
 
   async function handleAccept() {
     const result = await subscribe();
@@ -67,7 +70,7 @@ export default function NotificationPermissionModal() {
     setIsOpen(false);
   }
 
-  if (!isOpen) return null;
+  if (!isOpen || isLandingPage) return null;
 
   return (
     <div

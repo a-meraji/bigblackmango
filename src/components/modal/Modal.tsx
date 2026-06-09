@@ -14,6 +14,10 @@ interface ModalProps {
   /** Applied to the visible panel (not the full-screen dialog overlay) */
   dialogClassName?: string;
   bodyClassName?: string;
+  /** Disables close button and Escape while true */
+  preventClose?: boolean;
+  /** When true, clicking the backdrop dismisses the modal (off by default for forms) */
+  closeOnBackdropClick?: boolean;
 }
 
 export default function Modal({
@@ -24,6 +28,8 @@ export default function Modal({
   size = 'md',
   dialogClassName,
   bodyClassName,
+  preventClose = false,
+  closeOnBackdropClick = false,
 }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -57,7 +63,22 @@ export default function Modal({
     };
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (!isOpen || preventClose) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose, preventClose]);
+
   function handleOverlayClick(e: React.MouseEvent<HTMLDialogElement>) {
+    if (!closeOnBackdropClick || preventClose) return;
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -65,7 +86,14 @@ export default function Modal({
 
   function handleCancel(e: React.SyntheticEvent<HTMLDialogElement>) {
     e.preventDefault();
-    onClose();
+    if (!preventClose && closeOnBackdropClick) {
+      onClose();
+    }
+  }
+
+  /** Block native form navigation when a <form> inside the dialog submits */
+  function handleDialogSubmit(e: React.SyntheticEvent<HTMLDialogElement>) {
+    e.preventDefault();
   }
 
   return (
@@ -73,6 +101,7 @@ export default function Modal({
       ref={dialogRef}
       className={styles.overlay}
       onCancel={handleCancel}
+      onSubmit={handleDialogSubmit}
       onClick={handleOverlayClick}
       aria-modal="true"
       aria-labelledby={title ? 'modal-title' : undefined}
@@ -88,7 +117,13 @@ export default function Modal({
             <h2 id="modal-title" className={styles.title}>
               {title}
             </h2>
-            <IconButton icon={X} label="بستن" variant="ghost" onClick={onClose} />
+            <IconButton
+              icon={X}
+              label="بستن"
+              variant="ghost"
+              onClick={onClose}
+              disabled={preventClose}
+            />
           </div>
         )}
         <div className={clsx(styles.body, bodyClassName)}>{children}</div>

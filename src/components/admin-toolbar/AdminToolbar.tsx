@@ -1,5 +1,6 @@
 import { Plus } from 'lucide-react';
 import Button from '@components/button/Button';
+import RawLocalizedInput from '@components/input/RawLocalizedInput';
 import styles from './AdminToolbar.module.css';
 
 interface AdminToolbarProps {
@@ -23,11 +24,11 @@ export default function AdminToolbar({
     <div className={styles.toolbar}>
       <div className={styles.mainRow}>
         {onSearchChange != null && (
-          <input
+          <RawLocalizedInput
             className={styles.search}
             type="search"
             value={searchValue ?? ''}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={onSearchChange}
             placeholder={searchPlaceholder ?? 'جستجو...'}
             aria-label={searchPlaceholder ?? 'جستجو'}
           />

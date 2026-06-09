@@ -1,3 +1,7 @@
+.backButtonWrap {
+  margin-block-end: var(--space-3);
+}
+
 .chipBar {
   position: sticky;
   inset-block-start: 0;

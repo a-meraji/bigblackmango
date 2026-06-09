@@ -10,6 +10,8 @@ import {
   ShoppingBag,
   MessageSquare,
   Bell,
+  Smartphone,
+  Ticket,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -27,11 +29,13 @@ export const ADMIN_NAV_OPERATIONS: AdminNavItem[] = [
   { label: 'استوری‌ها و بنرها', path: '/admin/stories', icon: CirclePlay },
   { label: 'بنرهای کیترینگ', path: '/admin/banners', icon: Image },
   { label: 'سرویس‌های کیترینگ', path: '/admin/party-services', icon: PartyPopper },
+  { label: 'صفحه لندینگ', path: '/admin/landing', icon: Smartphone },
   { label: 'نوتیفیکیشن‌ها', path: '/admin/notifications', icon: Bell },
 ];
 
 export const ADMIN_NAV_MANAGEMENT: AdminNavItem[] = [
   { label: 'سفارش‌ها', path: '/admin/orders', icon: ShoppingBag },
+  { label: 'کدهای تخفیف', path: '/admin/discount-codes', icon: Ticket },
   { label: 'نظرات', path: '/admin/reviews', icon: MessageSquare },
 ];
 
@@ -43,8 +47,10 @@ export const ADMIN_PAGE_TITLES: Record<string, string> = {
   '/admin/stories': 'استوری‌ها و بنرها',
   '/admin/banners': 'بنرهای کیترینگ',
   '/admin/party-services': 'سرویس‌های کیترینگ',
+  '/admin/landing': 'صفحه لندینگ',
   '/admin/notifications': 'نوتیفیکیشن‌ها',
   '/admin/orders': 'سفارش‌ها',
+  '/admin/discount-codes': 'کدهای تخفیف',
   '/admin/reviews': 'نظرات',
 };
 

@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react';
 import { X, Download, Bell, Zap, Smartphone } from 'lucide-react';
 import { usePwaInstall, isIosSafari, isInStandaloneMode } from '@hooks/usePwaInstall';
+import { useIsLandingPage } from '@hooks/useIsLandingPage';
 import styles from './PwaInstallModal.module.css';
 
 const DISMISS_KEY = 'bbm_install_modal_dismissed';
 
 export default function PwaInstallModal() {
+  const isLandingPage = useIsLandingPage();
   const { isInstallable, triggerInstall, isIos } = usePwaInstall();
   const [isOpen, setIsOpen] = useState(false);
   const [installing, setInstalling] = useState(false);
 
   useEffect(() => {
+    if (isLandingPage) return;
     if (isInStandaloneMode()) return;
     if (localStorage.getItem(DISMISS_KEY)) return;
 
@@ -20,7 +23,7 @@ export default function PwaInstallModal() {
 
     const t = setTimeout(() => setIsOpen(true), 1800);
     return () => clearTimeout(t);
-  }, [isInstallable]);
+  }, [isInstallable, isLandingPage]);
 
   function handleDismiss() {
     localStorage.setItem(DISMISS_KEY, '1');
@@ -41,7 +44,7 @@ export default function PwaInstallModal() {
     }
   }
 
-  if (!isOpen) return null;
+  if (!isOpen || isLandingPage) return null;
 
   return (
     <div className={styles.backdrop} role="dialog" aria-modal="true" aria-labelledby="pwa-modal-title">

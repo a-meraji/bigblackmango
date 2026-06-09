@@ -1,0 +1,24 @@
+.strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-xs);
+}
+
+.item {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-heading);
+  line-height: 1.3;
+}
+
+@media (max-width: 360px) {
+  .item {
+    font-size: 0.625rem;
+  }
+}

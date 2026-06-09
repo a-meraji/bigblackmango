@@ -8,6 +8,8 @@ export interface BackendOrderSummary {
   paymentStatus?: string;
   subtotal: number;
   deliveryFee: number;
+  discountAmount?: number;
+  discountCode?: string | null;
   total: number;
   orderedAt: string;
   itemsPreview?: Array<{ foodName: string; quantity: number }>;
@@ -22,6 +24,8 @@ export interface BackendOrderDetail extends BackendOrderSummary {
     foodName: string;
     quantity: number;
     unitPrice: number;
+    originalUnitPrice?: number | null;
+    menuDiscountPercent?: number | null;
     lineTotal: number;
   }>;
   reviewPrompt?: { canReview: boolean; promptShown: boolean };
@@ -56,6 +60,8 @@ export function mapOrderSummary(raw: BackendOrderSummary): Order {
     pricing: {
       subtotal: raw.subtotal,
       deliveryFee: raw.deliveryFee,
+      discountAmount: raw.discountAmount ?? 0,
+      discountCode: raw.discountCode ?? null,
       total: raw.total,
     },
     reviewStatus: deriveReviewStatus(raw.status, false),

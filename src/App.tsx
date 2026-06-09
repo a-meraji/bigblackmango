@@ -1,38 +1,30 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './router';
+import { queryClient } from './query-client';
+import AuthReauthModal from '@components/auth-reauth-modal/AuthReauthModal';
 import { useAuthInit } from '@hooks/useAuthInit';
+import { useAuthQueryRecovery } from '@hooks/useAuthQueryRecovery';
+import { useAuthSessionRecovery } from '@hooks/useAuthSessionRecovery';
+import { useAuthStorageSync } from '@hooks/useAuthStorageSync';
+import { useProactiveTokenRefresh } from '@hooks/useProactiveTokenRefresh';
 import SkipLink from '@components/skip-link/SkipLink';
 import ToastContainer from '@components/toast/ToastContainer';
 import PwaInstallModal from '@components/pwa-install-modal/PwaInstallModal';
 import NotificationPermissionModal from '@components/notification-permission-modal/NotificationPermissionModal';
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: (failureCount, error) => {
-        const apiErr = error as { code?: string };
-        if (['UNAUTHORIZED', 'FORBIDDEN', 'NOT_FOUND'].includes(apiErr.code ?? '')) {
-          return false;
-        }
-        return failureCount < 2;
-      },
-      staleTime: 1000 * 60 * 2,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
-    },
-    mutations: {
-      retry: false,
-    },
-  },
-});
-
 function AppInner() {
   useAuthInit();
+  useAuthSessionRecovery();
+  useAuthStorageSync();
+  useProactiveTokenRefresh();
+  useAuthQueryRecovery();
+
   return (
     <>
       <SkipLink />
       <RouterProvider router={router} />
+      <AuthReauthModal />
       <ToastContainer />
       <PwaInstallModal />
       <NotificationPermissionModal />

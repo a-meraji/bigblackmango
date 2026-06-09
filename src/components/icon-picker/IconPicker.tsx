@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import RawLocalizedInput from '@components/input/RawLocalizedInput';
 import * as LucideIcons from 'lucide-react';
 import { Search, X } from 'lucide-react';
 import LucideIcon from '@components/lucide-icon/LucideIcon';
@@ -86,12 +87,12 @@ export default function IconPicker({ label = 'آیکون', value, onChange }: Pr
         <div className={styles.panel}>
           <div className={styles.searchRow}>
             <Search size={14} className={styles.searchIcon} />
-            <input
+            <RawLocalizedInput
               className={styles.searchInput}
               type="text"
               placeholder="جستجو در آیکون‌ها..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={setSearch}
               autoFocus
               dir="ltr"
             />

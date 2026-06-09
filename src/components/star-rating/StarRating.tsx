@@ -1,4 +1,5 @@
 import styles from './StarRating.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface StarRatingProps {
   average: number;
@@ -13,7 +14,7 @@ export default function StarRating({ average, count, size = 'md' }: StarRatingPr
       <span className={styles.star} aria-hidden="true">★</span>
       <span className={styles.average}>{formatted}</span>
       {count !== undefined && (
-        <span className={styles.count}>({count.toLocaleString('fa-IR')})</span>
+        <span className={styles.count}>({formatNumber(count)})</span>
       )}
     </div>
   );

@@ -5,7 +5,8 @@ import type { AdminPartyServiceHighlight } from '@t/admin-content';
 export interface PartyServiceHighlightPayload {
   servicePageId: string;
   title: string;
-  videoUrl: string;
+  mediaType: 'image' | 'video';
+  mediaUrl: string;
   thumbnailUrl?: string;
   sortOrder?: number;
   isActive: boolean;
@@ -15,7 +16,8 @@ type RawHighlight = {
   id: string;
   servicePageId: string;
   title: string;
-  videoUrl: string;
+  mediaType: 'image' | 'video';
+  mediaUrl: string;
   thumbnailUrl: string | null;
   sortOrder: number;
   isActive: boolean;
@@ -27,7 +29,8 @@ function mapHighlight(raw: RawHighlight): AdminPartyServiceHighlight {
     id: raw.id,
     servicePageId: raw.servicePageId,
     title: raw.title,
-    videoUrl: raw.videoUrl,
+    mediaType: raw.mediaType,
+    mediaUrl: raw.mediaUrl,
     thumbnailUrl: raw.thumbnailUrl,
     sortOrder: raw.sortOrder,
     isActive: raw.isActive,

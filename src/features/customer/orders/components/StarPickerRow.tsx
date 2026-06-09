@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './StarPickerRow.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface Props {
   foodName: string;
@@ -23,7 +24,7 @@ export default function StarPickerRow({ foodName, value, comment, onChange }: Pr
             onMouseEnter={() => setHover(star)}
             onMouseLeave={() => setHover(0)}
             onClick={() => onChange(star, comment)}
-            aria-label={`${star.toLocaleString('fa-IR')} ستاره`}
+            aria-label={`${formatNumber(star)} ستاره`}
           >
             ★
           </button>

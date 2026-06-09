@@ -31,7 +31,8 @@ export interface ServiceStat {
 export interface Highlight {
   id: string;
   title: string;
-  videoUrl: string;
+  mediaType: 'image' | 'video';
+  mediaUrl: string;
   thumbnailUrl: string | null;
 }
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCartStore } from '@store/cart.store';
 import { useAuthStore } from '@store/auth.store';
 import { validateCurrentCart } from '@features/customer/cart/cart-operations';
 import { submitCheckout } from '@api/checkout';
@@ -10,15 +11,18 @@ import CheckoutAuthGate from '@features/customer/checkout/components/CheckoutAut
 import StockConflictAlert from '@features/customer/checkout/components/StockConflictAlert';
 import { useToast } from '@hooks/useToast';
 import type { CheckoutPayload } from '@t/checkout';
+import type { DiscountValidationResult } from '@t/discount-code';
 import styles from './CheckoutPage.module.css';
 
 type Step = 'auth' | 'delivery' | 'submitting';
 
 export default function CheckoutPage() {
   const { isAuthenticated } = useAuthStore();
+  const cart = useCartStore((s) => s.cart);
   const navigate = useNavigate();
   const toast = useToast();
   const [step, setStep] = useState<Step>(() => (isAuthenticated ? 'delivery' : 'auth'));
+  const [appliedDiscount, setAppliedDiscount] = useState<DiscountValidationResult | null>(null);
   const [stockConflicts, setStockConflicts] = useState<
     Array<{ menuItemId: string; requestedQuantity: number; availableQuantity: number }>
   >([]);
@@ -45,6 +49,9 @@ export default function CheckoutPage() {
         setStockConflicts((err as { details: typeof stockConflicts }).details ?? []);
       } else if (apiErr.code === 'CHECKOUT_INVALID_STATE') {
         toast.error('سبد خرید نامعتبر است. لطفاً دوباره تلاش کنید.');
+      } else if (apiErr.code?.startsWith('DISCOUNT_CODE_')) {
+        toast.error(apiErr.message ?? 'کد تخفیف معتبر نیست.');
+        setAppliedDiscount(null);
       } else {
         toast.error(apiErr.message ?? 'خطا در ثبت سفارش. دوباره تلاش کنید.');
       }
@@ -70,7 +77,22 @@ export default function CheckoutPage() {
       )}
 
       {(step === 'delivery' || step === 'submitting') && isAuthenticated && (
-        <DeliveryForm onSubmit={handleDeliverySubmit} loading={step === 'submitting'} />
+        <DeliveryForm
+          onSubmit={handleDeliverySubmit}
+          loading={step === 'submitting'}
+          cartPricing={
+            cart
+              ? {
+                  subtotal: cart.subtotal,
+                  deliveryFee: cart.deliveryFee,
+                  total: cart.total,
+                }
+              : null
+          }
+          appliedDiscount={appliedDiscount}
+          onDiscountApplied={setAppliedDiscount}
+          onDiscountClear={() => setAppliedDiscount(null)}
+        />
       )}
     </PageShell>
   );

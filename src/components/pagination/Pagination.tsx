@@ -1,4 +1,5 @@
 import styles from './Pagination.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface PaginationProps {
   page: number;
@@ -22,7 +23,7 @@ export default function Pagination({ page, total, limit, onChange }: PaginationP
         قبلی
       </button>
       <span className={styles.info}>
-        {page.toLocaleString('fa-IR')} از {totalPages.toLocaleString('fa-IR')}
+        {formatNumber(page)} از {formatNumber(totalPages)}
       </span>
       <button
         type="button"

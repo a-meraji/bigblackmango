@@ -8,7 +8,7 @@ interface RequireAuthProps {
 }
 
 export default function RequireAuth({ children }: RequireAuthProps) {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const { isAuthenticated, isLoading, reauthOpen } = useAuthStore();
   const location = useLocation();
 
   if (isLoading) {
@@ -17,6 +17,10 @@ export default function RequireAuth({ children }: RequireAuthProps) {
         <Spinner size="lg" />
       </div>
     );
+  }
+
+  if (reauthOpen) {
+    return <>{children}</>;
   }
 
   if (!isAuthenticated) {

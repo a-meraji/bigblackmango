@@ -6,6 +6,7 @@ import { formatPrice } from '@utils/format-price';
 import Icon from '@components/icon/Icon';
 import { isFloatingCartBarHidden } from '@features/customer/cart/cart-bar-visibility';
 import styles from './FloatingCartBar.module.css';
+import { formatNumber } from '@utils/locale';
 
 /**
  * Visible to all users — guest cart is stored locally; signed-in users use the server cart.
@@ -38,7 +39,7 @@ export default function FloatingCartBar() {
       <button type="button" className={styles.btn} onClick={openCart} aria-label="مشاهده سبد خرید">
         <span className={styles.leading}>
           <Icon icon={ShoppingCart} size="sm" decorative />
-          <span className={styles.count}>{itemCount.toLocaleString('fa-IR')} مورد</span>
+          <span className={styles.count}>{formatNumber(itemCount)} مورد</span>
         </span>
         <span className={styles.label}>مشاهده سبد</span>
         <span

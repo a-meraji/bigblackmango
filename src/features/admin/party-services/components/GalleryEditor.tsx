@@ -1,7 +1,10 @@
 import { useRef, useState } from 'react';
 import Button from '@components/button/Button';
+import RawLocalizedInput from '@components/input/RawLocalizedInput';
+import { MediaLibraryModal } from '@components/media-picker';
 import { uploadImage } from '@api/uploads';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
+import type { MediaAsset } from '@t/media';
 import styles from './GalleryEditor.module.css';
 
 interface GalleryEditorProps {
@@ -13,6 +16,7 @@ export default function GalleryEditor({ gallery, onChange }: GalleryEditorProps)
   const fileRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
 
   function addUrl(url: string) {
     const trimmed = url.trim();
@@ -34,14 +38,21 @@ export default function GalleryEditor({ gallery, onChange }: GalleryEditorProps)
     }
   }
 
+  function handleLibrarySelect(asset: MediaAsset) {
+    if (asset.type === 'image') {
+      addUrl(asset.path);
+    }
+    setLibraryOpen(false);
+  }
+
   return (
     <div className={styles.editor}>
       <span className={styles.label}>گالری تصاویر</span>
       <div className={styles.inputRow}>
-        <input
+        <RawLocalizedInput
           className={styles.input}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={setInput}
           placeholder="URL تصویر"
           dir="ltr"
           onKeyDown={(e) => {
@@ -70,6 +81,14 @@ export default function GalleryEditor({ gallery, onChange }: GalleryEditorProps)
         >
           آپلود
         </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => setLibraryOpen(true)}
+        >
+          کتابخانه
+        </Button>
       </div>
       {gallery.length > 0 && (
         <div className={styles.grid}>
@@ -94,6 +113,13 @@ export default function GalleryEditor({ gallery, onChange }: GalleryEditorProps)
             );
           })}
         </div>
+      )}
+      {libraryOpen && (
+        <MediaLibraryModal
+          allowedTypes="image"
+          onSelect={handleLibrarySelect}
+          onClose={() => setLibraryOpen(false)}
+        />
       )}
     </div>
   );

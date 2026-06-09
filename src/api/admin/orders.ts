@@ -24,6 +24,8 @@ export interface AdminOrderListItem {
 export interface AdminOrderDetailView extends AdminOrderListItem {
   subtotal: number;
   deliveryFee: number;
+  discountAmount?: number;
+  discountCode?: string | null;
   contact: ReturnType<typeof parseContactSnapshot>;
   address: ReturnType<typeof parseAddressSnapshot>;
   items: Array<{
@@ -85,6 +87,8 @@ type RawOrderDetail = {
   paymentStatus: string;
   subtotal: number;
   deliveryFee: number;
+  discountAmount?: number;
+  discountCode?: string | null;
   total: number;
   orderedAt: string;
   lastStatusChangedAt: string;
@@ -128,6 +132,8 @@ function mapDetail(raw: RawOrderDetail): AdminOrderDetailView {
     })),
     subtotal: raw.subtotal,
     deliveryFee: raw.deliveryFee,
+    discountAmount: raw.discountAmount,
+    discountCode: raw.discountCode,
     contact,
     address: parseAddressSnapshot(raw.address),
     items: raw.items,

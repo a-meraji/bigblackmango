@@ -14,6 +14,7 @@ import {
 } from '@api/admin/testimonials';
 import type { AdminPartyServicePage, AdminServiceTestimonial } from '@t/admin-content';
 import { useToast } from '@hooks/useToast';
+import { shouldSuppressAuthToast } from '@utils/auth-errors';
 import TestimonialFormModal from './TestimonialFormModal';
 import styles from './TestimonialsManager.module.css';
 
@@ -75,16 +76,22 @@ export default function TestimonialsManager({ service, onClose }: Props) {
   }
 
   async function handleSave(payload: Partial<TestimonialPayload>) {
-    if (editing) {
-      const { servicePageId: _sid, ...updatePayload } = payload;
-      await adminUpdateTestimonial(editing.id, updatePayload);
-      toast.success('نظر بروزرسانی شد.');
-    } else {
-      await adminCreateTestimonial(payload as TestimonialPayload);
-      toast.success('نظر ثبت شد.');
+    try {
+      if (editing) {
+        const { servicePageId: _sid, ...updatePayload } = payload;
+        await adminUpdateTestimonial(editing.id, updatePayload);
+        toast.success('نظر بروزرسانی شد.');
+      } else {
+        await adminCreateTestimonial(payload as TestimonialPayload);
+        toast.success('نظر ثبت شد.');
+      }
+      qc.invalidateQueries({ queryKey: ['admin', 'testimonials', service.id] });
+      setShowForm(false);
+    } catch (err) {
+      if (shouldSuppressAuthToast(err)) return;
+      toast.error('خطا در ذخیره نظر.');
+      throw err;
     }
-    qc.invalidateQueries({ queryKey: ['admin', 'testimonials', service.id] });
-    setShowForm(false);
   }
 
   return (

@@ -15,6 +15,8 @@ export interface OrderAddress {
 export interface OrderPricing {
   subtotal: number;
   deliveryFee: number;
+  discountAmount?: number;
+  discountCode?: string | null;
   total: number;
 }
 
@@ -24,6 +26,8 @@ export interface OrderItemLine {
   foodName: string;
   quantity: number;
   unitPrice: number;
+  originalUnitPrice?: number | null;
+  menuDiscountPercent?: number | null;
   lineTotal: number;
 }
 

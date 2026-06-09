@@ -15,6 +15,7 @@ import AdminReplyCell from '@features/admin/reviews/components/AdminReplyCell';
 import { toJalali } from '@utils/format-date';
 import { useToast } from '@hooks/useToast';
 import styles from './ReviewsPage.module.css';
+import { formatNumber, formatDigits } from '@utils/locale';
 
 type ReviewsQueryData = { items: AdminReview[]; meta: { page: number; limit: number; total: number } };
 
@@ -87,7 +88,7 @@ export default function ReviewsPage() {
       label: 'مشتری',
       render: (r) => (
         <span dir="ltr" className={styles.userMobile}>
-          {r.userMobile}
+          {formatDigits(r.userMobile)}
         </span>
       ),
     },
@@ -97,7 +98,7 @@ export default function ReviewsPage() {
       width: '100px',
       render: (r) => (
         <span dir="ltr" className={styles.tracking}>
-          {r.orderTrackingCode}
+          {formatDigits(r.orderTrackingCode)}
         </span>
       ),
     },
@@ -155,7 +156,7 @@ export default function ReviewsPage() {
 
       {lowRatingCount > 0 && (
         <div className={styles.lowRatingAlert} role="alert">
-          {lowRatingCount.toLocaleString('fa-IR')} نظر با امتیاز پایین (۱ یا ۲ ستاره) در
+          {formatNumber(lowRatingCount)} نظر با امتیاز پایین (۱ یا ۲ ستاره) در
           این صفحه نیاز به بررسی دارد.
         </div>
       )}

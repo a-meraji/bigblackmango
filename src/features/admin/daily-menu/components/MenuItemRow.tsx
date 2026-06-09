@@ -2,22 +2,42 @@ import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Trash2, Star } from 'lucide-react';
 import type { AdminDailyMenuItem } from '@t/admin-catalog';
-import { formatPrice } from '@utils/format-price';
+import PriceWithDiscount from '@components/price-with-discount/PriceWithDiscount';
+import { useLocalizedDigits } from '@hooks/useLocalizedDigits';
+import { formatNumber } from '@utils/locale';
 import styles from './MenuItemRow.module.css';
 
 interface MenuItemRowProps {
   item: AdminDailyMenuItem;
+  selected: boolean;
+  onSelectToggle: (checked: boolean) => void;
   onStockChange: (stock: number) => void;
+  onDiscountChange: (discountPercent: number | null) => void;
   onStoryToggle: (value: boolean) => void;
   onRemove: () => void;
 }
 
-export default function MenuItemRow({ item, onStockChange, onStoryToggle, onRemove }: MenuItemRowProps) {
+export default function MenuItemRow({
+  item,
+  selected,
+  onSelectToggle,
+  onStockChange,
+  onDiscountChange,
+  onStoryToggle,
+  onRemove,
+}: MenuItemRowProps) {
   const [stockInput, setStockInput] = useState(String(item.stock));
+  const [discountInput, setDiscountInput] = useState(
+    item.discountPercent != null ? String(item.discountPercent) : '',
+  );
 
   useEffect(() => {
     setStockInput(String(item.stock));
   }, [item.stock]);
+
+  useEffect(() => {
+    setDiscountInput(item.discountPercent != null ? String(item.discountPercent) : '');
+  }, [item.discountPercent]);
 
   function handleStockBlur() {
     const n = Number(stockInput);
@@ -28,21 +48,74 @@ export default function MenuItemRow({ item, onStockChange, onStoryToggle, onRemo
     }
   }
 
+  function handleDiscountBlur() {
+    const trimmed = discountInput.trim();
+    if (!trimmed) {
+      if (item.discountPercent != null) {
+        onDiscountChange(null);
+      }
+      return;
+    }
+
+    const n = Number(trimmed);
+    if (Number.isNaN(n) || n < 1 || n > 100) {
+      setDiscountInput(item.discountPercent != null ? String(item.discountPercent) : '');
+      return;
+    }
+
+    if (n !== item.discountPercent) {
+      onDiscountChange(n);
+    }
+  }
+
+  const stockProps = useLocalizedDigits(stockInput, setStockInput, {
+    type: 'number',
+    dir: 'ltr',
+  });
+
+  const discountProps = useLocalizedDigits(discountInput, setDiscountInput, {
+    type: 'number',
+    dir: 'ltr',
+  });
+
   const stockTone =
     item.stock === 0 ? styles.stockDanger : item.stock <= 5 ? styles.stockWarning : undefined;
+  const hasDiscount = item.discountPercent != null && item.discountPercent > 0;
 
   return (
-    <li className={styles.row}>
-      {/* Name + meta */}
-      <div className={styles.info}>
-        <span className={styles.name}>{item.food.name}</span>
-        <span className={styles.category}>{item.food.category.name}</span>
-        <span className={styles.price} dir="ltr">{formatPrice(item.food.price)}</span>
+    <li className={clsx(styles.row, hasDiscount && styles.discountedRow)}>
+      <div className={styles.topRow}>
+        <label className={styles.selectWrap}>
+          <input
+            type="checkbox"
+            className={styles.checkbox}
+            checked={selected}
+            onChange={(e) => onSelectToggle(e.target.checked)}
+            aria-label={`انتخاب ${item.food.name}`}
+          />
+        </label>
+
+        <div className={styles.info}>
+          <div className={styles.nameRow}>
+            <span className={styles.name}>{item.food.name}</span>
+            {hasDiscount && (
+              <span className={styles.discountPill} dir="ltr">
+                تخفیف {formatNumber(item.discountPercent!)}٪
+              </span>
+            )}
+          </div>
+          <span className={styles.category}>{item.food.category.name}</span>
+          <PriceWithDiscount
+            originalPrice={item.food.price}
+            salePrice={item.salePrice}
+            discountPercent={item.discountPercent}
+            size="sm"
+            showBadge={false}
+          />
+        </div>
       </div>
 
-      {/* Controls row */}
       <div className={styles.controls}>
-        {/* Stock */}
         <div className={styles.stockGroup}>
           <label className={styles.stockLabel} htmlFor={`stock-${item.id}`}>
             موجودی
@@ -50,13 +123,9 @@ export default function MenuItemRow({ item, onStockChange, onStoryToggle, onRemo
           <div className={styles.stockRow}>
             <input
               id={`stock-${item.id}`}
-              type="number"
-              min={0}
               className={clsx(styles.stockInput, stockTone)}
-              value={stockInput}
-              onChange={(e) => setStockInput(e.target.value)}
               onBlur={handleStockBlur}
-              dir="ltr"
+              {...stockProps}
             />
             {item.stock <= 5 && (
               <span className={clsx(styles.stockBadge, stockTone)}>
@@ -66,7 +135,19 @@ export default function MenuItemRow({ item, onStockChange, onStoryToggle, onRemo
           </div>
         </div>
 
-        {/* Actions */}
+        <div className={styles.discountGroup}>
+          <label className={styles.stockLabel} htmlFor={`discount-${item.id}`}>
+            تخفیف %
+          </label>
+          <input
+            id={`discount-${item.id}`}
+            className={styles.discountInput}
+            placeholder="—"
+            onBlur={handleDiscountBlur}
+            {...discountProps}
+          />
+        </div>
+
         <div className={styles.actions}>
           <button
             type="button"

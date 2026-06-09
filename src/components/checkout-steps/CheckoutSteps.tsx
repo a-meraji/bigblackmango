@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import styles from './CheckoutSteps.module.css';
+import { formatNumber } from '@utils/locale';
 
 export type CheckoutStepId = 'auth' | 'delivery' | 'payment';
 
@@ -32,7 +33,7 @@ export default function CheckoutSteps({ current, skipAuth }: Props) {
               className={clsx(styles.item, isActive && styles.active, isDone && styles.done)}
               aria-current={isActive ? 'step' : undefined}
             >
-              <span className={styles.dot}>{(index + 1).toLocaleString('fa-IR')}</span>
+              <span className={styles.dot}>{formatNumber((index + 1))}</span>
               <span className={styles.label}>{step.label}</span>
             </li>
           );

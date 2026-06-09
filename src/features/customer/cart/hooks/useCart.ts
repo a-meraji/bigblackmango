@@ -4,8 +4,7 @@ import {
   hydrateCartFromSource,
   validateCurrentCart,
 } from '@features/customer/cart/cart-operations';
-import { mapGuestCartToCart } from '@features/customer/cart/guest-cart.mapper';
-import { loadGuestCart } from '@features/customer/cart/guest-cart.storage';
+import { reconcileGuestCartPrices } from '@features/customer/cart/guest-cart-price-sync';
 import { useAuthStore } from '@store/auth.store';
 import { useCartStore } from '@store/cart.store';
 import { issuesFromValidationChanges } from '@utils/cart-item-issues';
@@ -35,7 +34,21 @@ export function useCart() {
       return;
     }
 
-    syncCart(mapGuestCartToCart(loadGuestCart()));
+    let cancelled = false;
+
+    reconcileGuestCartPrices()
+      .then((cart) => {
+        if (!cancelled) {
+          syncCart(cart);
+        }
+      })
+      .catch(() => {
+        /* non-fatal */
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [isOpen, isAuthenticated, syncCart]);
 
   useEffect(() => {

@@ -1,10 +1,11 @@
 import { Loader2, Plus, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { DailyMenuItem } from '@t/food';
-import { formatPrice } from '@utils/format-price';
+import PriceWithDiscount from '@components/price-with-discount/PriceWithDiscount';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
 import type { GuestCartItemInput } from '@features/customer/cart/guest-cart.types';
 import styles from './FoodCard.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface FoodCardProps {
   item: DailyMenuItem;
@@ -19,11 +20,14 @@ export default function FoodCard({ item, onAddToCart, addingId }: FoodCardProps)
   const isOutOfStock = stock === 0;
   const isLowStock = stock > 0 && stock <= LOW_STOCK_THRESHOLD;
   const isAdding = addingId === menuItemId;
+  const salePrice = item.salePrice ?? food.price;
+  const hasMenuDiscount =
+    item.discountPercent != null && item.discountPercent > 0 && salePrice < food.price;
 
   return (
     <article
       className={`${styles.card} ${isOutOfStock ? styles.outOfStock : ''}`}
-      aria-label={`${food.name}، ${formatPrice(food.price)}`}
+      aria-label={`${food.name}، ${hasMenuDiscount ? 'با تخفیف' : ''}`}
     >
       <Link to={`/foods/${food.id}`} className={styles.imageWrap} tabIndex={-1} aria-hidden>
         {food.imageUrl ? (
@@ -35,6 +39,11 @@ export default function FoodCard({ item, onAddToCart, addingId }: FoodCardProps)
           />
         ) : (
           <div className={styles.imagePlaceholder} />
+        )}
+        {hasMenuDiscount && (
+          <span className={styles.discountBadge} dir="ltr">
+            −{formatNumber(item.discountPercent!)}٪
+          </span>
         )}
       </Link>
 
@@ -58,10 +67,16 @@ export default function FoodCard({ item, onAddToCart, addingId }: FoodCardProps)
             {isOutOfStock && <span className={styles.stockLabel}>تمام شد</span>}
             {isLowStock && (
               <span className={styles.stockLabel}>
-                فقط {stock.toLocaleString('fa-IR')} عدد
+                فقط {formatNumber(stock)} عدد
               </span>
             )}
-            <span className={styles.price}>{formatPrice(food.price)}</span>
+            <PriceWithDiscount
+              originalPrice={food.price}
+              salePrice={salePrice}
+              discountPercent={item.discountPercent}
+              size="sm"
+              showBadge={false}
+            />
           </div>
 
           <button
@@ -71,7 +86,9 @@ export default function FoodCard({ item, onAddToCart, addingId }: FoodCardProps)
             onClick={() =>
               onAddToCart({
                 menuItemId,
-                unitPrice: food.price,
+                unitPrice: salePrice,
+                originalUnitPrice: hasMenuDiscount ? food.price : undefined,
+                menuDiscountPercent: hasMenuDiscount ? item.discountPercent : undefined,
                 food: { id: food.id, name: food.name, thumbnailUrl: food.imageUrl },
               })
             }

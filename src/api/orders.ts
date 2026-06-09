@@ -51,11 +51,19 @@ export interface OrderReceipt {
     foodName: string;
     quantity: number;
     unitPrice: number;
+    originalUnitPrice?: number | null;
+    menuDiscountPercent?: number | null;
     lineTotal: number;
   }>;
   total: number;
   address: string;
-  pricing: { subtotal: number; deliveryFee: number; total: number };
+  pricing: {
+    subtotal: number;
+    deliveryFee: number;
+    discountAmount?: number;
+    discountCode?: string | null;
+    total: number;
+  };
 }
 
 export async function getOrderReceipt(orderId: string): Promise<OrderReceipt> {

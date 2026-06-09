@@ -3,6 +3,7 @@ import { ClipboardList, ShoppingCart, UtensilsCrossed, User } from 'lucide-react
 import { useAuthStore } from '@store/auth.store';
 import { useCartStore } from '@store/cart.store';
 import styles from './BottomNav.module.css';
+import { formatNumber } from '@utils/locale';
 
 export default function BottomNav() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -24,7 +25,7 @@ export default function BottomNav() {
         onClick={openCart}
         aria-label={
           itemCount > 0
-            ? `سبد خرید — ${itemCount.toLocaleString('fa-IR')} مورد`
+            ? `سبد خرید — ${formatNumber(itemCount)} مورد`
             : 'سبد خرید'
         }
       >
@@ -32,7 +33,7 @@ export default function BottomNav() {
           <ShoppingCart size={20} strokeWidth={1.75} aria-hidden />
           {itemCount > 0 && (
             <span className={styles.badge} aria-hidden="true">
-              {itemCount > 9 ? '۹+' : itemCount.toLocaleString('fa-IR')}
+              {itemCount > 9 ? '۹+' : formatNumber(itemCount)}
             </span>
           )}
         </span>

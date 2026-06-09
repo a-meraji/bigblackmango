@@ -1,0 +1,35 @@
+.section {
+  padding: 1.5rem;
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  margin: 0 0 0.375rem;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0 0 1rem;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.link {
+  font-size: 0.8125rem;
+  color: var(--color-primary);
+  text-decoration: underline;
+}

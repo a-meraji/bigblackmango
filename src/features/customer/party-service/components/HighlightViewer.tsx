@@ -12,6 +12,8 @@ interface HighlightViewerProps {
   onClose: () => void;
 }
 
+const IMAGE_DURATION_MS = 5000;
+
 export default function HighlightViewer({
   highlights,
   initialIndex,
@@ -24,6 +26,7 @@ export default function HighlightViewer({
   const [index, setIndex] = useState(initialIndex);
   const [progress, setProgress] = useState(0);
   const highlight = highlights[index];
+  const isVideo = highlight?.mediaType === 'video';
 
   const goNext = useCallback(() => {
     if (index < highlights.length - 1) {
@@ -41,14 +44,38 @@ export default function HighlightViewer({
     }
   }, [index]);
 
+  // Image auto-advance timer
+  useEffect(() => {
+    if (!highlight || isVideo) return;
+
+    setProgress(0);
+    const startTime = performance.now();
+    let raf: number;
+
+    function tick(now: number) {
+      const elapsed = now - startTime;
+      const pct = Math.min((elapsed / IMAGE_DURATION_MS) * 100, 100);
+      setProgress(pct);
+      if (pct < 100) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        goNext();
+      }
+    }
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [index, goNext, highlight, isVideo]);
+
   // Reset and play video when index changes
   useEffect(() => {
+    if (!isVideo) return;
     setProgress(0);
     const video = videoRef.current;
     if (!video) return;
     video.load();
     video.play().catch(() => {});
-  }, [index]);
+  }, [index, isVideo]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -86,7 +113,6 @@ export default function HighlightViewer({
       aria-modal="true"
       aria-label={`هایلایت: ${highlight.title}`}
     >
-      {/* Progress bar */}
       <div className={styles.progressRow} aria-hidden="true">
         {highlights.map((_, i) => (
           <div key={i} className={styles.progressTrack}>
@@ -101,7 +127,6 @@ export default function HighlightViewer({
         ))}
       </div>
 
-      {/* Header */}
       <div className={styles.header}>
         <span className={styles.highlightTitle}>{highlight.title}</span>
         <IconButton
@@ -113,18 +138,25 @@ export default function HighlightViewer({
         />
       </div>
 
-      {/* Video */}
       <div className={styles.media}>
-        <video
-          ref={videoRef}
-          key={highlight.id}
-          src={resolveMediaUrl(highlight.videoUrl)}
-          className={styles.video}
-          autoPlay
-          playsInline
-          onTimeUpdate={handleTimeUpdate}
-          onEnded={goNext}
-        />
+        {isVideo ? (
+          <video
+            ref={videoRef}
+            key={highlight.id}
+            src={resolveMediaUrl(highlight.mediaUrl)}
+            className={styles.video}
+            autoPlay
+            playsInline
+            onTimeUpdate={handleTimeUpdate}
+            onEnded={goNext}
+          />
+        ) : (
+          <img
+            src={resolveMediaUrl(highlight.mediaUrl)}
+            alt={highlight.title}
+            className={styles.video}
+          />
+        )}
         <div className={styles.tapZones}>
           <button
             type="button"

@@ -17,6 +17,7 @@ import Skeleton from '@components/skeleton/Skeleton';
 import Input from '@components/input/Input';
 import Button from '@components/button/Button';
 import { useToast } from '@hooks/useToast';
+import { formatDigits } from '@utils/locale';
 import styles from './ProfilePage.module.css';
 
 type AddressFormState = {
@@ -153,11 +154,13 @@ export default function ProfilePage() {
     createAddressMutation.isPending || updateAddressMutation.isPending;
 
   async function handleLogout() {
+    // Leave the protected route before clearing auth — otherwise RequireAuth
+    // redirects to /auth/otp before navigate('/') can run.
+    navigate('/', { replace: true });
     try {
       await logout();
     } finally {
       clearUser();
-      navigate('/');
     }
   }
 
@@ -241,7 +244,7 @@ export default function ProfilePage() {
         <div className={styles.metaRow}>
           <Phone size={15} aria-hidden />
           <span className={styles.metaLabel}>موبایل:</span>
-          <span dir="ltr">{profile?.mobile}</span>
+          <span dir="ltr">{profile?.mobile ? formatDigits(profile.mobile) : '—'}</span>
         </div>
       </section>
 

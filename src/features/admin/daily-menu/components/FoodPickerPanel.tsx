@@ -5,6 +5,8 @@ import { adminGetFoods } from '@api/admin/foods';
 import { adminGetCategories } from '@api/admin/categories';
 import FoodPickerCard from './FoodPickerCard';
 import Skeleton from '@components/skeleton/Skeleton';
+import RawLocalizedInput from '@components/input/RawLocalizedInput';
+import { formatNumber } from '@utils/locale';
 import styles from './FoodPickerPanel.module.css';
 
 const ALL = '__all__';
@@ -56,12 +58,12 @@ export default function FoodPickerPanel({
       <div className={styles.controls}>
         <div className={styles.searchWrapper}>
           <Search size={17} className={styles.searchIcon} aria-hidden="true" />
-          <input
+          <RawLocalizedInput
             type="search"
             placeholder="جستجوی نام غذا..."
             className={styles.searchInput}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={setSearch}
             aria-label="جستجوی غذا"
           />
           {search && (
@@ -118,7 +120,7 @@ export default function FoodPickerPanel({
           <>
             {isFetching && !isLoading && <div className={styles.fetchingBar} aria-hidden="true" />}
             <div className={styles.resultsCount} aria-live="polite">
-              {foods.length.toLocaleString('fa-IR')} غذا
+              {formatNumber(foods.length)} غذا
             </div>
             <div className={styles.grid}>
               {foods.map((food) => (

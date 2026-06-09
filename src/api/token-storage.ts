@@ -5,8 +5,14 @@
 // same-origin frontend keeps working with HttpOnly cookies; the header is the
 // cross-origin fallback.
 
-const ACCESS_TOKEN_KEY = 'bm_access_token';
-const REFRESH_TOKEN_KEY = 'bm_refresh_token';
+export const ACCESS_TOKEN_KEY = 'bm_access_token';
+export const REFRESH_TOKEN_KEY = 'bm_refresh_token';
+
+export const AUTH_STORAGE_KEYS = [ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY] as const;
+
+export function hasStoredTokens(): boolean {
+  return !!(getAccessToken() || getRefreshToken());
+}
 
 function read(key: string): string | null {
   try {

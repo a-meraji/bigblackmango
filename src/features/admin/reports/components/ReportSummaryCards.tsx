@@ -1,5 +1,6 @@
 import { formatPrice } from '@utils/format-price';
 import styles from './ReportSummaryCards.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface ReportSummaryCardsProps {
   summary: { totalOrders: number; totalSales: number };
@@ -10,7 +11,7 @@ export default function ReportSummaryCards({ summary }: ReportSummaryCardsProps)
     <div className={styles.cards}>
       <article className={styles.card}>
         <span className={styles.label}>تعداد سفارش</span>
-        <span className={styles.value}>{summary.totalOrders.toLocaleString('fa-IR')}</span>
+        <span className={styles.value}>{formatNumber(summary.totalOrders)}</span>
       </article>
       <article className={styles.card}>
         <span className={styles.label}>مجموع فروش</span>

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Skeleton from '@components/skeleton/Skeleton';
 import Icon from '@components/icon/Icon';
 import styles from './KpiCard.module.css';
+import { formatNumber } from '@utils/locale';
 
 type KpiVariant = 'default' | 'warning' | 'success' | 'danger';
 
@@ -16,7 +17,7 @@ interface KpiCardProps {
 }
 
 function formatValue(value: number | string): string {
-  if (typeof value === 'number') return value.toLocaleString('fa-IR');
+  if (typeof value === 'number') return formatNumber(value);
   return value;
 }
 

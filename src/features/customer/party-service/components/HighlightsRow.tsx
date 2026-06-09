@@ -10,13 +10,18 @@ interface AvatarProps {
 }
 
 function HighlightAvatar({ highlight }: AvatarProps) {
+  const isImage = highlight.mediaType === 'image';
   const videoFrame = useVideoThumbnail(
-    highlight.thumbnailUrl ? undefined : resolveMediaUrl(highlight.videoUrl),
+    !isImage && !highlight.thumbnailUrl
+      ? resolveMediaUrl(highlight.mediaUrl)
+      : undefined,
   );
 
   const imgSrc = highlight.thumbnailUrl
     ? resolveMediaUrl(highlight.thumbnailUrl)
-    : videoFrame ?? undefined;
+    : isImage
+      ? resolveMediaUrl(highlight.mediaUrl)
+      : videoFrame ?? undefined;
 
   if (imgSrc) {
     return (
@@ -34,7 +39,11 @@ function HighlightAvatar({ highlight }: AvatarProps) {
   return (
     <div className={styles.avatarPlaceholder} aria-hidden="true">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M8 5v14l11-7z" />
+        {isImage ? (
+          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+        ) : (
+          <path d="M8 5v14l11-7z" />
+        )}
       </svg>
     </div>
   );

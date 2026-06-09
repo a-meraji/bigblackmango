@@ -1,5 +1,6 @@
 import CustomSelect from '@components/custom-select/CustomSelect';
 import styles from './MetricSelector.module.css';
+import { formatNumber } from '@utils/locale';
 
 interface CompareLimitSelectorProps {
   value: number;
@@ -17,7 +18,7 @@ export default function CompareLimitSelector({ value, onChange }: CompareLimitSe
         onChange={(v) => onChange(Number(v))}
         aria-label="تعداد غذاهای برتر"
         size="sm"
-        options={LIMITS.map((n) => ({ value: String(n), label: `${n.toLocaleString('fa-IR')} مورد` }))}
+        options={LIMITS.map((n) => ({ value: String(n), label: `${formatNumber(n)} مورد` }))}
       />
     </div>
   );

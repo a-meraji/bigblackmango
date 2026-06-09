@@ -35,6 +35,8 @@ export interface FoodTodayAvailability {
   menuItemId: string | null;
   stock: number;
   isAvailable: boolean;
+  discountPercent?: number | null;
+  salePrice?: number;
 }
 
 export interface DailyMenuItemCategory {
@@ -46,6 +48,8 @@ export interface DailyMenuItemCategory {
 export interface DailyMenuItem {
   menuItemId: string;
   stock: number;
+  discountPercent?: number | null;
+  salePrice?: number;
   food: PublicFoodSummary;
   category: DailyMenuItemCategory;
 }

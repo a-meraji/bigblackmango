@@ -39,12 +39,16 @@ export async function addItemToCart(input: GuestCartItemInput, quantity = 1): Pr
   if (existing) {
     existing.quantity += quantity;
     existing.unitPrice = input.unitPrice;
+    existing.originalUnitPrice = input.originalUnitPrice;
+    existing.menuDiscountPercent = input.menuDiscountPercent;
     existing.food = input.food;
   } else {
     storage.items.push({
       menuItemId: input.menuItemId,
       quantity,
       unitPrice: input.unitPrice,
+      originalUnitPrice: input.originalUnitPrice,
+      menuDiscountPercent: input.menuDiscountPercent,
       food: input.food,
     });
   }

@@ -17,6 +17,7 @@ import OrderStatusConfirmModal, {
   type OrderStatusConfirmPayload,
 } from '@features/admin/orders/components/OrderStatusConfirmModal';
 import { formatPrice } from '@utils/format-price';
+import { formatDigits } from '@utils/locale';
 import { toJalaliWithTime } from '@utils/format-date';
 import type { OrderStatus } from '@t/order';
 import { useToast } from '@hooks/useToast';
@@ -84,7 +85,7 @@ export default function OrdersPage() {
           onClick={() => setSelectedOrderId(o.id)}
           dir="ltr"
         >
-          {o.trackingCode}
+          {formatDigits(o.trackingCode)}
         </button>
       ),
     },
@@ -111,7 +112,7 @@ export default function OrdersPage() {
           <span>{o.customer.fullName}</span>
           {o.customer.mobile && (
             <span className={styles.customerMobile} dir="ltr">
-              {o.customer.mobile}
+              {formatDigits(o.customer.mobile)}
             </span>
           )}
         </div>

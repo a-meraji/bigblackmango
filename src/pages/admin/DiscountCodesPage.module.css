@@ -1,0 +1,55 @@
+.filters {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.filterTabs {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.filterTab,
+.filterTabActive {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  border: var(--border-subtle);
+  background: var(--bg-surface);
+  font-size: var(--text-size-sm);
+  cursor: pointer;
+}
+
+.filterTabActive {
+  border-color: var(--brand-primary);
+  background: var(--brand-primary-subtle);
+  color: var(--brand-primary);
+}
+
+.codeCell {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.statusBadge {
+  display: inline-flex;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-size-xs);
+  font-weight: 600;
+}
+
+.status_active {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.status_inactive {
+  background: var(--bg-surface-sunken);
+  color: var(--text-secondary);
+}
+
+.status_expired {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}

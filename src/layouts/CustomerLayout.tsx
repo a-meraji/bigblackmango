@@ -6,23 +6,29 @@ import BottomNav from '@layouts/BottomNav';
 import { ErrorBoundary } from '@components/error-boundary/ErrorBoundary';
 import { useCartAuthSync } from '@hooks/useCartAuthSync';
 import { useCartInit } from '@hooks/useCartInit';
+import { useIsLandingPage } from '@hooks/useIsLandingPage';
 import styles from './CustomerLayout.module.css';
 
 export default function CustomerLayout() {
   useCartInit();
   useCartAuthSync();
+  const isLandingPage = useIsLandingPage();
 
   return (
     <div className={styles.wrapper}>
-      <TopNav />
+      <TopNav landingMode={isLandingPage} />
       <main id="main-content" className={styles.main}>
         <ErrorBoundary>
           <Outlet />
         </ErrorBoundary>
       </main>
-      <FloatingCartBar />
-      <CartModal />
-      <BottomNav />
+      {!isLandingPage && (
+        <>
+          <FloatingCartBar />
+          <CartModal />
+          <BottomNav />
+        </>
+      )}
     </div>
   );
 }

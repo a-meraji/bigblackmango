@@ -80,7 +80,8 @@ function mapPartyServicePage(raw: Record<string, unknown>): PartyServicePage {
       .map((h) => ({
         id: String(h.id ?? ''),
         title: String(h.title ?? ''),
-        videoUrl: String(h.videoUrl ?? ''),
+        mediaType: h.mediaType === 'video' ? 'video' as const : 'image' as const,
+        mediaUrl: String(h.mediaUrl ?? h.videoUrl ?? ''),
         thumbnailUrl: typeof h.thumbnailUrl === 'string' ? h.thumbnailUrl : null,
       })),
   };

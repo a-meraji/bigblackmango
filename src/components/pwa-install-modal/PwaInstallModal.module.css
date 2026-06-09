@@ -129,7 +129,7 @@
   width: 100%;
   padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
   background: var(--yellow-400, #f8b02b);
-  color: var(--charcoal-700, #222);
+  color: #ffffff;
   font-family: inherit;
   font-size: var(--text-base, 1rem);
   font-weight: 700;
@@ -138,9 +138,26 @@
   cursor: pointer;
   transition: background 160ms ease, transform 100ms ease;
 }
-.installBtn:hover  { background: var(--yellow-500, #e0931a); }
-.installBtn:active { transform: scale(0.98); }
-.installBtn:disabled { opacity: 0.7; cursor: not-allowed; }
+.installBtn svg {
+  color: #ffffff;
+  stroke: currentColor;
+}
+
+.installBtn:hover {
+  background: var(--yellow-500, #e0931a);
+  color: #ffffff;
+}
+
+.installBtn:active {
+  transform: scale(0.98);
+  color: #ffffff;
+}
+
+.installBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  color: #ffffff;
+}
 
 .dismissText {
   background: none;

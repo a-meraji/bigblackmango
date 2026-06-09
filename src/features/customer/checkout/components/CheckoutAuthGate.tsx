@@ -5,6 +5,7 @@ import { mergeLocalCartAfterAuth } from '@features/customer/cart/cart-operations
 import { useAuthStore } from '@store/auth.store';
 import { useCartStore } from '@store/cart.store';
 import Input from '@components/input/Input';
+import { formatDigits } from '@utils/locale';
 import Button from '@components/button/Button';
 import { isValidIranianMobile } from '@utils/validators';
 import styles from './CheckoutAuthGate.module.css';
@@ -106,7 +107,7 @@ export default function CheckoutAuthGate({ onSuccess, onBack }: Props) {
       {phase === 'otp' && (
         <>
           <p className={styles.info}>
-            کد ارسال‌شده به <strong dir="ltr">{mobile.trim()}</strong> را وارد کنید.
+            کد ارسال‌شده به <strong dir="ltr">{formatDigits(mobile.trim())}</strong> را وارد کنید.
           </p>
           <form onSubmit={verifyCode} className={styles.form} noValidate>
             <Input
@@ -115,7 +116,8 @@ export default function CheckoutAuthGate({ onSuccess, onBack }: Props) {
               inputMode="numeric"
               maxLength={6}
               value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+              onChange={(e) => setCode(e.target.value)}
+              digitsOnly
               error={error}
               ref={codeRef}
               dir="ltr"

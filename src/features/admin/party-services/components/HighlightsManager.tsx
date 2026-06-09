@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Video, Plus, Eye, EyeOff, Pencil, Trash2 } from 'lucide-react';
+import { Video, Image, Plus, Eye, EyeOff, Pencil, Trash2 } from 'lucide-react';
 import clsx from 'clsx';
 import Modal from '@components/modal/Modal';
 import EmptyState from '@components/empty-state/EmptyState';
 import Spinner from '@components/spinner/Spinner';
 import {
   adminListHighlights,
-  adminCreateHighlight,
   adminUpdateHighlight,
   adminDeleteHighlight,
-  type PartyServiceHighlightPayload,
 } from '@api/admin/party-service-highlights';
 import type { AdminPartyServicePage, AdminPartyServiceHighlight } from '@t/admin-content';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
@@ -65,19 +63,6 @@ export default function HighlightsManager({ service, onClose }: HighlightsManage
     deleteMutation.mutate(h.id);
   }
 
-  async function handleSave(payload: Partial<PartyServiceHighlightPayload>) {
-    if (editingHighlight) {
-      const { servicePageId: _sid, ...updatePayload } = payload;
-      await adminUpdateHighlight(editingHighlight.id, updatePayload);
-      toast.success('هایلایت بروزرسانی شد.');
-    } else {
-      await adminCreateHighlight(payload as PartyServiceHighlightPayload);
-      toast.success('هایلایت ایجاد شد.');
-    }
-    qc.invalidateQueries({ queryKey: ['admin', 'highlights', service.id] });
-    setShowForm(false);
-  }
-
   return (
     <>
       <Modal isOpen onClose={onClose} title={`هایلایت‌های «${service.title}»`} size="lg">
@@ -107,14 +92,16 @@ export default function HighlightsManager({ service, onClose }: HighlightsManage
           ) : (
             <ul className={styles.list}>
               {highlights.map((h) => {
-                const thumb = resolveMediaUrl(h.thumbnailUrl ?? '');
+                const thumb = resolveMediaUrl(
+                  h.thumbnailUrl ?? (h.mediaType === 'image' ? h.mediaUrl : ''),
+                );
                 return (
                   <li key={h.id} className={clsx(styles.item, !h.isActive && styles.itemDim)}>
                     {thumb ? (
                       <img src={thumb} alt="" className={styles.thumb} loading="lazy" />
                     ) : (
                       <div className={styles.thumbPlaceholder}>
-                        <Video size={15} />
+                        {h.mediaType === 'image' ? <Image size={15} /> : <Video size={15} />}
                       </div>
                     )}
 
@@ -163,7 +150,6 @@ export default function HighlightsManager({ service, onClose }: HighlightsManage
           servicePageId={service.id}
           initial={editingHighlight}
           onClose={() => setShowForm(false)}
-          onSave={handleSave}
         />
       )}
     </>

@@ -8,10 +8,8 @@ import EmptyState from '@components/empty-state/EmptyState';
 import Spinner from '@components/spinner/Spinner';
 import {
   adminListServiceItems,
-  adminCreateServiceItem,
   adminUpdateServiceItem,
   adminDeleteServiceItem,
-  type ServiceItemPayload,
 } from '@api/admin/service-items';
 import type { AdminPartyServicePage, AdminServiceItem } from '@t/admin-content';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
@@ -64,24 +62,6 @@ export default function ServiceItemsManager({ service, onClose }: Props) {
   function handleDelete(item: AdminServiceItem) {
     if (!window.confirm(`حذف خدمت «${item.title}»؟`)) return;
     deleteMutation.mutate(item.id);
-  }
-
-  async function handleSave(payload: Partial<ServiceItemPayload>) {
-    try {
-      if (editing) {
-        const { servicePageId: _sid, ...updatePayload } = payload;
-        await adminUpdateServiceItem(editing.id, updatePayload);
-        toast.success('خدمت بروزرسانی شد.');
-      } else {
-        await adminCreateServiceItem(payload as ServiceItemPayload);
-        toast.success('خدمت ایجاد شد.');
-      }
-      qc.invalidateQueries({ queryKey: ['admin', 'service-items', service.id] });
-      setShowForm(false);
-    } catch {
-      toast.error('ذخیره‌سازی ناموفق بود. لطفاً دوباره امتحان کنید.');
-      throw new Error('save_failed');
-    }
   }
 
   return (
@@ -184,7 +164,6 @@ export default function ServiceItemsManager({ service, onClose }: Props) {
           servicePageId={service.id}
           initial={editing}
           onClose={() => setShowForm(false)}
-          onSave={handleSave}
         />
       )}
     </>
