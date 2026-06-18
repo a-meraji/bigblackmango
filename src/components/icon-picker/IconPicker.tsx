@@ -1,33 +1,9 @@
 import { useState, useMemo } from 'react';
 import RawLocalizedInput from '@components/input/RawLocalizedInput';
-import * as LucideIcons from 'lucide-react';
 import { Search, X } from 'lucide-react';
 import LucideIcon from '@components/lucide-icon/LucideIcon';
+import { ICON_NAMES } from '@components/lucide-icon/icon-map';
 import styles from './IconPicker.module.css';
-
-const EXCLUDED = new Set(['createLucideIcon', 'LucideProvider', 'useLucideContext', 'default']);
-const ALL_ICON_NAMES = Object.keys(LucideIcons).filter(
-  (name) => !EXCLUDED.has(name) && !name.endsWith('Icon'),
-);
-
-const POPULAR_ICON_NAMES = [
-  'Music', 'Music2', 'Mic', 'Mic2', 'Headphones', 'Speaker', 'Volume2', 'Radio',
-  'Camera', 'Video', 'Film', 'Image', 'Clapperboard', 'Play',
-  'Star', 'Heart', 'Sparkles', 'Crown', 'Trophy', 'Award', 'Medal',
-  'PartyPopper', 'Cake', 'Gift', 'Package', 'Balloon',
-  'Wine', 'Beer', 'Coffee', 'Utensils', 'UtensilsCrossed', 'ChefHat', 'Pizza',
-  'Users', 'User', 'UserCheck', 'Users2',
-  'MapPin', 'Map', 'Building', 'Building2', 'Home',
-  'Phone', 'MessageSquare', 'Mail', 'Send',
-  'Calendar', 'Clock', 'Timer', 'AlarmClock',
-  'CheckCircle', 'Shield', 'Check', 'BadgeCheck',
-  'Flower', 'Flower2', 'Sun', 'Moon', 'Leaf', 'TreePine',
-  'Car', 'Smile', 'Zap', 'Flame',
-  'Gem', 'Palette', 'Brush', 'Wand2',
-  'Layers', 'List', 'Tag', 'Grid3x3',
-].filter((name) => ALL_ICON_NAMES.includes(name));
-
-const MAX_SEARCH_RESULTS = 120;
 
 interface Props {
   label?: string;
@@ -40,9 +16,9 @@ export default function IconPicker({ label = 'آیکون', value, onChange }: Pr
   const [search, setSearch] = useState('');
 
   const displayed = useMemo(() => {
-    if (!search.trim()) return POPULAR_ICON_NAMES;
+    if (!search.trim()) return ICON_NAMES;
     const q = search.toLowerCase();
-    return ALL_ICON_NAMES.filter((n) => n.toLowerCase().includes(q)).slice(0, MAX_SEARCH_RESULTS);
+    return ICON_NAMES.filter((n) => n.toLowerCase().includes(q));
   }, [search]);
 
   function select(name: string) {
@@ -109,7 +85,7 @@ export default function IconPicker({ label = 'آیکون', value, onChange }: Pr
           </div>
 
           <p className={styles.hint}>
-            {search.trim() ? `${displayed.length} آیکون یافت شد` : 'آیکون‌های پیشنهادی'}
+            {search.trim() ? `${displayed.length} آیکون یافت شد` : 'آیکون‌ها'}
           </p>
 
           <div className={styles.grid} role="listbox" aria-label="انتخاب آیکون">
@@ -128,14 +104,8 @@ export default function IconPicker({ label = 'آیکون', value, onChange }: Pr
               </button>
             ))}
 
-            {displayed.length === 0 && (
-              <p className={styles.noResult}>آیکونی یافت نشد</p>
-            )}
+            {displayed.length === 0 && <p className={styles.noResult}>آیکونی یافت نشد</p>}
           </div>
-
-          {!search.trim() && (
-            <p className={styles.searchHint}>برای مشاهده همه آیکون‌ها در کادر بالا جستجو کنید</p>
-          )}
         </div>
       )}
     </div>

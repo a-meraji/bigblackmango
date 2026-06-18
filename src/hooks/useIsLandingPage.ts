@@ -46,3 +46,9 @@ export function useIsLandingPage(): boolean {
   const currentPath = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   return currentPath === '/' && !isInStandaloneMode();
 }
+
+/** True on any `/admin` route. Safe inside and outside RouterProvider. */
+export function useIsAdminRoute(): boolean {
+  const currentPath = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  return currentPath.startsWith('/admin');
+}

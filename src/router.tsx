@@ -7,7 +7,8 @@ import { lazyPage } from './router/pageBoundary';
 
 // Layouts
 import CustomerLayout from '@layouts/CustomerLayout';
-import AdminLayout from '@layouts/AdminLayout';
+// AdminLayout is lazy — admin code stays out of the customer entry bundle / PWA.
+const AdminLayout = lazy(() => import('@layouts/AdminLayout'));
 
 // Auth — eager (small, always needed)
 import OtpPage from '@pages/auth/OtpPage';
@@ -50,9 +51,7 @@ export const router = createBrowserRouter([
       { path: 'checkout', element: lazyPage(<CheckoutPage />) },
       {
         path: 'payment',
-        element: (
-          <RequireAuth>{lazyPage(<PaymentPage />)}</RequireAuth>
-        ),
+        element: <RequireAuth>{lazyPage(<PaymentPage />)}</RequireAuth>,
       },
       { path: 'payment/callback', element: lazyPage(<PaymentCallbackPage />) },
       {
@@ -70,11 +69,7 @@ export const router = createBrowserRouter([
 
   {
     path: '/admin',
-    element: (
-      <RequireAdmin>
-        <AdminLayout />
-      </RequireAdmin>
-    ),
+    element: <RequireAdmin>{lazyPage(<AdminLayout />)}</RequireAdmin>,
     errorElement: <RouteError />,
     children: [
       { index: true, element: lazyPage(<DashboardPage />) },

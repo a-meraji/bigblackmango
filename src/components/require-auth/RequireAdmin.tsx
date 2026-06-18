@@ -1,11 +1,17 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@store/auth.store';
+import { isInStandaloneMode } from '@hooks/usePwaInstall';
 import Spinner from '@components/spinner/Spinner';
 import styles from './RequireAuth.module.css';
 
 export default function RequireAdmin({ children }: { children: React.ReactNode }) {
   const { user, isLoading, isAuthenticated, reauthOpen } = useAuthStore();
   const location = useLocation();
+
+  // Admin is web-only. Inside the installed PWA, send admins back to the customer app.
+  if (isInStandaloneMode()) {
+    return <Navigate to="/" replace />;
+  }
 
   if (isLoading) {
     return (

@@ -1,2 +1,5 @@
-/* Vazirmatn — Persian UI font (Vazir-compatible weights 400/500/700/900) */
-@import 'vazirmatn/Vazirmatn-font-face.css';
+/* Vazirmatn — Persian UI font.
+ * Single variable font (~109 KB) covering weights 100–900 in one request, replacing the
+ * nine static weight files (~450 KB) the static font-face CSS pulled in. font-display: swap
+ * is preserved by the upstream declaration. */
+@import 'vazirmatn/Vazirmatn-Variable-font-face.css';

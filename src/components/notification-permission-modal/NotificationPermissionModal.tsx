@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Bell, X } from 'lucide-react';
 import { isInStandaloneMode } from '@hooks/usePwaInstall';
-import { useIsLandingPage } from '@hooks/useIsLandingPage';
+import { useIsLandingPage, useIsAdminRoute } from '@hooks/useIsLandingPage';
 import { usePushNotifications } from '@hooks/usePushNotifications';
 import styles from './NotificationPermissionModal.module.css';
 
@@ -26,11 +26,12 @@ function dismissForever(): void {
 
 export default function NotificationPermissionModal() {
   const isLandingPage = useIsLandingPage();
+  const isAdminRoute = useIsAdminRoute();
   const { permission, isSubscribed, isSupported, subscribe, isLoading } = usePushNotifications();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (isLandingPage) return;
+    if (isLandingPage || isAdminRoute) return;
     if (!isSupported) return;
     if (isSubscribed) return;
     if (permission !== 'default') return;
@@ -47,7 +48,7 @@ export default function NotificationPermissionModal() {
     // In standalone, show after 3s
     const t = setTimeout(() => setIsOpen(true), 3000);
     return () => clearTimeout(t);
-  }, [isSupported, isSubscribed, permission, isLandingPage]);
+  }, [isSupported, isSubscribed, permission, isLandingPage, isAdminRoute]);
 
   async function handleAccept() {
     const result = await subscribe();
@@ -70,7 +71,7 @@ export default function NotificationPermissionModal() {
     setIsOpen(false);
   }
 
-  if (!isOpen || isLandingPage) return null;
+  if (!isOpen || isLandingPage || isAdminRoute) return null;
 
   return (
     <div
@@ -80,12 +81,7 @@ export default function NotificationPermissionModal() {
       aria-labelledby="notif-modal-title"
     >
       <div className={styles.sheet}>
-        <button
-          type="button"
-          className={styles.closeBtn}
-          onClick={handleSnooze}
-          aria-label="بستن"
-        >
+        <button type="button" className={styles.closeBtn} onClick={handleSnooze} aria-label="بستن">
           <X size={18} />
         </button>
 
@@ -97,8 +93,7 @@ export default function NotificationPermissionModal() {
           منوی روزانه رو دریافت کن 🔔
         </h2>
         <p className={styles.body}>
-          هر روز ساعت ۱۰:۳۰ بهت خبر می‌دیم چی امروز داریم —
-          قبل از اینکه تموم بشه سفارش بدی!
+          هر روز ساعت ۱۰:۳۰ بهت خبر می‌دیم چی امروز داریم — قبل از اینکه تموم بشه سفارش بدی!
         </p>
 
         <div className={styles.actions}>

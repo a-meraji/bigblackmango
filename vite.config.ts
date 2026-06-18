@@ -1,8 +1,53 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
+import fs from 'fs';
+import zlib from 'zlib';
+
+/**
+ * Dependency-free build-time precompression. Emits `.gz` (gzip) and `.br` (brotli) siblings
+ * for compressible text assets so nginx can serve them via `gzip_static`/`brotli_static`
+ * without spending CPU at request time. woff2/png/ico are already compressed → skipped.
+ */
+function precompress(): Plugin {
+  const COMPRESSIBLE = /\.(?:js|css|html|svg|json|webmanifest)$/;
+  const MIN_BYTES = 1024;
+
+  function walk(dir: string, out: string[] = []): string[] {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full, out);
+      else if (COMPRESSIBLE.test(entry.name)) out.push(full);
+    }
+    return out;
+  }
+
+  return {
+    name: 'bbm-precompress',
+    apply: 'build',
+    enforce: 'post',
+    closeBundle() {
+      const outDir = path.resolve(__dirname, 'dist');
+      if (!fs.existsSync(outDir)) return;
+      for (const file of walk(outDir)) {
+        const buf = fs.readFileSync(file);
+        if (buf.byteLength < MIN_BYTES) continue;
+        fs.writeFileSync(`${file}.gz`, zlib.gzipSync(buf, { level: 9 }));
+        fs.writeFileSync(
+          `${file}.br`,
+          zlib.brotliCompressSync(buf, {
+            params: {
+              [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+              [zlib.constants.BROTLI_PARAM_SIZE_HINT]: buf.byteLength,
+            },
+          }),
+        );
+      }
+    },
+  };
+}
 
 export default defineConfig({
   plugins: [
@@ -13,6 +58,9 @@ export default defineConfig({
       srcDir: 'src',
       filename: 'sw.ts',
       registerType: 'autoUpdate',
+      // The PWA is the customer app only. We register the service worker manually in main.tsx
+      // and skip it entirely on /admin, so admin stays a plain web app (see main.tsx).
+      injectRegister: false,
       includeAssets: ['favicon.ico', 'icons/*.png'],
       manifest: {
         name: 'بلک منگو',
@@ -44,10 +92,52 @@ export default defineConfig({
         ],
       },
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,woff2,ico,png,svg}'],
+        // Precache exactly the customer app shell: HTML, the entry chunk + its only static
+        // chunk import (vendor), the entry CSS, the font, and icons. Every route/component
+        // chunk (customer + admin) is fetched and runtime-cached on demand (see sw.ts), so
+        // the PWA install payload stays minimal.
+        globPatterns: [
+          'index.html',
+          'manifest.webmanifest',
+          'assets/index-*.js',
+          'assets/index-*.css',
+          'assets/vendor-*.js',
+          '**/*.woff2',
+        ],
       },
     }),
+    precompress(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          // Heavy, admin-only viz/date libraries (+ their unique deps fall in alongside) —
+          // kept out of the customer shell and out of the precache. Admin page/layout code is
+          // lazy-loaded (router + AdminLayout), so it lands in its own route chunks naturally
+          // — no manual grouping needed, and forcing one would pull shared UI components in.
+          if (
+            /[\\/]node_modules[\\/](recharts|react-multi-date-picker|react-date-object)[\\/]/.test(
+              id,
+            )
+          ) {
+            return 'admin-vendor';
+          }
+          // Stable libraries shared across the customer app. Listed explicitly so Rollup
+          // never co-locates a shell dependency (e.g. clsx) into admin-vendor — doing so
+          // would chain the entry to that 470 KB chunk. Bundled once, precached, long-cached.
+          if (
+            /[\\/]node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom|@tanstack[\\/]react-query|zustand|axios|clsx|lucide-react|date-fns-jalali|date-fns-tz)[\\/]/.test(
+              id,
+            )
+          ) {
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

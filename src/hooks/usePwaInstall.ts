@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -17,46 +17,68 @@ export function isInStandaloneMode(): boolean {
   );
 }
 
+// ─── Shared install state ─────────────────────────────────────────────────────
+// `beforeinstallprompt` fires once, early — often before lazily-loaded components (e.g. the
+// landing page) mount. We therefore capture it at module load (this module is in the eager
+// entry) into a single shared store, so every usePwaInstall() consumer sees the same deferred
+// prompt regardless of when it mounts. A per-instance useEffect listener would miss the event.
+
+let deferredPrompt: BeforeInstallPromptEvent | null = null;
+let installed = typeof window !== 'undefined' ? isInStandaloneMode() : false;
+
+interface InstallState {
+  isInstallable: boolean;
+  isInstalled: boolean;
+}
+let snapshot: InstallState = { isInstallable: false, isInstalled: installed };
+
+const listeners = new Set<() => void>();
+
+function update(): void {
+  snapshot = { isInstallable: deferredPrompt !== null, isInstalled: installed };
+  listeners.forEach((listener) => listener());
+}
+
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getSnapshot(): InstallState {
+  return snapshot;
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (e: Event) => {
+    e.preventDefault();
+    deferredPrompt = e as BeforeInstallPromptEvent;
+    update();
+  });
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    installed = true;
+    update();
+  });
+}
+
+export async function triggerInstall(): Promise<'accepted' | 'dismissed' | 'unavailable'> {
+  if (!deferredPrompt) return 'unavailable';
+  await deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  // The prompt can only be used once.
+  deferredPrompt = null;
+  update();
+  return outcome;
+}
+
 export function usePwaInstall() {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstallable, setIsInstallable] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(() => isInStandaloneMode());
-
-  useEffect(() => {
-    if (isInStandaloneMode()) {
-      setIsInstalled(true);
-      return;
-    }
-
-    function onBeforeInstall(e: Event) {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setIsInstallable(true);
-    }
-
-    function onAppInstalled() {
-      setIsInstalled(true);
-      setIsInstallable(false);
-      setDeferredPrompt(null);
-    }
-
-    window.addEventListener('beforeinstallprompt', onBeforeInstall);
-    window.addEventListener('appinstalled', onAppInstalled);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', onBeforeInstall);
-      window.removeEventListener('appinstalled', onAppInstalled);
-    };
-  }, []);
-
-  async function triggerInstall(): Promise<'accepted' | 'dismissed' | 'unavailable'> {
-    if (!deferredPrompt) return 'unavailable';
-    await deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    setDeferredPrompt(null);
-    if (outcome === 'accepted') setIsInstallable(false);
-    return outcome;
-  }
-
-  return { isInstallable, isInstalled, isIos: isIosSafari(), triggerInstall };
+  const state = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  return {
+    isInstallable: state.isInstallable,
+    isInstalled: state.isInstalled,
+    isIos: isIosSafari(),
+    triggerInstall,
+  };
 }

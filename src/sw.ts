@@ -1,11 +1,16 @@
 /// <reference lib="webworker" />
-import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
+import {
+  cleanupOutdatedCaches,
+  createHandlerBoundToURL,
+  precacheAndRoute,
+} from 'workbox-precaching';
 import { NavigationRoute, registerRoute } from 'workbox-routing';
-import { NetworkFirst } from 'workbox-strategies';
+import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
 
 declare const self: ServiceWorkerGlobalScope;
 
-// Precache everything injected by vite-plugin-pwa
+// Precache the customer app shell injected by vite-plugin-pwa (see vite.config injectManifest).
 precacheAndRoute(self.__WB_MANIFEST);
 cleanupOutdatedCaches();
 
@@ -19,19 +24,32 @@ registerRoute(
   }),
 );
 
-// SPA navigation fallback — skip /admin (SSR-style or separate bundle)
-const adminPattern = /^\/admin/;
+// On-demand customer JS/CSS chunks — not precached, so cache them as they're first used.
+// Admin chunks (admin-*, admin-vendor-*) are deliberately excluded: admin is web-only and
+// must never enter the PWA's cache storage.
 registerRoute(
-  new NavigationRoute(
-    async ({ request }) => {
-      if (adminPattern.test(new URL(request.url).pathname)) {
-        return fetch(request);
-      }
-      const cache = await caches.open('workbox-precache-v2');
-      const cached = await cache.match('/index.html');
-      return cached ?? fetch(request);
-    },
-  ),
+  ({ url, request }) =>
+    url.pathname.startsWith('/assets/') &&
+    !url.pathname.startsWith('/assets/admin-') &&
+    (request.destination === 'script' || request.destination === 'style'),
+  new StaleWhileRevalidate({ cacheName: 'app-chunks' }),
+);
+
+// Fonts — immutable, hashed; cache long-term.
+registerRoute(
+  ({ request }) => request.destination === 'font',
+  new CacheFirst({
+    cacheName: 'fonts',
+    plugins: [new ExpirationPlugin({ maxEntries: 8, maxAgeSeconds: 60 * 60 * 24 * 365 })],
+  }),
+);
+
+// SPA navigation fallback — serve the precached shell for customer routes; let /admin and
+// /api fall through to the network (admin is not precached).
+registerRoute(
+  new NavigationRoute(createHandlerBoundToURL('/index.html'), {
+    denylist: [/^\/admin/, /^\/api/],
+  }),
 );
 
 // ─── PUSH ────────────────────────────────────────────────────────────────────
@@ -67,14 +85,10 @@ self.addEventListener('push', (event: PushEvent) => {
     dir: 'rtl',
     lang: 'fa',
     data: { url: data.url ?? '/' },
-    actions: [
-      { action: 'open', title: data.actionLabel ?? 'مشاهده منو' },
-    ],
+    actions: [{ action: 'open', title: data.actionLabel ?? 'مشاهده منو' }],
   };
 
-  event.waitUntil(
-    self.registration.showNotification(title, options),
-  );
+  event.waitUntil(self.registration.showNotification(title, options));
 });
 
 // ─── NOTIFICATION CLICK ───────────────────────────────────────────────────────
@@ -85,15 +99,13 @@ self.addEventListener('notificationclick', (event: NotificationClickEvent) => {
   const targetUrl: string = (event.notification.data as { url?: string })?.url ?? '/';
 
   event.waitUntil(
-    self.clients
-      .matchAll({ type: 'window', includeUncontrolled: true })
-      .then((clients) => {
-        const existing = clients.find((c) => 'navigate' in c);
-        if (existing) {
-          return (existing as WindowClient).focus().then((c) => c.navigate(targetUrl));
-        }
-        return self.clients.openWindow(targetUrl);
-      }),
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      const existing = clients.find((c) => 'navigate' in c);
+      if (existing) {
+        return (existing as WindowClient).focus().then((c) => c.navigate(targetUrl));
+      }
+      return self.clients.openWindow(targetUrl);
+    }),
   );
 });
 
