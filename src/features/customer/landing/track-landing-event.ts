@@ -3,6 +3,7 @@ export type LandingAnalyticsEvent =
   | 'install_click'
   | 'install_accepted'
   | 'install_dismissed'
+  | 'install_unavailable'
   | 'ios_instructions_view';
 
 export function trackLandingEvent(
