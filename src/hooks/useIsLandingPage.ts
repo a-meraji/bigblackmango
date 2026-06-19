@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { isInStandaloneMode } from '@hooks/usePwaInstall';
+import { getWebAppModeChosen, subscribeWebAppMode } from '@hooks/useWebAppMode';
 
 let pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
 const listeners = new Set<() => void>();
@@ -41,10 +42,15 @@ if (typeof window !== 'undefined') {
   };
 }
 
-/** True on `/` in browser mode (not installed PWA). Safe inside and outside RouterProvider. */
+/**
+ * True on `/` in browser mode — i.e. the marketing landing page. False once the user is an
+ * installed PWA or has chosen "continue on web". Safe inside and outside RouterProvider.
+ */
 export function useIsLandingPage(): boolean {
   const currentPath = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  return currentPath === '/' && !isInStandaloneMode();
+  // Re-render when the web-mode flag flips so the layout chrome updates in the same tick.
+  useSyncExternalStore(subscribeWebAppMode, getWebAppModeChosen, () => false);
+  return currentPath === '/' && !isInStandaloneMode() && !getWebAppModeChosen();
 }
 
 /** True on any `/admin` route. Safe inside and outside RouterProvider. */

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { X, Download, Bell, Zap, Smartphone } from 'lucide-react';
 import { usePwaInstall, isIosSafari, isInStandaloneMode } from '@hooks/usePwaInstall';
 import { useIsLandingPage, useIsAdminRoute } from '@hooks/useIsLandingPage';
+import { getWebAppModeChosen } from '@hooks/useWebAppMode';
 import styles from './PwaInstallModal.module.css';
 
 const DISMISS_KEY = 'bbm_install_modal_dismissed';
@@ -15,7 +16,7 @@ export default function PwaInstallModal() {
 
   useEffect(() => {
     if (isLandingPage || isAdminRoute) return;
-    if (isInStandaloneMode()) return;
+    if (isInStandaloneMode() || getWebAppModeChosen()) return;
     if (localStorage.getItem(DISMISS_KEY)) return;
 
     // Show on iOS Safari even without beforeinstallprompt

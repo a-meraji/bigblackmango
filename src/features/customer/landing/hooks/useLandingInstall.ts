@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { usePwaInstall } from '@hooks/usePwaInstall';
+import { enableWebAppMode } from '@hooks/useWebAppMode';
 import { toast } from '@store/toast.store';
 import { trackLandingEvent } from '../track-landing-event';
 
@@ -43,5 +44,14 @@ export function useLandingInstall() {
     [isIos, triggerInstall],
   );
 
-  return { handleInstallClick, isInstallable, isIos };
+  const handleContinueOnWeb = useCallback((sectionId: string) => {
+    trackLandingEvent('continue_web_click', { sectionId });
+    // Flip `/` to render the app experience (categories grid) + show cart/bottom-nav chrome.
+    // We're already on `/`, so HomePage re-renders in place via the shared store — no navigation
+    // needed. Scroll to top so the user starts at the top of the categories grid.
+    enableWebAppMode();
+    window.scrollTo({ top: 0 });
+  }, []);
+
+  return { handleInstallClick, handleContinueOnWeb, isInstallable, isIos };
 }

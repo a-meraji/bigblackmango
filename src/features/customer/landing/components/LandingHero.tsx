@@ -1,15 +1,17 @@
 import type { LandingHero as LandingHeroType } from '@t/landing';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
 import InstallButton from './InstallButton';
+import ContinueOnWebButton from './ContinueOnWebButton';
 import styles from './LandingHero.module.css';
 
 interface Props {
   hero: LandingHeroType;
   onInstallClick: (sectionId: string) => void | Promise<unknown>;
+  onContinueWeb: (sectionId: string) => void;
   installing?: boolean;
 }
 
-export default function LandingHero({ hero, onInstallClick, installing }: Props) {
+export default function LandingHero({ hero, onInstallClick, onContinueWeb, installing }: Props) {
   return (
     <section className={styles.hero} aria-labelledby="landing-hero-title">
       {hero.imageUrl && (
@@ -29,12 +31,8 @@ export default function LandingHero({ hero, onInstallClick, installing }: Props)
           {hero.title}
         </h1>
         {hero.subtitle && <p className={styles.subtitle}>{hero.subtitle}</p>}
-        <InstallButton
-          sectionId="hero"
-          onClick={onInstallClick}
-          loading={installing}
-          fullWidth
-        />
+        <InstallButton sectionId="hero" onClick={onInstallClick} loading={installing} fullWidth />
+        <ContinueOnWebButton onClick={() => onContinueWeb('hero')} fullWidth />
         <p className={styles.trustLine}>{hero.trustLine}</p>
       </div>
     </section>

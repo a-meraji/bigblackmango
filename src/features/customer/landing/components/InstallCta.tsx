@@ -1,13 +1,15 @@
 import InstallButton from './InstallButton';
+import ContinueOnWebButton from './ContinueOnWebButton';
 import styles from './InstallCta.module.css';
 
 interface Props {
   visible: boolean;
   onInstallClick: (sectionId: string) => void | Promise<unknown>;
+  onContinueWeb: (sectionId: string) => void;
   installing?: boolean;
 }
 
-export default function InstallCta({ visible, onInstallClick, installing }: Props) {
+export default function InstallCta({ visible, onInstallClick, onContinueWeb, installing }: Props) {
   if (!visible) return null;
 
   return (
@@ -23,6 +25,7 @@ export default function InstallCta({ visible, onInstallClick, installing }: Prop
           onClick={onInstallClick}
           loading={installing}
         />
+        <ContinueOnWebButton label="ادامه در وب" onClick={() => onContinueWeb('sticky')} />
       </div>
     </div>
   );

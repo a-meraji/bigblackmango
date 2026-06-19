@@ -36,7 +36,7 @@ export default function LandingHomePage() {
   const heroSentinelRef = useRef<HTMLDivElement>(null);
   const { data, isLoading, isError, refetch } = useLandingData();
   const landing = mergeLandingWithFallback(data);
-  const { handleInstallClick } = useLandingInstall();
+  const { handleInstallClick, handleContinueOnWeb } = useLandingInstall();
   const { showSticky } = useLandingState(heroSentinelRef);
   const [installing, setInstalling] = useState(false);
 
@@ -87,6 +87,7 @@ export default function LandingHomePage() {
       <LandingHero
         hero={landing.hero}
         onInstallClick={onInstallClick}
+        onContinueWeb={handleContinueOnWeb}
         installing={installing}
       />
       <div ref={heroSentinelRef} aria-hidden="true" />
@@ -113,10 +114,7 @@ export default function LandingHomePage() {
 
       <RevealSection className={styles.section}>
         <Suspense fallback={<SectionSkeleton />}>
-          <TrustStatsSection
-            sectionTitle={landing.trustSectionTitle}
-            stats={landing.stats}
-          />
+          <TrustStatsSection sectionTitle={landing.trustSectionTitle} stats={landing.stats} />
         </Suspense>
       </RevealSection>
 
@@ -157,6 +155,7 @@ export default function LandingHomePage() {
           <FinalCtaBand
             config={landing.finalCta}
             onInstallClick={onInstallClick}
+            onContinueWeb={handleContinueOnWeb}
             installing={installing}
           />
         </Suspense>
@@ -168,6 +167,7 @@ export default function LandingHomePage() {
       <InstallCta
         visible={showSticky}
         onInstallClick={onInstallClick}
+        onContinueWeb={handleContinueOnWeb}
         installing={installing}
       />
     </PageShell>

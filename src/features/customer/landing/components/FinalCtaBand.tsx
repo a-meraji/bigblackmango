@@ -1,6 +1,7 @@
 import type { LandingFinalCta } from '@t/landing';
 import { usePwaInstall } from '@hooks/usePwaInstall';
 import InstallButton from './InstallButton';
+import ContinueOnWebButton from './ContinueOnWebButton';
 import StoreBadgeRow from './StoreBadgeRow';
 import TrustReassuranceList from './TrustReassuranceList';
 import IosInstallInstructions from './IosInstallInstructions';
@@ -10,22 +11,21 @@ import styles from './FinalCtaBand.module.css';
 interface Props {
   config: LandingFinalCta;
   onInstallClick: (sectionId: string) => void | Promise<unknown>;
+  onContinueWeb: (sectionId: string) => void;
   installing?: boolean;
 }
 
-export default function FinalCtaBand({ config, onInstallClick, installing }: Props) {
+export default function FinalCtaBand({ config, onInstallClick, onContinueWeb, installing }: Props) {
   const { isIos, isInstallable } = usePwaInstall();
 
   return (
     <section id="section-final-cta" className={styles.section} aria-labelledby="final-cta-title">
-      <h2 id="final-cta-title" className={styles.title}>{config.title}</h2>
+      <h2 id="final-cta-title" className={styles.title}>
+        {config.title}
+      </h2>
       <p className={styles.subtitle}>{config.subtitle}</p>
-      <InstallButton
-        sectionId="final"
-        onClick={onInstallClick}
-        loading={installing}
-        fullWidth
-      />
+      <InstallButton sectionId="final" onClick={onInstallClick} loading={installing} fullWidth />
+      <ContinueOnWebButton onClick={() => onContinueWeb('final')} fullWidth />
       <StoreBadgeRow />
       <TrustReassuranceList items={config.trustItems} />
       {config.links.length > 0 && (
