@@ -12,6 +12,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   plugins: ['@typescript-eslint', 'react', 'react-hooks', 'jsx-a11y', 'prettier'],
+  ignorePatterns: ['dist', 'node_modules', '**/dist/**'],
   rules: {
     'prettier/prettier': 'error',
     'react/react-in-jsx-scope': 'off',
@@ -22,10 +23,28 @@ module.exports = {
     {
       // Native <dialog> element is interactive (role="dialog") but jsx-a11y does not
       // recognize it as such. Backdrop-click close is a standard UX pattern for dialogs.
-      files: ['src/components/modal/Modal.tsx'],
+      files: ['packages/shared/src/components/modal/Modal.tsx'],
       rules: {
         'jsx-a11y/no-noninteractive-element-interactions': 'off',
         'jsx-a11y/click-events-have-key-events': 'off',
+      },
+    },
+    {
+      // Separation boundary: the customer PWA and the shared platform must never pull in
+      // admin-only heavy libraries. Admin viz/date-picker deps live only in apps/admin.
+      files: ['apps/customer/**/*.{ts,tsx}', 'packages/shared/**/*.{ts,tsx}'],
+      rules: {
+        'no-restricted-imports': [
+          'error',
+          {
+            paths: [
+              { name: 'recharts', message: 'Admin-only dependency — not allowed in the customer PWA or shared platform.' },
+              { name: 'react-multi-date-picker', message: 'Admin-only dependency — not allowed in the customer PWA or shared platform.' },
+              { name: 'react-date-object', message: 'Admin-only dependency — not allowed in the customer PWA or shared platform.' },
+            ],
+            patterns: ['**/apps/admin/**'],
+          },
+        ],
       },
     },
   ],

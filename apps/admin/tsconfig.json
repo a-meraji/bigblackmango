@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "types": ["vite/client"],
+    "paths": {
+      "@/*": ["src/*"],
+      "@features/*": ["src/features/*"],
+      "@pages/*": ["src/pages/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@components/*": ["../../packages/shared/src/components/*"],
+      "@api/*": ["../../packages/shared/src/api/*"],
+      "@store/*": ["../../packages/shared/src/store/*"],
+      "@hooks/*": ["../../packages/shared/src/hooks/*"],
+      "@t/*": ["../../packages/shared/src/types/*"],
+      "@utils/*": ["../../packages/shared/src/utils/*"],
+      "@styles/*": ["../../packages/shared/src/styles/*"],
+      "@assets/*": ["../../packages/shared/src/assets/*"],
+      "@constants/*": ["../../packages/shared/src/constants/*"],
+      "@query-client": ["../../packages/shared/src/query-client.ts"]
+    }
+  },
+  "include": ["src"]
+}
