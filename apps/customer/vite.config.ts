@@ -93,9 +93,9 @@ export default defineConfig({
       },
       injectManifest: {
         // Precache exactly the customer app shell: HTML, the entry chunk + its only static
-        // chunk import (vendor), the entry CSS, the font, and icons. Every route/component
-        // chunk (customer + admin) is fetched and runtime-cached on demand (see sw.ts), so
-        // the PWA install payload stays minimal.
+        // chunk import (vendor), the entry CSS, the font, and icons. Every other route/
+        // component chunk is fetched and runtime-cached on demand (see sw.ts), so the PWA
+        // install payload stays minimal. This build contains customer code only.
         globPatterns: [
           'index.html',
           'manifest.webmanifest',
@@ -113,9 +113,8 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (!id.includes('node_modules')) return;
-          // Stable libraries shared across the customer app. Listed explicitly so Rollup
-          // never co-locates a shell dependency (e.g. clsx) into admin-vendor — doing so
-          // would chain the entry to that 470 KB chunk. Bundled once, precached, long-cached.
+          // Stable libraries shared across the customer app. Bundled into one vendor chunk
+          // that's precached and long-cached.
           if (
             /[\\/]node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom|@tanstack[\\/]react-query|zustand|axios|clsx|lucide-react|date-fns-jalali|date-fns-tz)[\\/]/.test(
               id,
@@ -148,8 +147,15 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3001,
+    port: Number(process.env.CUSTOMER_PORT ?? 3001),
     strictPort: false,
+    // Trust the *.localhost hosts the dev host-router (scripts/dev.mjs) routes on. When run
+    // through that proxy, bind IPv4 (the proxy dials 127.0.0.1) and point HMR back at the
+    // proxy port so live-reload works behind it.
+    allowedHosts: ['app.localhost', 'localhost'],
+    ...(process.env.DEV_PROXY_PORT
+      ? { host: '127.0.0.1', hmr: { clientPort: Number(process.env.DEV_PROXY_PORT) } }
+      : {}),
     proxy: {
       '/api': {
         target: process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:3000',

@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "npm run dev -w @blackmango/customer",
     "dev:admin": "npm run dev -w @blackmango/admin",
+    "dev:all": "node scripts/dev.mjs",
     "build": "npm run build -w @blackmango/customer",
     "build:admin": "npm run build -w @blackmango/admin",
     "build:all": "npm run build && npm run build:admin",

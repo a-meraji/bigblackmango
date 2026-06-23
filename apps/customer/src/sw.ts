@@ -25,12 +25,10 @@ registerRoute(
 );
 
 // On-demand customer JS/CSS chunks — not precached, so cache them as they're first used.
-// Admin chunks (admin-*, admin-vendor-*) are deliberately excluded: admin is web-only and
-// must never enter the PWA's cache storage.
+// This build is customer-only; admin is a separate app on its own origin (admin.<domain>).
 registerRoute(
   ({ url, request }) =>
     url.pathname.startsWith('/assets/') &&
-    !url.pathname.startsWith('/assets/admin-') &&
     (request.destination === 'script' || request.destination === 'style'),
   new StaleWhileRevalidate({ cacheName: 'app-chunks' }),
 );
@@ -44,11 +42,11 @@ registerRoute(
   }),
 );
 
-// SPA navigation fallback — serve the precached shell for customer routes; let /admin and
-// /api fall through to the network (admin is not precached).
+// SPA navigation fallback — serve the precached shell for customer routes; let /api fall
+// through to the network.
 registerRoute(
   new NavigationRoute(createHandlerBoundToURL('/index.html'), {
-    denylist: [/^\/admin/, /^\/api/],
+    denylist: [/^\/api/],
   }),
 );
 

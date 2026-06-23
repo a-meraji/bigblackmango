@@ -29,8 +29,15 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3002,
+    port: Number(process.env.ADMIN_PORT ?? 3002),
     strictPort: false,
+    // Trust the *.localhost hosts the dev host-router (scripts/dev.mjs) routes on. When run
+    // through that proxy, bind IPv4 (the proxy dials 127.0.0.1) and point HMR back at the
+    // proxy port so live-reload works on the subdomain.
+    allowedHosts: ['admin.localhost', 'localhost'],
+    ...(process.env.DEV_PROXY_PORT
+      ? { host: '127.0.0.1', hmr: { clientPort: Number(process.env.DEV_PROXY_PORT) } }
+      : {}),
     proxy: {
       '/api': {
         target: process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:3000',
