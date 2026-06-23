@@ -20,7 +20,7 @@ export default function InstallCta({ visible, onInstallClick, onContinueWeb, ins
           <span className={styles.sub}>نصب رایگان · سفارش سریع</span>
         </div>
         <InstallButton
-          label="نصب بلک منگو"
+          label="ورود به برنامه"
           sectionId="sticky"
           onClick={onInstallClick}
           loading={installing}

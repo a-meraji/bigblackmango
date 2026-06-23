@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function InstallButton({
-  label = 'نصب رایگان اپ',
+  label = 'ورود به برنامه',
   sectionId,
   onClick,
   loading = false,

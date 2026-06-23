@@ -115,7 +115,7 @@ export default function PwaInstallModal() {
               aria-busy={installing}
             >
               <Download size={18} aria-hidden="true" />
-              {installing ? 'در حال نصب...' : 'نصب رایگان اپ'}
+              {installing ? 'در حال نصب...' : 'ورد به برنامه'}
             </button>
             <button type="button" className={styles.dismissText} onClick={handleDismiss}>
               نه ممنون
