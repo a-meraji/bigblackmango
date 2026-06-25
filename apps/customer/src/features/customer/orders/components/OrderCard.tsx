@@ -1,6 +1,7 @@
 import type { Order, OrderStatus } from '@t/order';
-import { toJalaliWithTime } from '@utils/format-date';
+import { toJalali, toJalaliWithTime } from '@utils/format-date';
 import clsx from 'clsx';
+import { useReviewPrompt } from '../context/ReviewPromptContext';
 import StatusIllustration from './StatusIllustration';
 import styles from './OrderCard.module.css';
 import { formatNumber, formatDigits } from '@utils/locale';
@@ -19,6 +20,11 @@ interface Props {
 }
 
 export default function OrderCard({ order, onShowReceipt }: Props) {
+  const { openForOrder } = useReviewPrompt();
+  const reviewPrompt = order.reviewPrompt;
+  const canRate = reviewPrompt?.canReview ?? false;
+  const hasSubmittedReview = reviewPrompt?.hasSubmittedReview ?? false;
+
   const itemsText =
     order.itemsPreview
       ?.map((i) => `${i.foodName} × ${formatNumber(i.quantity)}`)
@@ -58,12 +64,28 @@ export default function OrderCard({ order, onShowReceipt }: Props) {
             <span className={styles.metaItems}>{itemsText}</span>
           </div>
         )}
+
+        {canRate && reviewPrompt?.expiresAt && (
+          <p className={styles.reviewHint}>تا {toJalali(reviewPrompt.expiresAt)} فرصت ثبت نظر دارید</p>
+        )}
       </div>
 
       <div className={styles.footer}>
         <button type="button" className={styles.receiptBtn} onClick={onShowReceipt}>
           مشاهده رسید
         </button>
+        {canRate && (
+          <button
+            type="button"
+            className={styles.rateBtn}
+            onClick={() => openForOrder(order.id)}
+          >
+            ثبت نظر
+          </button>
+        )}
+        {order.status === 'delivered' && hasSubmittedReview && !canRate && (
+          <span className={styles.reviewSubmitted}>نظر ثبت شد</span>
+        )}
       </div>
     </li>
   );

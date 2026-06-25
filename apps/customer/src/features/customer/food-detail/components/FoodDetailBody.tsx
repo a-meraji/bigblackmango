@@ -1,8 +1,6 @@
 import type { PublicFoodDetail } from '@t/food';
 import type { NormalizedAvailability } from '@utils/food-availability';
 import StarRating from '@components/star-rating/StarRating';
-import Badge from '@components/badge/Badge';
-import PriceWithDiscount from '@components/price-with-discount/PriceWithDiscount';
 import styles from './FoodDetailBody.module.css';
 import { formatNumber } from '@utils/locale';
 
@@ -25,26 +23,12 @@ export default function FoodDetailBody({ food, availability }: Props) {
         <StarRating average={food.rating.average} count={food.rating.count} />
       </div>
 
-      {availability && (
-        <div className={styles.priceBlock}>
-          <PriceWithDiscount
-            originalPrice={food.price}
-            salePrice={availability.salePrice}
-            discountPercent={availability.discountPercent}
-            size="md"
-          />
-        </div>
-      )}
-
-      {isLowStock && availability && (
-        <Badge variant="gold" className={styles.stockBadge}>
-          فقط {formatNumber(availability.stock)} عدد باقی مانده
-        </Badge>
-      )}
-      {isOutOfStock && availability && (
-        <Badge variant="neutral" className={styles.stockBadge}>
-          تمام شد
-        </Badge>
+      {availability && (isLowStock || isOutOfStock) && (
+        <p className={isOutOfStock ? styles.stockOut : styles.stockLow}>
+          {isOutOfStock
+            ? 'تمام شد'
+            : `فقط ${formatNumber(availability.stock)} عدد باقی مانده`}
+        </p>
       )}
 
       {food.description && <p className={styles.description}>{food.description}</p>}

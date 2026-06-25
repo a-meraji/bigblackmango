@@ -40,6 +40,7 @@ export default function FoodDetailPage() {
       <FoodDetailHero food={data.food} availability={availability} />
       <div className={styles.contentCard}>
         <FoodDetailBody food={data.food} availability={availability} />
+        <FoodDetailStickyBar food={data.food} availability={availability} />
         <ReviewsSection
           summary={data.reviews.summary}
           initialItems={data.reviews.items}
@@ -47,7 +48,6 @@ export default function FoodDetailPage() {
         />
         {data.relatedFoods.length > 0 && <RelatedFoods foods={data.relatedFoods} />}
       </div>
-      <FoodDetailStickyBar food={data.food} availability={availability} />
     </div>
   );
 }

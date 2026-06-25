@@ -1,4 +1,6 @@
+import { Trash2 } from 'lucide-react';
 import Input from '@components/input/Input';
+import IconButton from '@components/icon-button/IconButton';
 import type { LandingLink } from '@t/landing';
 import styles from './LandingEditorForm.module.css';
 
@@ -41,24 +43,33 @@ export default function LandingLinksEditor({
           + افزودن لینک
         </button>
       </div>
-      {links.map((link, index) => (
-        <div key={index} className={styles.statRow}>
-          <Input
-            label="برچسب"
-            value={link.label}
-            onChange={(e) => updateLink(index, 'label', e.target.value)}
-          />
-          <Input
-            label="آدرس"
-            value={link.href}
-            onChange={(e) => updateLink(index, 'href', e.target.value)}
-            placeholder="#section-id یا https://..."
-          />
-          <button type="button" className={styles.removeBtn} onClick={() => removeLink(index)}>
-            حذف
-          </button>
+      {links.length > 0 && (
+        <div className={styles.linkList}>
+          {links.map((link, index) => (
+            <div key={index} className={styles.linkRow}>
+              <Input
+                label="برچسب"
+                value={link.label}
+                onChange={(e) => updateLink(index, 'label', e.target.value)}
+              />
+              <Input
+                label="آدرس"
+                value={link.href}
+                onChange={(e) => updateLink(index, 'href', e.target.value)}
+                placeholder="#section-id یا https://..."
+                dir="ltr"
+              />
+              <IconButton
+                icon={Trash2}
+                label={`حذف لینک ${index + 1}`}
+                variant="ghost"
+                className={styles.linkRemoveBtn}
+                onClick={() => removeLink(index)}
+              />
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }

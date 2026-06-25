@@ -2,10 +2,14 @@ import { apiClient } from '@api/client';
 import type { ApiResponse } from '@t/api';
 import type {
   NotificationTemplate,
-  NotificationLog,
   NotificationStats,
   CreateTemplatePayload,
   SendNotificationPayload,
+  NotificationSchedule,
+  UpdateSchedulePayload,
+  NotificationChannel,
+  UpdateChannelPayload,
+  ChannelKey,
 } from '@t/notifications';
 
 export async function adminGetNotificationStats(): Promise<NotificationStats> {
@@ -52,6 +56,41 @@ export async function adminSendNotification(
 ): Promise<{ sent: number; failed: number }> {
   const res = await apiClient.post<ApiResponse<{ sent: number; failed: number }>>(
     '/admin/notifications/send',
+    payload,
+  );
+  return res.data.data;
+}
+
+export async function adminGetSchedule(): Promise<NotificationSchedule> {
+  const res = await apiClient.get<ApiResponse<NotificationSchedule>>(
+    '/admin/notifications/schedule',
+  );
+  return res.data.data;
+}
+
+export async function adminUpdateSchedule(
+  payload: UpdateSchedulePayload,
+): Promise<NotificationSchedule> {
+  const res = await apiClient.patch<ApiResponse<NotificationSchedule>>(
+    '/admin/notifications/schedule',
+    payload,
+  );
+  return res.data.data;
+}
+
+export async function adminListChannels(): Promise<NotificationChannel[]> {
+  const res = await apiClient.get<ApiResponse<NotificationChannel[]>>(
+    '/admin/notifications/channels',
+  );
+  return res.data.data;
+}
+
+export async function adminUpdateChannel(
+  channel: ChannelKey,
+  payload: UpdateChannelPayload,
+): Promise<NotificationChannel> {
+  const res = await apiClient.patch<ApiResponse<NotificationChannel>>(
+    `/admin/notifications/channels/${channel}`,
     payload,
   );
   return res.data.data;

@@ -20,6 +20,12 @@
   margin: 0 0 1rem;
 }
 
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
 .links {
   display: flex;
   flex-wrap: wrap;

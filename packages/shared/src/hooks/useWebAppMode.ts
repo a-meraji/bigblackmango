@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import { isInStandaloneMode } from '@hooks/usePwaInstall';
 
-// When the user clicks "ادامه در وب" on the landing page we persist this flag so `/` renders
+// When the user clicks "مشاهده منو" on the landing page we persist this flag so `/` renders
 // the real app experience (categories grid + cart + bottom nav) in a plain browser, and the
 // choice survives reloads/navigation. Stored under the codebase-wide `bbm_…` convention.
 const WEB_MODE_KEY = 'bbm_continue_on_web';
@@ -30,6 +30,14 @@ if (typeof window !== 'undefined') {
     if (e.key !== WEB_MODE_KEY) return;
     chosen = readStored();
     emit();
+  });
+  // The moment the PWA is installed, drop the user into the app experience in this tab instead of
+  // leaving them on the marketing landing page. (The web platform can't force-open the installed
+  // standalone window from a browser tab; flipping app mode is the closest we can do — and it's
+  // consistent with the standalone launch, which also renders AppHomePage at start_url `/`.)
+  window.addEventListener('appinstalled', () => {
+    enableWebAppMode();
+    window.scrollTo({ top: 0 });
   });
 }
 

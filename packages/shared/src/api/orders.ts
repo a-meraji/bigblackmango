@@ -9,8 +9,6 @@ import {
   type BackendOrderSummary,
 } from '@utils/map-order';
 
-const DISMISSED_PROMPTS_KEY = 'dismissedReviewPrompts';
-
 export async function getOrders(params?: {
   tab?: 'current' | 'past';
   page?: number;
@@ -97,57 +95,40 @@ export interface ReviewPrompt {
   orderId: string;
   trackingCode: string;
   promptShown: boolean;
+  expiresAt: string;
   foods: Array<{ foodId: string; name: string }>;
 }
 
-export async function getReviewPrompts(): Promise<ReviewPrompt[]> {
-  const dismissed = getDismissedPromptIds();
-  const { items } = await getOrders({ tab: 'past', limit: 30 });
-  const delivered = items.filter((o) => o.status === 'delivered' && !dismissed.includes(o.id));
+export async function getPendingReviewPrompts(): Promise<ReviewPrompt[]> {
+  const res = await apiClient.get<ApiResponse<{ prompts: ReviewPrompt[] }>>(
+    '/orders/review-prompts/pending',
+  );
+  return res.data.data.prompts;
+}
 
-  const prompts: ReviewPrompt[] = [];
-
-  for (const order of delivered) {
-    try {
-      const detail = await getOrderDetail(order.id);
-      if (detail.reviewPrompt.canReview && !detail.reviewPrompt.promptShown) {
-        prompts.push({
-          orderId: order.id,
-          trackingCode: order.trackingCode,
-          promptShown: false,
-          foods: detail.items.map((item) => ({
-            foodId: item.foodId,
-            name: item.foodName,
-          })),
-        });
-      }
-    } catch {
-      /* skip orders that fail to load */
-    }
+export async function getReviewPromptForOrder(orderId: string): Promise<ReviewPrompt | null> {
+  const detail = await getOrderDetail(orderId);
+  if (!detail.reviewPrompt.canReview) {
+    return null;
   }
 
-  return prompts;
+  return {
+    orderId: detail.id,
+    trackingCode: detail.trackingCode,
+    promptShown: detail.reviewPrompt.promptShown,
+    expiresAt: detail.reviewPrompt.expiresAt,
+    foods: detail.items.map((item) => ({
+      foodId: item.foodId,
+      name: item.foodName,
+    })),
+  };
+}
+
+/** @deprecated Use getPendingReviewPrompts */
+export async function getReviewPrompts(): Promise<ReviewPrompt[]> {
+  return getPendingReviewPrompts();
 }
 
 export async function dismissReviewPrompt(orderId: string): Promise<void> {
-  try {
-    await apiClient.post(`/orders/${orderId}/review-prompts/dismiss`);
-  } catch {
-    markPromptDismissed(orderId);
-  }
-}
-
-function getDismissedPromptIds(): string[] {
-  try {
-    return JSON.parse(sessionStorage.getItem(DISMISSED_PROMPTS_KEY) ?? '[]') as string[];
-  } catch {
-    return [];
-  }
-}
-
-function markPromptDismissed(orderId: string): void {
-  const dismissed = getDismissedPromptIds();
-  if (!dismissed.includes(orderId)) {
-    sessionStorage.setItem(DISMISSED_PROMPTS_KEY, JSON.stringify([...dismissed, orderId]));
-  }
+  await apiClient.post(`/orders/${orderId}/review-prompts/dismiss`);
 }

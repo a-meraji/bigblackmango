@@ -1,3 +1,9 @@
 .section {
   padding-block-start: 0;
+  margin-inline: calc(-1 * var(--page-inline-padding));
+}
+
+.header {
+  /* PageShell padding + RevealSection padding, to match other landing sections */
+  padding-inline: calc(2 * var(--page-inline-padding));
 }

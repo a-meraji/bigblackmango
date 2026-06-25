@@ -2,10 +2,8 @@ import type { LandingFinalCta } from '@t/landing';
 import { usePwaInstall } from '@hooks/usePwaInstall';
 import InstallButton from './InstallButton';
 import ContinueOnWebButton from './ContinueOnWebButton';
-import StoreBadgeRow from './StoreBadgeRow';
 import TrustReassuranceList from './TrustReassuranceList';
 import IosInstallInstructions from './IosInstallInstructions';
-import DesktopQrFallback from './DesktopQrFallback';
 import styles from './FinalCtaBand.module.css';
 
 interface Props {
@@ -18,15 +16,25 @@ interface Props {
 export default function FinalCtaBand({ config, onInstallClick, onContinueWeb, installing }: Props) {
   const { isIos, isInstallable } = usePwaInstall();
 
+  const hasContent =
+    config.title.trim() ||
+    config.subtitle.trim() ||
+    config.trustItems.length > 0 ||
+    config.links.length > 0;
+
+  if (!hasContent) return null;
+
   return (
     <section id="section-final-cta" className={styles.section} aria-labelledby="final-cta-title">
       <h2 id="final-cta-title" className={styles.title}>
         {config.title}
       </h2>
       <p className={styles.subtitle}>{config.subtitle}</p>
-      <InstallButton sectionId="final" onClick={onInstallClick} loading={installing} fullWidth />
-      <ContinueOnWebButton onClick={() => onContinueWeb('final')} fullWidth />
-      <StoreBadgeRow />
+      <div className={styles.actions}>
+        {/* <InstallButton sectionId="final" onClick={onInstallClick} loading={installing} fullWidth /> */}
+        <ContinueOnWebButton onClick={() => onContinueWeb('final')} fullWidth />
+      </div>
+
       <TrustReassuranceList items={config.trustItems} />
       {config.links.length > 0 && (
         <nav className={styles.links} aria-label="لینک‌های مرتبط">
@@ -38,7 +46,6 @@ export default function FinalCtaBand({ config, onInstallClick, onContinueWeb, in
         </nav>
       )}
       {isIos && <IosInstallInstructions compact />}
-      {!isInstallable && !isIos && <DesktopQrFallback />}
     </section>
   );
 }

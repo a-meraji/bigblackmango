@@ -31,7 +31,7 @@ export default function LandingHero({ hero, onInstallClick, onContinueWeb, insta
           {hero.title}
         </h1>
         {hero.subtitle && <p className={styles.subtitle}>{hero.subtitle}</p>}
-        <InstallButton sectionId="hero" onClick={onInstallClick} loading={installing} fullWidth />
+        {/* <InstallButton sectionId="hero" onClick={onInstallClick} loading={installing} fullWidth /> */}
         <ContinueOnWebButton onClick={() => onContinueWeb('hero')} fullWidth />
         <p className={styles.trustLine}>{hero.trustLine}</p>
       </div>

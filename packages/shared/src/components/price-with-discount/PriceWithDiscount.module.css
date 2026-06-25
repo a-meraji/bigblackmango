@@ -101,3 +101,12 @@
   align-items: center;
   gap: 0.375rem;
 }
+
+.onBrand .regular,
+.onBrand .sale {
+  color: var(--text-on-brand);
+}
+
+.onBrand .original {
+  color: color-mix(in srgb, var(--text-on-brand) 68%, transparent);
+}

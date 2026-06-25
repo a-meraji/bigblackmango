@@ -8,7 +8,6 @@ import EmptyState from '@components/empty-state/EmptyState';
 import Skeleton from '@components/skeleton/Skeleton';
 import OrderCard from '@features/customer/orders/components/OrderCard';
 import ReceiptModal from '@features/customer/orders/components/ReceiptModal';
-import ReviewPromptSheet from '@features/customer/orders/components/ReviewPromptSheet';
 import { PENDING_RECEIPT_KEY } from '@constants/payment';
 import styles from './OrdersPage.module.css';
 
@@ -90,8 +89,6 @@ export default function OrdersPage() {
       {receiptOrderId && receipt && !receiptLoading && (
         <ReceiptModal isOpen onClose={() => setReceiptOrderId(null)} receipt={receipt} />
       )}
-
-      <ReviewPromptSheet />
     </PageShell>
   );
 }

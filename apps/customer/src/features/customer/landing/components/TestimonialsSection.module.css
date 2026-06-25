@@ -1,3 +1,121 @@
 .section {
   padding-block-start: 0;
+  position: relative;
+  margin-inline: calc(-1 * var(--page-inline-padding));
+}
+
+.header {
+  padding-inline: calc(2 * var(--page-inline-padding));
+}
+
+.carousel {
+  --carousel-stage-height: clamp(210px, 62vw, 300px);
+  --carousel-stage-padding: 0;
+  --carousel-slide-width: 78%;
+  --carousel-slide-max-width: 20rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 190px;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+.stars {
+  display: flex;
+  gap: 0.125rem;
+  flex-shrink: 0;
+}
+
+.starFilled {
+  color: var(--brand-primary);
+  fill: var(--brand-primary);
+}
+
+.starEmpty {
+  color: var(--cream-400);
+  fill: var(--cream-400);
+}
+
+.quote {
+  margin: 0;
+  flex: 1;
+}
+
+.text {
+  font-size: 0.875rem;
+  color: var(--text-body);
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-block-start: auto;
+  border-block-start: 1px solid var(--border-hairline);
+  padding-block-start: 0.75rem;
+}
+
+.avatar {
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarPlaceholder {
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-radius: var(--radius-pill);
+  background: var(--bg-brand-tint);
+  color: var(--brand-primary-active);
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.authorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-inline-size: 0;
+  flex: 1;
+}
+
+.authorName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.role {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+@media (min-width: 640px) {
+  .carousel {
+    --carousel-slide-max-width: 22rem;
+  }
+
+  .card {
+    min-block-size: 210px;
+  }
 }

@@ -10,6 +10,23 @@
     <meta name="theme-color" content="#000000" />
     <title>بلک منگو</title>
 
+    <!--
+      Register the service worker as early as possible — during HTML parse, in parallel with the
+      app bundle — instead of waiting for main.tsx to download/execute. Chrome's install criteria
+      need an active SW with a fetch handler, so front-loading registration makes
+      `beforeinstallprompt` (and the install button) go live sooner on slow connections. Skipped
+      on localhost dev hosts where no SW is built (no devOptions); insecure-context failures (the
+      plain-HTTP IP host) are swallowed.
+    -->
+    <script>
+      if (
+        'serviceWorker' in navigator &&
+        !/(^|\.)localhost$|^127\.|^\[?::1\]?$/.test(location.hostname)
+      ) {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
+      }
+    </script>
+
     <!-- PWA / Apple home-screen -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />

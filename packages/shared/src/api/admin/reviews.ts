@@ -7,6 +7,7 @@ export interface AdminReview {
   foodName: string;
   userId: string;
   userMobile: string;
+  reviewerName: string | null;
   orderId: string;
   orderTrackingCode: string;
   rating: number;
@@ -30,6 +31,7 @@ type RawAdminReview = {
   id: string;
   rating: number;
   comment: string | null;
+  reviewerName: string | null;
   isVisible: boolean;
   createdAt: string;
   user: { id: string; mobile: string };
@@ -45,6 +47,7 @@ function mapReview(raw: RawAdminReview): AdminReview {
     foodName: raw.food.name,
     userId: raw.user.id,
     userMobile: raw.user.mobile,
+    reviewerName: raw.reviewerName,
     orderId: raw.order.id,
     orderTrackingCode: raw.order.trackingCode,
     rating: raw.rating,

@@ -1,4 +1,4 @@
-import type { Order, OrderStatus, ReviewStatus } from '@t/order';
+import type { Order, OrderStatus, ReviewPromptInfo, ReviewStatus } from '@t/order';
 import { statusLabel } from '@utils/order-status';
 
 export interface BackendOrderSummary {
@@ -13,6 +13,7 @@ export interface BackendOrderSummary {
   total: number;
   orderedAt: string;
   itemsPreview?: Array<{ foodName: string; quantity: number }>;
+  reviewPrompt?: BackendReviewPrompt;
 }
 
 export interface BackendOrderDetail extends BackendOrderSummary {
@@ -28,7 +29,16 @@ export interface BackendOrderDetail extends BackendOrderSummary {
     menuDiscountPercent?: number | null;
     lineTotal: number;
   }>;
-  reviewPrompt?: { canReview: boolean; promptShown: boolean };
+  reviewPrompt: BackendReviewPrompt;
+}
+
+export interface BackendReviewPrompt {
+  canReview: boolean;
+  shouldPrompt: boolean;
+  promptShown: boolean;
+  dismissedAt: string | null;
+  expiresAt: string;
+  hasSubmittedReview: boolean;
 }
 
 const PAST_STATUSES: OrderStatus[] = ['delivered', 'cancelled'];
@@ -43,9 +53,36 @@ function parseAddressLine(address: unknown): string {
   return a.addressLine?.trim() || '—';
 }
 
+function mapReviewPrompt(raw?: BackendReviewPrompt): ReviewPromptInfo | undefined {
+  if (!raw) return undefined;
+
+  return {
+    canReview: raw.canReview,
+    shouldPrompt: raw.shouldPrompt,
+    promptShown: raw.promptShown,
+    dismissedAt: raw.dismissedAt,
+    expiresAt: raw.expiresAt,
+    hasSubmittedReview: raw.hasSubmittedReview,
+  };
+}
+
+function deriveReviewStatus(
+  status: OrderStatus,
+  reviewPrompt?: ReviewPromptInfo,
+): ReviewStatus {
+  if (status !== 'delivered') return 'not_applicable';
+  if (!reviewPrompt) return 'not_applicable';
+  if (reviewPrompt.hasSubmittedReview) return 'submitted';
+  if (!reviewPrompt.canReview) {
+    return reviewPrompt.hasSubmittedReview ? 'submitted' : 'expired';
+  }
+  return 'pending';
+}
+
 export function mapOrderSummary(raw: BackendOrderSummary): Order {
   const preview = raw.itemsPreview ?? [];
   const previewLine = preview.map((i) => `${i.foodName} × ${i.quantity}`).join(' · ');
+  const reviewPrompt = mapReviewPrompt(raw.reviewPrompt);
 
   return {
     id: raw.id,
@@ -64,30 +101,34 @@ export function mapOrderSummary(raw: BackendOrderSummary): Order {
       discountCode: raw.discountCode ?? null,
       total: raw.total,
     },
-    reviewStatus: deriveReviewStatus(raw.status, false),
+    reviewStatus: deriveReviewStatus(raw.status, reviewPrompt),
+    reviewPrompt,
     itemsPreview: preview,
   };
 }
 
 export function mapOrderDetail(raw: BackendOrderDetail): Order & {
   items: BackendOrderDetail['items'];
-  reviewPrompt: { canReview: boolean; promptShown: boolean };
+  reviewPrompt: ReviewPromptInfo;
 } {
+  const reviewPrompt = mapReviewPrompt(raw.reviewPrompt) ?? {
+    canReview: false,
+    shouldPrompt: false,
+    promptShown: true,
+    dismissedAt: null,
+    expiresAt: new Date().toISOString(),
+    hasSubmittedReview: false,
+  };
+
   const base = mapOrderSummary(raw);
-  const rp = raw.reviewPrompt ?? { canReview: false, promptShown: true };
 
   return {
     ...base,
     address: { addressLine: parseAddressLine(raw.address) },
-    reviewStatus: deriveReviewStatus(raw.status, rp.canReview && !rp.promptShown),
+    reviewStatus: deriveReviewStatus(raw.status, reviewPrompt),
     items: raw.items,
-    reviewPrompt: rp,
+    reviewPrompt,
   };
-}
-
-function deriveReviewStatus(status: OrderStatus, canReview: boolean): ReviewStatus {
-  if (status !== 'delivered') return 'not_applicable';
-  return canReview ? 'pending' : 'submitted';
 }
 
 export function filterOrdersByTab(orders: Order[], tab: 'current' | 'past'): Order[] {

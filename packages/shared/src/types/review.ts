@@ -8,6 +8,7 @@ export interface PublicReview {
   id: string;
   rating: number;
   comment: string | null;
+  reviewerName: string | null;
   adminReply: PublicAdminReply | null;
   createdAt: string;
 }

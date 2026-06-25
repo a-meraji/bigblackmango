@@ -5,7 +5,7 @@ export type OrderStatus =
   | 'delivered'
   | 'cancelled';
 
-export type ReviewStatus = 'not_applicable' | 'pending' | 'submitted';
+export type ReviewStatus = 'not_applicable' | 'pending' | 'submitted' | 'expired';
 
 export interface OrderAddress {
   addressLine: string;
@@ -31,6 +31,15 @@ export interface OrderItemLine {
   lineTotal: number;
 }
 
+export interface ReviewPromptInfo {
+  canReview: boolean;
+  shouldPrompt: boolean;
+  promptShown: boolean;
+  dismissedAt: string | null;
+  expiresAt: string;
+  hasSubmittedReview: boolean;
+}
+
 export interface Order {
   id: string;
   trackingCode: string;
@@ -41,10 +50,11 @@ export interface Order {
   address: OrderAddress;
   pricing: OrderPricing;
   reviewStatus: ReviewStatus;
+  reviewPrompt?: ReviewPromptInfo;
   itemsPreview?: Array<{ foodName: string; quantity: number }>;
 }
 
 export interface OrderDetail extends Order {
   items: OrderItemLine[];
-  reviewPrompt: { canReview: boolean; promptShown: boolean };
+  reviewPrompt: ReviewPromptInfo;
 }

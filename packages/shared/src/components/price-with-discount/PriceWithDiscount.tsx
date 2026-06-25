@@ -5,6 +5,7 @@ import styles from './PriceWithDiscount.module.css';
 
 type Size = 'sm' | 'md' | 'lg';
 type Layout = 'stacked' | 'inline';
+type Variant = 'default' | 'onBrand';
 
 interface Props {
   originalPrice: number;
@@ -12,6 +13,7 @@ interface Props {
   discountPercent?: number | null;
   size?: Size;
   layout?: Layout;
+  variant?: Variant;
   showBadge?: boolean;
   className?: string;
 }
@@ -35,15 +37,17 @@ export default function PriceWithDiscount({
   discountPercent,
   size = 'md',
   layout = 'stacked',
+  variant = 'default',
   showBadge = true,
   className,
 }: Props) {
   const discounted = hasDiscount(originalPrice, salePrice, discountPercent);
   const effectiveSalePrice = salePrice ?? originalPrice;
+  const variantClass = variant === 'onBrand' ? styles.onBrand : undefined;
 
   if (!discounted) {
     return (
-      <span className={clsx(styles.root, className)} dir="ltr">
+      <span className={clsx(styles.root, variantClass, className)} dir="ltr">
         <span className={clsx(styles.regular, styles[`regular${capitalize(size)}`])}>
           {formatPrice(originalPrice)}
         </span>
@@ -59,7 +63,7 @@ export default function PriceWithDiscount({
 
   if (layout === 'inline') {
     return (
-      <span className={clsx(styles.rootInline, className)} dir="ltr">
+      <span className={clsx(styles.rootInline, variantClass, className)} dir="ltr">
         {badge}
         <span className={clsx(styles.original, styles[`original${capitalize(size)}`])}>
           {formatPrice(originalPrice)}
@@ -72,7 +76,7 @@ export default function PriceWithDiscount({
   }
 
   return (
-    <span className={clsx(styles.root, className)} dir="ltr">
+    <span className={clsx(styles.root, variantClass, className)} dir="ltr">
       {badge && <span className={styles.badgeRow}>{badge}</span>}
       <span className={clsx(styles.original, styles[`original${capitalize(size)}`])}>
         {formatPrice(originalPrice)}

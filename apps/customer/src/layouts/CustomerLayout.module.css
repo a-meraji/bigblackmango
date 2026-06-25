@@ -10,6 +10,9 @@
   max-inline-size: var(--layout-max-width);
   inline-size: 100%;
   margin-inline: auto;
+}
+
+.withBottomNavInset {
   padding-block-end: calc(
     var(--layout-bottom-nav-height) + env(safe-area-inset-bottom, 0px)
   );

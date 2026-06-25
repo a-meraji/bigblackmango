@@ -2,8 +2,7 @@ import type { PublicFoodSummary } from '@t/food';
 import type { LandingFoodShowcase } from '@t/landing';
 import { formatPrice } from '@utils/format-price';
 import { resolveMediaUrl } from '@utils/resolve-media-url';
-import { useRevealOnScroll } from '@hooks/useRevealOnScroll';
-import InstallButton from './InstallButton';
+import DepthCarousel from './DepthCarousel';
 import LandingSectionHeader from './LandingSectionHeader';
 import styles from './FoodShowcaseSection.module.css';
 
@@ -15,45 +14,38 @@ interface Props {
   installing?: boolean;
 }
 
-function FoodTile({
+function FoodCarouselCard({
   food,
-  index,
+  isActive,
   onInstallClick,
 }: {
   food: PublicFoodSummary;
-  index: number;
+  isActive: boolean;
   onInstallClick: (sectionId: string) => void | Promise<unknown>;
 }) {
-  const ref = useRevealOnScroll<HTMLLIElement>();
-
   return (
-    <li
-      ref={ref}
-      className={styles.item}
-      style={{ transitionDelay: `${index * 90}ms` }}
+    <button
+      type="button"
+      className={`${styles.tile} ${isActive ? styles.tileActive : styles.tileInactive}`}
+      onClick={() => onInstallClick('food_showcase')}
+      tabIndex={isActive ? 0 : -1}
+      aria-label={`${food.name}، ${formatPrice(food.price)} — نصب اپ برای سفارش`}
     >
-      <button
-        type="button"
-        className={styles.tile}
-        onClick={() => onInstallClick('food_showcase')}
-        aria-label={`${food.name}، ${formatPrice(food.price)} — نصب اپ برای سفارش`}
-      >
-        <span className={styles.imageWrap}>
-          {food.imageUrl ? (
-            <img
-              src={resolveMediaUrl(food.imageUrl)}
-              alt=""
-              className={styles.image}
-              loading="lazy"
-            />
-          ) : (
-            <span className={styles.imagePlaceholder} aria-hidden="true" />
-          )}
-          <span className={styles.gradient} aria-hidden="true" />
-          <span className={styles.name}>{food.name}</span>
-        </span>
-      </button>
-    </li>
+      <span className={styles.imageWrap}>
+        {food.imageUrl ? (
+          <img
+            src={resolveMediaUrl(food.imageUrl)}
+            alt=""
+            className={styles.image}
+            loading={isActive ? 'eager' : 'lazy'}
+          />
+        ) : (
+          <span className={styles.imagePlaceholder} aria-hidden="true" />
+        )}
+        <span className={styles.gradient} aria-hidden="true" />
+        <span className={styles.name}>{food.name}</span>
+      </span>
+    </button>
   );
 }
 
@@ -62,48 +54,39 @@ export default function FoodShowcaseSection({
   foods,
   loading = false,
   onInstallClick,
-  installing,
 }: Props) {
   if (!loading && foods.length === 0) return null;
 
   return (
     <section className={styles.section} aria-labelledby="food-showcase-title">
-      <LandingSectionHeader
-        id="food-showcase-title"
-        title={config.sectionTitle}
-        iconName={config.sectionIcon}
-      />
-      <p className={styles.lead}>{config.lead}</p>
+      <div className={styles.header}>
+        <LandingSectionHeader
+          id="food-showcase-title"
+          title={config.sectionTitle}
+          iconName={config.sectionIcon}
+        />
+        <p className={styles.lead}>{config.lead}</p>
+      </div>
 
       {loading ? (
-        <ul className={styles.list} aria-hidden="true">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <li key={index}>
-              <div className={styles.skeleton} />
-            </li>
-          ))}
-        </ul>
+        <div className={styles.carouselSkeleton} aria-hidden="true" />
       ) : (
-        <ul className={styles.list}>
-          {foods.map((food, index) => (
-            <FoodTile
-              key={food.id}
+        <DepthCarousel
+          className={styles.carousel}
+          items={foods}
+          getItemKey={(food) => food.id}
+          ariaLabel="غذاهای منتخب"
+          renderSlide={(food, { isActive }) => (
+            <FoodCarouselCard
               food={food}
-              index={index}
+              isActive={isActive}
               onInstallClick={onInstallClick}
             />
-          ))}
-        </ul>
+          )}
+        />
       )}
 
-      <div className={styles.cta}>
-        <InstallButton
-          sectionId="food_showcase"
-          onClick={onInstallClick}
-          loading={installing}
-          fullWidth
-        />
-      </div>
+      <div className={styles.cta} />
     </section>
   );
 }

@@ -12,6 +12,10 @@ interface Props {
   initialItems: PublicReview[];
 }
 
+function reviewerLabel(name: string | null): string {
+  return name?.trim() || 'کاربر';
+}
+
 export default function ReviewsSection({ foodId, summary, initialItems }: Props) {
   const [page, setPage] = useState(1);
   const [reviews, setReviews] = useState<PublicReview[]>(initialItems);
@@ -60,13 +64,19 @@ export default function ReviewsSection({ foodId, summary, initialItems }: Props)
         {reviews.map((review) => (
           <li key={review.id} className={styles.item}>
             <div className={styles.itemHeader}>
+              <div className={styles.authorRow}>
+                <span className={styles.author}>{reviewerLabel(review.reviewerName)}</span>
+                <span className={styles.separator} aria-hidden>
+                  ·
+                </span>
+                <span className={styles.date}>{toJalali(review.createdAt)}</span>
+              </div>
               <StarRating average={review.rating} size="sm" />
-              <span className={styles.date}>{toJalali(review.createdAt)}</span>
             </div>
             {review.comment && <p className={styles.comment}>{review.comment}</p>}
             {review.adminReply && (
               <div className={styles.adminReply}>
-                <span className={styles.replyLabel}>پاسخ فروشگاه:</span>
+                <span className={styles.replyLabel}>پاسخ مدیر رستوران:</span>
                 <p className={styles.replyText}>{review.adminReply.message}</p>
               </div>
             )}

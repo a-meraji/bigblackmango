@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Bell, Send, Plus, Pencil, Trash2, CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
+import { Bell, Send, Plus, Pencil, Trash2, CheckCircle, XCircle, Eye, EyeOff, Clock, Radio } from 'lucide-react';
 import clsx from 'clsx';
 import CustomSelect from '@components/custom-select/CustomSelect';
 import {
@@ -10,17 +10,76 @@ import {
   adminUpdateTemplate,
   adminDeleteTemplate,
   adminSendNotification,
+  adminGetSchedule,
+  adminUpdateSchedule,
+  adminListChannels,
+  adminUpdateChannel,
 } from '@api/admin/notifications';
-import type { NotificationTemplate, CreateTemplatePayload, SendNotificationPayload } from '@t/notifications';
+import type {
+  NotificationTemplate,
+  CreateTemplatePayload,
+  SendNotificationPayload,
+  NotificationChannel,
+  ChannelKey,
+  ChannelConfig,
+} from '@t/notifications';
 import Button from '@components/button/Button';
 import Spinner from '@components/spinner/Spinner';
 import { useToast } from '@hooks/useToast';
 import { toJalaliWithTime } from '@utils/format-date';
+import { toPersianDigits } from '@utils/locale';
 import RawLocalizedInput from '@components/input/RawLocalizedInput';
 import { useLocalizedDigits } from '@hooks/useLocalizedDigits';
 import styles from './NotificationsPage.module.css';
 
 const PLACEHOLDERS = '{food1}، {food2}، {food3}';
+
+/** Backend sentinel for an already-stored secret (never the real value). */
+const SECRET_MASK = '__SECRET_SET__';
+
+interface ChannelFieldMeta {
+  key: string;
+  label: string;
+  secret?: boolean;
+  placeholder?: string;
+}
+
+const CHANNEL_META: Record<
+  ChannelKey,
+  { label: string; desc: string; fields: ChannelFieldMeta[] }
+> = {
+  web_push: {
+    label: 'نوتیفیکیشن وب (Web Push)',
+    desc: 'پوش مرورگر برای کاربرانی که اجازه داده‌اند. کانال اصلی.',
+    fields: [],
+  },
+  sms: {
+    label: 'پیامک (کاوه‌نگار)',
+    desc: '⚠️ پیامک به همهٔ مشتریان دارای شماره ',
+    fields: [
+      { key: 'apiKey', label: 'API Key', secret: true, placeholder: 'کلید API کاوه‌نگار' },
+      { key: 'sender', label: 'شماره فرستنده', placeholder: '10008663' },
+    ],
+  },
+  telegram: {
+    label: 'تلگرام',
+    desc: 'ارسال منوی روزانه به کانال/چت تلگرام. کاربران در کانال عضو می‌شوند.',
+    fields: [
+      { key: 'botToken', label: 'Bot Token', secret: true, placeholder: '123456:ABC...' },
+      { key: 'chatId', label: 'شناسه چت / کانال', placeholder: '@my_channel یا -100...' },
+    ],
+  },
+  bale: {
+    label: 'بله',
+    desc: 'ارسال منوی روزانه به کانال/چت بله.',
+    fields: [
+      { key: 'botToken', label: 'Bot Token', secret: true, placeholder: 'توکن ربات بله' },
+      { key: 'chatId', label: 'شناسه چت / کانال', placeholder: '@my_channel یا شناسه عددی' },
+    ],
+  },
+};
+
+const CHANNEL_ORDER: ChannelKey[] = ['web_push', 'sms', 'telegram', 'bale'];
 
 // ─── Template Form ────────────────────────────────────────────────────────────
 
@@ -182,6 +241,196 @@ function SendForm({ templates, onSend, sending }: SendFormProps) {
   );
 }
 
+// ─── Schedule Card ──────────────────────────────────────────────────────────────
+
+function ScheduleCard() {
+  const qc = useQueryClient();
+  const toast = useToast();
+  const { data: schedule, isLoading } = useQuery({
+    queryKey: ['admin', 'notifications', 'schedule'],
+    queryFn: adminGetSchedule,
+  });
+
+  const [time, setTime] = useState<string | null>(null);
+  const [enabled, setEnabled] = useState<boolean | null>(null);
+
+  const currentTime = time ?? schedule?.tehranTime ?? '10:30';
+  const currentEnabled = enabled ?? schedule?.isEnabled ?? true;
+
+  const mutation = useMutation({
+    mutationFn: adminUpdateSchedule,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'notifications', 'schedule'] });
+      toast.success('زمان‌بندی ذخیره شد.');
+      setTime(null);
+      setEnabled(null);
+    },
+    onError: () => toast.error('خطا در ذخیرهٔ زمان‌بندی.'),
+  });
+
+  if (isLoading) return <Spinner />;
+
+  return (
+    <div className={styles.scheduleCard}>
+      <div className={styles.scheduleRow}>
+        <div className={styles.formRow}>
+          <label className={styles.label}>ساعت ارسال روزانه (به وقت تهران)</label>
+          <input
+            type="time"
+            dir="ltr"
+            className={styles.timeInput}
+            value={currentTime}
+            onChange={(e) => setTime(e.target.value)}
+          />
+          <span className={styles.hint}>
+            هر روز ساعت {toPersianDigits(currentTime)} به وقت تهران ارسال می‌شود.
+          </span>
+        </div>
+
+        <label className={styles.switchLabel}>
+          <input
+            type="checkbox"
+            checked={currentEnabled}
+            onChange={(e) => setEnabled(e.target.checked)}
+          />
+          <span>{currentEnabled ? 'فعال' : 'غیرفعال'}</span>
+        </label>
+      </div>
+
+      <div className={styles.formActions}>
+        <Button
+          type="button"
+          variant="primary"
+          loading={mutation.isPending}
+          onClick={() =>
+            mutation.mutate({ tehranTime: currentTime, isEnabled: currentEnabled })
+          }
+        >
+          ذخیره زمان‌بندی
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Channels Card ──────────────────────────────────────────────────────────────
+
+function ChannelRow({
+  channel,
+  onSave,
+  saving,
+}: {
+  channel: NotificationChannel;
+  onSave: (payload: { isEnabled: boolean; config: ChannelConfig }) => void;
+  saving: boolean;
+}) {
+  const meta = CHANNEL_META[channel.channel];
+  const [enabled, setEnabled] = useState(channel.isEnabled);
+  const [config, setConfig] = useState<ChannelConfig>(() => {
+    const init: ChannelConfig = {};
+    for (const f of meta.fields) {
+      // Secret fields start blank (stored value is masked); others prefill.
+      init[f.key] = f.secret ? '' : channel.config[f.key] ?? '';
+    }
+    return init;
+  });
+
+  function handleSave() {
+    onSave({ isEnabled: enabled, config });
+  }
+
+  return (
+    <div className={clsx(styles.channelItem, !enabled && styles.tplDim)}>
+      <div className={styles.channelHead}>
+        <div>
+          <span className={styles.channelName}>{meta.label}</span>
+          <p className={styles.channelDesc}>{meta.desc}</p>
+        </div>
+        <label className={styles.switchLabel}>
+          <input
+            type="checkbox"
+            checked={enabled}
+            onChange={(e) => setEnabled(e.target.checked)}
+          />
+          <span>{enabled ? 'فعال' : 'غیرفعال'}</span>
+        </label>
+      </div>
+
+      {meta.fields.length > 0 && (
+        <div className={styles.channelFields}>
+          {meta.fields.map((f) => {
+            const isStored = f.secret && channel.config[f.key] === SECRET_MASK;
+            return (
+              <div key={f.key} className={styles.formRow}>
+                <label className={styles.label}>{f.label}</label>
+                <RawLocalizedInput
+                  className={styles.input}
+                  value={config[f.key] ?? ''}
+                  onChange={(v) => setConfig((c) => ({ ...c, [f.key]: v }))}
+                  placeholder={isStored ? '•••••• (ذخیره شده)' : f.placeholder}
+                  dir="ltr"
+                  type={f.secret ? 'password' : 'text'}
+                />
+                {f.secret && (
+                  <span className={styles.hint}>
+                    {isStored
+                      ? 'برای تغییر، مقدار جدید وارد کنید؛ خالی بگذارید تا همان بماند.'
+                      : 'این مقدار محرمانه است و ذخیره می‌شود.'}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <div className={styles.formActions}>
+        <Button type="button" variant="primary" loading={saving} onClick={handleSave}>
+          ذخیره
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function ChannelsCard() {
+  const qc = useQueryClient();
+  const toast = useToast();
+  const { data: channels = [], isLoading } = useQuery({
+    queryKey: ['admin', 'notifications', 'channels'],
+    queryFn: adminListChannels,
+  });
+
+  const mutation = useMutation({
+    mutationFn: ({ channel, payload }: { channel: ChannelKey; payload: { isEnabled: boolean; config: ChannelConfig } }) =>
+      adminUpdateChannel(channel, payload),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'notifications', 'channels'] });
+      toast.success('کانال ذخیره شد.');
+    },
+    onError: () => toast.error('خطا در ذخیرهٔ کانال.'),
+  });
+
+  if (isLoading) return <Spinner />;
+
+  const ordered = CHANNEL_ORDER.map((key) => channels.find((c) => c.channel === key)).filter(
+    (c): c is NotificationChannel => Boolean(c),
+  );
+
+  return (
+    <div className={styles.channelList}>
+      {ordered.map((channel) => (
+        <ChannelRow
+          key={channel.channel}
+          channel={channel}
+          saving={mutation.isPending && mutation.variables?.channel === channel.channel}
+          onSave={(payload) => mutation.mutate({ channel: channel.channel, payload })}
+        />
+      ))}
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function NotificationsPage() {
@@ -280,6 +529,22 @@ export default function NotificationsPage() {
             </div>
           </div>
         )}
+      </section>
+
+      {/* ── Daily schedule ── */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}><Clock size={15} />زمان ارسال روزانه</h2>
+        <ScheduleCard />
+      </section>
+
+      {/* ── Delivery channels ── */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}><Radio size={15} />کانال‌های ارسال</h2>
+        <p className={styles.empty}>
+          منوی روزانه به همهٔ کانال‌های فعال ارسال می‌شود. کانال‌های پیامک/تلگرام/بله برای
+          کاربرانی که پوش وب ندارند.
+        </p>
+        <ChannelsCard />
       </section>
 
       {/* ── Send now ── */}

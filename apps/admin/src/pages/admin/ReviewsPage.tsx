@@ -87,9 +87,12 @@ export default function ReviewsPage() {
       key: 'user',
       label: 'مشتری',
       render: (r) => (
-        <span dir="ltr" className={styles.userMobile}>
-          {formatDigits(r.userMobile)}
-        </span>
+        <div className={styles.customerCell}>
+          <strong>{r.reviewerName?.trim() || 'کاربر'}</strong>
+          <span dir="ltr" className={styles.userMobile}>
+            {formatDigits(r.userMobile)}
+          </span>
+        </div>
       ),
     },
     {

@@ -41,7 +41,14 @@
 }
 
 .userMobile {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.customerCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
 }
 
 .tracking {

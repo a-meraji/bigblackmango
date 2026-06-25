@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Trash2 } from 'lucide-react';
 import Input from '@components/input/Input';
 import Button from '@components/button/Button';
+import IconButton from '@components/icon-button/IconButton';
 import FormErrorBanner from '@components/form-error-banner/FormErrorBanner';
 import IconPicker from '@components/icon-picker/IconPicker';
 import { MediaPickerField } from '@components/media-picker';
@@ -15,7 +17,6 @@ import type {
   LandingHowItWorks,
   LandingPartySection,
   LandingTestimonial,
-  LandingValueProps,
   UpdateLandingPayload,
 } from '@t/landing';
 import type { FaqItem, ServiceStat } from '@t/party-service';
@@ -44,10 +45,6 @@ export default function LandingEditorForm() {
     sectionIcon: null,
     lead: '',
     featuredFoodIds: [],
-  });
-  const [valueProps, setValueProps] = useState<LandingValueProps>({
-    sectionTitle: '',
-    items: [],
   });
   const [stats, setStats] = useState<ServiceStat[]>([]);
   const [trustSectionTitle, setTrustSectionTitle] = useState('');
@@ -78,6 +75,8 @@ export default function LandingEditorForm() {
   });
   const [isActive, setIsActive] = useState(true);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [foodShowcaseIconOpen, setFoodShowcaseIconOpen] = useState(false);
+  const [openStatIconIndex, setOpenStatIconIndex] = useState<number | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'landing'],
@@ -98,7 +97,6 @@ export default function LandingEditorForm() {
     setHeroTrustLine(landing.heroTrustLine);
     setSocialItems(landing.socialStrip.items);
     setFoodShowcase(landing.foodShowcase);
-    setValueProps(landing.valueProps);
     setStats(landing.stats);
     setTrustSectionTitle(landing.trustSectionTitle);
     setHowItWorks(landing.howItWorks);
@@ -132,6 +130,10 @@ export default function LandingEditorForm() {
 
   function removeStat(i: number) {
     setStats((s) => s.filter((_, idx) => idx !== i));
+    if (openStatIconIndex === i) setOpenStatIconIndex(null);
+    else if (openStatIconIndex !== null && openStatIconIndex > i) {
+      setOpenStatIconIndex(openStatIconIndex - 1);
+    }
   }
 
   function updateStat(i: number, field: 'label' | 'value', val: string) {
@@ -197,10 +199,6 @@ export default function LandingEditorForm() {
         lead: foodShowcase.lead.trim(),
         featuredFoodIds: foodShowcase.featuredFoodIds,
       },
-      valueProps: {
-        sectionTitle: valueProps.sectionTitle.trim(),
-        items: valueProps.items.filter((item) => item.title.trim() && item.body.trim()),
-      },
       stats: stats.filter((s) => s.label.trim() && s.value.trim()),
       trustSectionTitle: trustSectionTitle.trim() || undefined,
       howItWorks: {
@@ -248,12 +246,40 @@ export default function LandingEditorForm() {
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>هیرو</h2>
-        <Input label="نشان" value={heroBadge} onChange={(e) => setHeroBadge(e.target.value)} />
-        <Input label="عنوان" value={heroTitle} onChange={(e) => setHeroTitle(e.target.value)} required />
-        <Input label="زیرعنوان" value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} />
-        <MediaPickerField label="تصویر هیرو" value={heroImageUrl} onChange={setHeroImageUrl} />
-        <Input label="متن جایگزین تصویر" value={heroImageAlt} onChange={(e) => setHeroImageAlt(e.target.value)} />
-        <Input label="خط اعتماد" value={heroTrustLine} onChange={(e) => setHeroTrustLine(e.target.value)} />
+        <div className={styles.heroTitleRow}>
+          <Input label="نشان" value={heroBadge} onChange={(e) => setHeroBadge(e.target.value)} />
+          <Input
+            label="عنوان"
+            value={heroTitle}
+            onChange={(e) => setHeroTitle(e.target.value)}
+            required
+          />
+          <Input
+            label="زیرعنوان"
+            value={heroSubtitle}
+            onChange={(e) => setHeroSubtitle(e.target.value)}
+          />
+        </div>
+        <MediaPickerField
+          label="تصویر هیرو"
+          value={heroImageUrl}
+          onChange={setHeroImageUrl}
+          allowedTypes="image"
+          uploadFolder="general"
+          previewAlt={heroImageAlt || heroTitle || 'تصویر هیرو'}
+        />
+        <div className={styles.heroMetaRow}>
+          <Input
+            label="متن جایگزین تصویر"
+            value={heroImageAlt}
+            onChange={(e) => setHeroImageAlt(e.target.value)}
+          />
+          <Input
+            label="خط اعتماد"
+            value={heroTrustLine}
+            onChange={(e) => setHeroTrustLine(e.target.value)}
+          />
+        </div>
       </section>
 
       <section className={styles.section}>
@@ -263,38 +289,56 @@ export default function LandingEditorForm() {
             + افزودن
           </button>
         </div>
-        {socialItems.map((item, index) => (
-          <div key={index} className={styles.trustItemRow}>
-            <Input
-              label={`ستون ${index + 1}`}
-              value={item}
-              onChange={(e) => updateSocialItem(index, e.target.value)}
-            />
-            <button type="button" className={styles.removeBtn} onClick={() => removeSocialItem(index)}>
-              حذف
-            </button>
+        {socialItems.length > 0 && (
+          <div className={styles.socialStripGrid}>
+            {socialItems.map((item, index) => (
+              <div key={index} className={styles.socialStripCell}>
+                <span className={styles.socialStripCellLabel}>ستون {index + 1}</span>
+                <div className={styles.socialStripCellInner}>
+                  <Input
+                    value={item}
+                    onChange={(e) => updateSocialItem(index, e.target.value)}
+                    aria-label={`ستون ${index + 1}`}
+                    className={styles.socialStripInput}
+                  />
+                  <IconButton
+                    icon={Trash2}
+                    label={`حذف ستون ${index + 1}`}
+                    variant="ghost"
+                    className={styles.socialStripRemove}
+                    onClick={() => removeSocialItem(index)}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>نمایش غذاها</h2>
-        <Input
-          label="عنوان بخش"
-          value={foodShowcase.sectionTitle}
-          onChange={(e) =>
-            setFoodShowcase((s) => ({ ...s, sectionTitle: e.target.value }))
-          }
-        />
-        <IconPicker
-          value={foodShowcase.sectionIcon}
-          onChange={(icon) => setFoodShowcase((s) => ({ ...s, sectionIcon: icon }))}
-        />
-        <Input
-          label="متن راهنما"
-          value={foodShowcase.lead}
-          onChange={(e) => setFoodShowcase((s) => ({ ...s, lead: e.target.value }))}
-        />
+        <div className={styles.cardFieldsGrid}>
+          <Input
+            label="عنوان بخش"
+            value={foodShowcase.sectionTitle}
+            onChange={(e) =>
+              setFoodShowcase((s) => ({ ...s, sectionTitle: e.target.value }))
+            }
+          />
+          <IconPicker
+            label="آیکون"
+            value={foodShowcase.sectionIcon}
+            onChange={(icon) => setFoodShowcase((s) => ({ ...s, sectionIcon: icon }))}
+            layout="gridSpan"
+            open={foodShowcaseIconOpen}
+            onOpenChange={setFoodShowcaseIconOpen}
+          />
+          <Input
+            label="متن راهنما"
+            value={foodShowcase.lead}
+            onChange={(e) => setFoodShowcase((s) => ({ ...s, lead: e.target.value }))}
+          />
+        </div>
         <LandingFoodPicker
           selectedIds={foodShowcase.featuredFoodIds}
           onChange={(featuredFoodIds) =>
@@ -304,39 +348,49 @@ export default function LandingEditorForm() {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>مزایا (چرا اپ؟)</h2>
-        <Input
-          label="عنوان بخش"
-          value={valueProps.sectionTitle}
-          onChange={(e) => setValueProps((s) => ({ ...s, sectionTitle: e.target.value }))}
-        />
-        <LandingCardListEditor
-          label="کارت‌های مزیت"
-          items={valueProps.items}
-          onChange={(items) => setValueProps((s) => ({ ...s, items }))}
-        />
-      </section>
-
-      <section className={styles.section}>
-        <Input
-          label="عنوان بخش آمار"
-          value={trustSectionTitle}
-          onChange={(e) => setTrustSectionTitle(e.target.value)}
-        />
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>آمار اعتماد</h2>
           <button type="button" className={styles.addBtn} onClick={addStat}>
             + افزودن
           </button>
         </div>
+        <Input
+          label="عنوان بخش آمار"
+          value={trustSectionTitle}
+          onChange={(e) => setTrustSectionTitle(e.target.value)}
+        />
         {stats.map((stat, i) => (
-          <div key={i} className={styles.statRow}>
-            <Input label="برچسب" value={stat.label} onChange={(e) => updateStat(i, 'label', e.target.value)} />
-            <Input label="مقدار" value={stat.value} onChange={(e) => updateStat(i, 'value', e.target.value)} />
-            <IconPicker value={stat.icon ?? null} onChange={(icon) => updateStatIcon(i, icon)} />
-            <button type="button" className={styles.removeBtn} onClick={() => removeStat(i)}>
-              حذف
-            </button>
+          <div key={i} className={styles.cardItem}>
+            <div className={styles.cardItemHeader}>
+              <span className={styles.rowLabel}>آمار {i + 1}</span>
+              <IconButton
+                icon={Trash2}
+                label={`حذف آمار ${i + 1}`}
+                variant="ghost"
+                className={styles.cardRemoveBtn}
+                onClick={() => removeStat(i)}
+              />
+            </div>
+            <div className={styles.cardFieldsGrid}>
+              <Input
+                label="برچسب"
+                value={stat.label}
+                onChange={(e) => updateStat(i, 'label', e.target.value)}
+              />
+              <Input
+                label="مقدار"
+                value={stat.value}
+                onChange={(e) => updateStat(i, 'value', e.target.value)}
+              />
+              <IconPicker
+                label="آیکون"
+                value={stat.icon ?? null}
+                onChange={(icon) => updateStatIcon(i, icon)}
+                layout="gridSpan"
+                open={openStatIconIndex === i}
+                onOpenChange={(open) => setOpenStatIconIndex(open ? i : null)}
+              />
+            </div>
           </div>
         ))}
       </section>
@@ -359,24 +413,26 @@ export default function LandingEditorForm() {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>بخش پذیرایی و مجالس</h2>
         <p className={styles.hint}>اسلایدها از بخش «بنرهای کیترینگ» مدیریت می‌شوند.</p>
-        <Input
-          label="عنوان"
-          value={partySection.title}
-          onChange={(e) => setPartySection((s) => ({ ...s, title: e.target.value }))}
-        />
-        <Input
-          label="زیرنویس"
-          value={partySection.caption}
-          onChange={(e) => setPartySection((s) => ({ ...s, caption: e.target.value }))}
-        />
+        <div className={styles.heroMetaRow}>
+          <Input
+            label="عنوان"
+            value={partySection.title}
+            onChange={(e) => setPartySection((s) => ({ ...s, title: e.target.value }))}
+          />
+          <Input
+            label="زیرنویس"
+            value={partySection.caption}
+            onChange={(e) => setPartySection((s) => ({ ...s, caption: e.target.value }))}
+          />
+        </div>
       </section>
 
-      <Input
-        label="عنوان بخش نظرات"
-        value={testimonialsSectionTitle}
-        onChange={(e) => setTestimonialsSectionTitle(e.target.value)}
+      <LandingTestimonialsEditor
+        sectionTitle={testimonialsSectionTitle}
+        onSectionTitleChange={setTestimonialsSectionTitle}
+        testimonials={testimonials}
+        onChange={setTestimonials}
       />
-      <LandingTestimonialsEditor testimonials={testimonials} onChange={setTestimonials} />
 
       <section className={styles.section}>
         <FaqEditor faq={faq} onChange={setFaq} />
@@ -384,26 +440,48 @@ export default function LandingEditorForm() {
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>دعوت نهایی (CTA)</h2>
-        <Input label="عنوان" value={finalCta.title} onChange={(e) => setFinalCta((s) => ({ ...s, title: e.target.value }))} />
-        <Input label="زیرعنوان" value={finalCta.subtitle} onChange={(e) => setFinalCta((s) => ({ ...s, subtitle: e.target.value }))} />
+        <div className={styles.heroMetaRow}>
+          <Input
+            label="عنوان"
+            value={finalCta.title}
+            onChange={(e) => setFinalCta((s) => ({ ...s, title: e.target.value }))}
+          />
+          <Input
+            label="زیرعنوان"
+            value={finalCta.subtitle}
+            onChange={(e) => setFinalCta((s) => ({ ...s, subtitle: e.target.value }))}
+          />
+        </div>
         <div className={styles.sectionHeader}>
           <span className={styles.subLabel}>مزایا</span>
           <button type="button" className={styles.addBtn} onClick={addTrustItem}>
             + افزودن
           </button>
         </div>
-        {finalCta.trustItems.map((item, index) => (
-          <div key={index} className={styles.trustItemRow}>
-            <Input
-              label={`مزیت ${index + 1}`}
-              value={item}
-              onChange={(e) => updateTrustItem(index, e.target.value)}
-            />
-            <button type="button" className={styles.removeBtn} onClick={() => removeTrustItem(index)}>
-              حذف
-            </button>
+        {finalCta.trustItems.length > 0 && (
+          <div className={styles.socialStripGrid}>
+            {finalCta.trustItems.map((item, index) => (
+              <div key={index} className={styles.socialStripCell}>
+                <span className={styles.socialStripCellLabel}>مزیت {index + 1}</span>
+                <div className={styles.socialStripCellInner}>
+                  <Input
+                    value={item}
+                    onChange={(e) => updateTrustItem(index, e.target.value)}
+                    aria-label={`مزیت ${index + 1}`}
+                    className={styles.socialStripInput}
+                  />
+                  <IconButton
+                    icon={Trash2}
+                    label={`حذف مزیت ${index + 1}`}
+                    variant="ghost"
+                    className={styles.socialStripRemove}
+                    onClick={() => removeTrustItem(index)}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
         <LandingLinksEditor
           label="لینک‌های اضافی"
           links={finalCta.links}
@@ -425,14 +503,17 @@ export default function LandingEditorForm() {
         />
       </section>
 
-      <label className={styles.checkbox}>
-        <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
-        <span>صفحه لندینگ فعال است</span>
-      </label>
+      <div className={styles.formFooterSpacer} aria-hidden="true" />
 
-      <Button type="submit" loading={saveMutation.isPending}>
-        ذخیره تغییرات
-      </Button>
+      <div className={styles.formFooter}>
+        <label className={styles.checkbox}>
+          <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+          <span>صفحه لندینگ فعال است</span>
+        </label>
+        <Button type="submit" loading={saveMutation.isPending}>
+          ذخیره تغییرات
+        </Button>
+      </div>
     </form>
   );
 }

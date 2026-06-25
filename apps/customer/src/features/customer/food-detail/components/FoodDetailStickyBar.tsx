@@ -1,7 +1,9 @@
+import clsx from 'clsx';
+import { PackageX, ShoppingCart, Tag } from 'lucide-react';
 import type { PublicFoodDetail } from '@t/food';
 import type { NormalizedAvailability } from '@utils/food-availability';
+import Icon from '@components/icon/Icon';
 import PriceWithDiscount from '@components/price-with-discount/PriceWithDiscount';
-import StickyFooter from '@components/sticky-footer/StickyFooter';
 import { useAddToCart } from '@features/customer/cart/hooks/useAddToCart';
 import styles from './FoodDetailStickyBar.module.css';
 
@@ -12,52 +14,61 @@ interface Props {
 
 export default function FoodDetailStickyBar({ food, availability }: Props) {
   const { addToCart, addingId } = useAddToCart();
-  const isOutOfStock = !availability || !availability.isAvailable;
-  const isLoading = availability ? addingId === availability.menuItemId : false;
+  const isUnavailable = !availability;
+  const isSoldOut = availability != null && !availability.isAvailable;
+  const canAddToCart = availability != null && availability.isAvailable;
+  const isLoading = canAddToCart && addingId === availability.menuItemId;
   const salePrice = availability?.salePrice ?? food.price;
   const hasMenuDiscount =
     availability != null &&
     availability.discountPercent != null &&
     availability.discountPercent > 0 &&
     salePrice < food.price;
+  const ctaLabel = isUnavailable ? 'ناموجود' : isSoldOut ? 'تمام شد' : 'افزودن به سبد';
+
+  function handleAddToCart() {
+    if (!canAddToCart) return;
+
+    addToCart({
+      menuItemId: availability.menuItemId,
+      unitPrice: salePrice,
+      originalUnitPrice: hasMenuDiscount ? food.price : undefined,
+      menuDiscountPercent: hasMenuDiscount ? availability.discountPercent : undefined,
+      food: {
+        id: food.id,
+        name: food.name,
+        thumbnailUrl: food.imageUrl,
+      },
+    });
+  }
 
   return (
-    <StickyFooter className={styles.bar}>
-      <div className={styles.pill}>
+    <section className={styles.bar} aria-label="قیمت و افزودن به سبد">
+      <div className={styles.priceGroup}>
+        <Icon icon={Tag} size="sm" className={styles.priceIcon} decorative />
         <PriceWithDiscount
           originalPrice={food.price}
           salePrice={salePrice}
           discountPercent={availability?.discountPercent}
           size="lg"
-          layout="inline"
+          layout="stacked"
+          variant="onBrand"
+          showBadge={false}
           className={styles.price}
         />
-        {availability && (
-          <button
-            className={styles.cta}
-            disabled={isOutOfStock || isLoading}
-            aria-busy={isLoading || undefined}
-            onClick={() =>
-              addToCart({
-                menuItemId: availability.menuItemId,
-                unitPrice: salePrice,
-                originalUnitPrice: hasMenuDiscount ? food.price : undefined,
-                menuDiscountPercent: hasMenuDiscount
-                  ? availability.discountPercent
-                  : undefined,
-                food: {
-                  id: food.id,
-                  name: food.name,
-                  thumbnailUrl: food.imageUrl,
-                },
-              })
-            }
-          >
-            {isLoading && <span className={styles.spinner} aria-hidden="true" />}
-            <span className={isLoading ? styles.hiddenText : undefined}>افزودن به سبد</span>
-          </button>
-        )}
       </div>
-    </StickyFooter>
+      <button
+        className={styles.cta}
+        disabled={!canAddToCart || isLoading}
+        aria-busy={isLoading || undefined}
+        onClick={handleAddToCart}
+      >
+        {isLoading && <span className={styles.spinner} aria-hidden="true" />}
+        <span className={clsx(styles.ctaContent, isLoading && styles.hiddenText)}>
+          <Icon icon={canAddToCart ? ShoppingCart : PackageX} size="sm" decorative />
+          <span>{ctaLabel}</span>
+        </span>
+      </button>
+    </section>
   );
 }

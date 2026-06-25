@@ -16,16 +16,15 @@ export default function InstallCta({ visible, onInstallClick, onContinueWeb, ins
     <div className={styles.bar} role="complementary" aria-label="نصب اپ">
       <div className={styles.inner}>
         <div className={styles.text}>
-          <span className={styles.label}>اپ بلک منگو</span>
-          <span className={styles.sub}>نصب رایگان · سفارش سریع</span>
+
         </div>
-        <InstallButton
-          label="ورود به برنامه"
+        {/* <InstallButton
+          label="نصب برنامه"
           sectionId="sticky"
           onClick={onInstallClick}
           loading={installing}
-        />
-        <ContinueOnWebButton label="ادامه در وب" onClick={() => onContinueWeb('sticky')} />
+        /> */}
+        <ContinueOnWebButton label="مشاهده منو" onClick={() => onContinueWeb('sticky')} />
       </div>
     </div>
   );

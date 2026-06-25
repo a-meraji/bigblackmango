@@ -7,13 +7,14 @@ import styles from './ServiceFaq.module.css';
 interface Props {
   faq: FaqItem[];
   sectionTitle?: string;
+  className?: string;
 }
 
-export default function ServiceFaq({ faq, sectionTitle = 'سوالات متداول' }: Props) {
+export default function ServiceFaq({ faq, sectionTitle = 'سوالات متداول', className }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className={styles.section}>
+    <section className={`${styles.section} ${className ?? ''}`.trim()}>
       <div className={styles.header}>
         <span className={styles.headerAccent} aria-hidden="true" />
         <h2 className={styles.title}>{sectionTitle}</h2>

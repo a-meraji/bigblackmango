@@ -21,7 +21,7 @@ export default function LandingFaq({ faq }: Props) {
 
   return (
     <section id="landing-faq" className={styles.section}>
-      <ServiceFaq faq={faq} />
+      <ServiceFaq faq={faq} className={styles.faq} />
       {showIosBlock && <IosInstallInstructions id="install-ios" />}
     </section>
   );

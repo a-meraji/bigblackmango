@@ -1,6 +1,7 @@
 import { Download } from 'lucide-react';
 import clsx from 'clsx';
 import Icon from '@components/icon/Icon';
+import { usePwaInstall } from '@hooks/usePwaInstall';
 import styles from './InstallButton.module.css';
 
 interface Props {
@@ -13,13 +14,18 @@ interface Props {
 }
 
 export default function InstallButton({
-  label = 'ورود به برنامه',
+  label = 'نصب برنامه',
   sectionId,
   onClick,
   loading = false,
   fullWidth = false,
   className,
 }: Props) {
+  const { isInstallReady } = usePwaInstall();
+  // Don't render the install button at all while the app is still getting ready — only show it
+  // once it's actually installable, so the user never sees a button they can't use yet.
+  if (!isInstallReady) return null;
+
   return (
     <button
       type="button"

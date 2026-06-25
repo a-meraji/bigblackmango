@@ -9,7 +9,6 @@ import { mergeLandingWithFallback } from '@features/customer/landing/landing-fal
 import { trackLandingEvent } from '@features/customer/landing/track-landing-event';
 import LandingHero from '@features/customer/landing/components/LandingHero';
 import SocialProofStrip from '@features/customer/landing/components/SocialProofStrip';
-import ValuePropsRow from '@features/customer/landing/components/ValuePropsRow';
 import RevealSection from '@features/customer/landing/components/RevealSection';
 import InstallCta from '@features/customer/landing/components/InstallCta';
 import LandingFooter from '@features/customer/landing/components/LandingFooter';
@@ -71,7 +70,6 @@ export default function LandingHomePage() {
           actionLabel="تلاش مجدد"
           onAction={() => refetch()}
         />
-        <ValuePropsRow config={landing.valueProps} />
         <RevealSection className={styles.section}>
           <Suspense fallback={<SectionSkeleton />}>
             <LandingFaq faq={landing.faq} />
@@ -96,7 +94,7 @@ export default function LandingHomePage() {
         <SocialProofStrip socialStrip={landing.socialStrip} />
       </RevealSection>
 
-      <RevealSection className={styles.section}>
+      <RevealSection className={styles.sectionBleed}>
         <Suspense fallback={<SectionSkeleton />}>
           <FoodShowcaseSection
             config={landing.foodShowcase}
@@ -108,11 +106,7 @@ export default function LandingHomePage() {
         </Suspense>
       </RevealSection>
 
-      <RevealSection className={styles.section}>
-        <ValuePropsRow config={landing.valueProps} />
-      </RevealSection>
-
-      <RevealSection className={styles.section}>
+      <RevealSection className={styles.sectionBleed}>
         <Suspense fallback={<SectionSkeleton />}>
           <TrustStatsSection sectionTitle={landing.trustSectionTitle} stats={landing.stats} />
         </Suspense>
@@ -135,7 +129,7 @@ export default function LandingHomePage() {
         </Suspense>
       </RevealSection>
 
-      <RevealSection className={styles.section}>
+      <RevealSection className={styles.sectionBleed}>
         <Suspense fallback={<SectionSkeleton />}>
           <TestimonialsSection
             sectionTitle={landing.testimonialsSectionTitle}
@@ -163,7 +157,6 @@ export default function LandingHomePage() {
 
       <LandingFooter content={landing.footer} />
 
-      <div className={styles.stickySpacer} aria-hidden="true" />
       <InstallCta
         visible={showSticky}
         onInstallClick={onInstallClick}

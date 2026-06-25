@@ -92,17 +92,19 @@ export default defineConfig({
         ],
       },
       injectManifest: {
-        // Precache exactly the customer app shell: HTML, the entry chunk + its only static
-        // chunk import (vendor), the entry CSS, the font, and icons. Every other route/
-        // component chunk is fetched and runtime-cached on demand (see sw.ts), so the PWA
-        // install payload stays minimal. This build contains customer code only.
+        // Precache only the customer app shell that gates first paint: HTML, the entry chunk +
+        // its only static chunk import (vendor), and the entry CSS. Fonts are intentionally NOT
+        // precached — they don't gate installability and are runtime-cached on first use by the
+        // CacheFirst('fonts') route in sw.ts, so keeping them out of the SW `install` event lets
+        // `beforeinstallprompt` fire ~109 KB sooner on slow links (font-display: swap covers the
+        // first paint). Every other route/component chunk is runtime-cached on demand too. This
+        // build contains customer code only.
         globPatterns: [
           'index.html',
           'manifest.webmanifest',
           'assets/index-*.js',
           'assets/index-*.css',
           'assets/vendor-*.js',
-          '**/*.woff2',
         ],
       },
     }),

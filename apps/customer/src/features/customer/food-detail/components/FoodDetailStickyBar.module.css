@@ -1,31 +1,45 @@
 .bar {
-  inset-block-end: env(safe-area-inset-bottom, 0px);
-  background: transparent;
-  border-block-start: none;
-  box-shadow: none;
-}
-
-.pill {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  inline-size: 100%;
+  margin: 0;
+  padding-block: var(--space-3);
+  padding-inline: var(--space-1);
   background: var(--brand-primary);
-  border-radius: var(--radius-pill);
-  padding: var(--space-1);
-  box-shadow: var(--shadow-brand-glow);
+  border-radius: 0;
+  border-block-start: var(--border-subtle);
 }
 
-.price {
-  flex: 1;
-  text-align: center;
-  padding-inline: var(--space-4);
-  font-size: var(--text-size-lg);
-  font-weight: 700;
-  color: var(--text-on-brand);
-  white-space: nowrap;
+.priceGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+  min-inline-size: 0;
+  padding-inline: var(--space-3);
+}
+
+.priceIcon {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.priceGroup .price {
+  flex: 0 0 auto;
+  min-inline-size: 0;
+  line-height: 1.15;
+  align-items: flex-end;
+  text-align: end;
 }
 
 .cta {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   border: none;
   cursor: pointer;
   font-family: inherit;
@@ -38,6 +52,13 @@
   white-space: nowrap;
   min-inline-size: 9rem;
   transition: background 140ms ease, opacity 100ms ease;
+}
+
+.ctaContent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
 }
 
 .cta:hover:not(:disabled) {

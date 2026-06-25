@@ -33,6 +33,9 @@
 .dismiss:active{ transform: translateY(1px); }
 
 .btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   inline-size: 100%;
   display: flex;
   align-items: center;
@@ -40,24 +43,70 @@
   gap: var(--space-3);
   padding: var(--space-4) var(--space-5);
   min-block-size: var(--btn-min-touch);
-  /* Modern, minimal glassy surface for a sleek floating card */
-  background: var(--surface-glass-dark-bg);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.10) 0%, transparent 42%),
+    linear-gradient(180deg, rgba(34, 34, 34, 0.72) 0%, rgba(10, 10, 10, 0.88) 100%);
   color: var(--text-on-dark);
-  border: 1px solid var(--surface-glass-dark-border);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
   font-family: inherit;
   font-size: var(--text-size-base);
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-  backdrop-filter: var(--surface-glass-dark-blur);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  box-shadow:
+    0 10px 36px rgba(0, 0, 0, 0.42),
+    0 2px 10px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(32px) saturate(1.65);
+  -webkit-backdrop-filter: blur(32px) saturate(1.65);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.28;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 55%;
+  border-radius: 16px 16px 60% 60%;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 38%,
+    transparent 100%
+  );
+}
+
+.btn > * {
+  position: relative;
+  z-index: 1;
 }
 
 @media (hover: hover) {
   .btn:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-2xl);
+    border-color: rgba(255, 255, 255, 0.20);
+    box-shadow:
+      0 14px 44px rgba(0, 0, 0, 0.48),
+      0 4px 14px rgba(0, 0, 0, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.28);
   }
 }
 
@@ -76,20 +125,20 @@
 }
 
 .label {
-  color: var(--text-on-dark-secondary);
-  font-weight: 400;
-  font-size: var(--text-size-sm);
-}
-
-.total {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--brand-primary);
+  color: #ffffff;
   font-weight: 700;
-  /* Emphasize price with brand accent so it is always visible on dark background */
-  color: var(--brand-primary);
-  font-size: 0.95rem;
+  font-size: var(--text-size-sm);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 @media (max-width: 480px) {
-  .label { display: none; }
   .count { font-size: 0.95rem; }
-  .total { font-size: 1rem; }
 }

@@ -4,6 +4,7 @@
   border-radius: var(--radius-lg);
   background: var(--bg-surface-sunken);
   border: var(--border-subtle);
+  margin-top: 1rem ;
 }
 
 .compact {

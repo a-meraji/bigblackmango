@@ -6,7 +6,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
-  z-index: 200;
+  z-index: 80;
   background: var(--bg-canvas);
 }
 
@@ -18,5 +18,7 @@
   border-start-end-radius: var(--radius-2xl);
   background: var(--bg-surface-raised);
   min-block-size: calc(100dvh - var(--fd-hero-height) + var(--fd-hero-peek));
-  padding-block-end: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  padding-block-end: calc(
+    var(--layout-bottom-nav-height) + env(safe-area-inset-bottom, 0px) + var(--space-2)
+  );
 }

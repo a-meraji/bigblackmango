@@ -13,7 +13,9 @@ export default function TrustStatsSection({ sectionTitle, stats }: Props) {
 
   return (
     <section className={styles.section}>
-      <LandingSectionHeader title={sectionTitle} />
+      <div className={styles.header}>
+        <LandingSectionHeader title={sectionTitle} />
+      </div>
       <ServiceStatsRow stats={stats} />
     </section>
   );

@@ -20,13 +20,14 @@
   padding-inline: var(--page-inline-padding);
 }
 
+.sectionBleed {
+  composes: section;
+  padding-inline: 0;
+}
+
 .sectionTight {
   composes: section;
   padding-block-start: 0.875rem;
-}
-
-.stickySpacer {
-  block-size: 5.5rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -26,9 +26,9 @@ export const ADMIN_NAV_OPERATIONS: AdminNavItem[] = [
   { label: 'دسته‌بندی‌ها', path: '/admin/categories', icon: FolderTree },
   { label: 'غذاها', path: '/admin/foods', icon: UtensilsCrossed },
   { label: 'منوی امروز', path: '/admin/daily-menu', icon: CalendarDays },
-  { label: 'استوری‌ها و بنرها', path: '/admin/stories', icon: CirclePlay },
-  { label: 'بنرهای کیترینگ', path: '/admin/banners', icon: Image },
   { label: 'سرویس‌های کیترینگ', path: '/admin/party-services', icon: PartyPopper },
+  { label: 'بنرهای کیترینگ', path: '/admin/banners', icon: Image },
+  { label: 'استوری‌ها و بنرها', path: '/admin/stories', icon: CirclePlay },
   { label: 'صفحه لندینگ', path: '/admin/landing', icon: Smartphone },
   { label: 'نوتیفیکیشن‌ها', path: '/admin/notifications', icon: Bell },
 ];

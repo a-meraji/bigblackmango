@@ -1,0 +1,207 @@
+.root {
+  --carousel-slide-width: 72%;
+  --carousel-offset-1: 64%;
+  --carousel-offset-2: 108%;
+  --carousel-offset-3: 142%;
+  overflow: hidden;
+}
+
+.stage {
+  position: relative;
+  block-size: var(
+    --carousel-stage-height,
+    clamp(148px, calc((100vw - 2 * var(--page-inline-padding) - 0.5rem) * 0.72 * 9 / 16), 280px)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--carousel-stage-padding, 0.25rem);
+  user-select: none;
+  cursor: grab;
+}
+
+.stage:active {
+  cursor: grabbing;
+}
+
+.stageSingle {
+  cursor: default;
+}
+
+.stageSingle:active {
+  cursor: default;
+}
+
+.slide {
+  position: absolute;
+  inline-size: var(--carousel-slide-width);
+  max-inline-size: var(--carousel-slide-max-width, 22rem);
+  inset-inline: 0;
+  margin-inline: auto;
+  will-change: transform, opacity, filter;
+  transition-property: transform, opacity, filter;
+  transition-timing-function: ease-in-out;
+  transition-duration: 700ms;
+}
+
+/* Active */
+.slide[data-position='0'] {
+  transform: translate3d(0, 0, 0) scale(1);
+  opacity: 1;
+  filter: none;
+  z-index: 30;
+}
+
+/* First neighbors — RTL (default for this app) */
+.slide[data-position='1'] {
+  transform: translate3d(calc(-1 * var(--carousel-offset-1)), 0, 0) scale(0.86);
+  opacity: 0.88;
+  filter: blur(1.5px);
+  z-index: 20;
+}
+
+.slide[data-position='-1'] {
+  transform: translate3d(var(--carousel-offset-1), 0, 0) scale(0.86);
+  opacity: 0.88;
+  filter: blur(1.5px);
+  z-index: 20;
+}
+
+.slide[data-position='2'] {
+  transform: translate3d(calc(-1 * var(--carousel-offset-2)), 0, 0) scale(0.74);
+  opacity: 0.75;
+  filter: blur(2.5px);
+  z-index: 10;
+}
+
+.slide[data-position='-2'] {
+  transform: translate3d(var(--carousel-offset-2), 0, 0) scale(0.74);
+  opacity: 0.75;
+  filter: blur(2.5px);
+  z-index: 10;
+}
+
+.slide[data-position='3'] {
+  transform: translate3d(calc(-1 * var(--carousel-offset-3)), 0, 0) scale(0.66);
+  opacity: 0.45;
+  filter: blur(3px);
+  z-index: 0;
+}
+
+.slide[data-position='-3'] {
+  transform: translate3d(var(--carousel-offset-3), 0, 0) scale(0.66);
+  opacity: 0.45;
+  filter: blur(3px);
+  z-index: 0;
+}
+
+/* LTR mirror */
+:global([dir='ltr']) .slide[data-position='1'] {
+  transform: translate3d(var(--carousel-offset-1), 0, 0) scale(0.86);
+}
+
+:global([dir='ltr']) .slide[data-position='-1'] {
+  transform: translate3d(calc(-1 * var(--carousel-offset-1)), 0, 0) scale(0.86);
+}
+
+:global([dir='ltr']) .slide[data-position='2'] {
+  transform: translate3d(var(--carousel-offset-2), 0, 0) scale(0.74);
+}
+
+:global([dir='ltr']) .slide[data-position='-2'] {
+  transform: translate3d(calc(-1 * var(--carousel-offset-2)), 0, 0) scale(0.74);
+}
+
+:global([dir='ltr']) .slide[data-position='3'] {
+  transform: translate3d(var(--carousel-offset-3), 0, 0) scale(0.66);
+}
+
+:global([dir='ltr']) .slide[data-position='-3'] {
+  transform: translate3d(calc(-1 * var(--carousel-offset-3)), 0, 0) scale(0.66);
+}
+
+@media (min-width: 480px) {
+  .root {
+    --carousel-slide-width: 80%;
+    --carousel-offset-1: 58%;
+    --carousel-offset-2: 100%;
+    --carousel-offset-3: 136%;
+  }
+
+  .stage {
+    block-size: var(
+      --carousel-stage-height,
+      clamp(168px, calc((100vw - 2 * var(--page-inline-padding)) * 0.8 * 9 / 16), 300px)
+    );
+    padding-inline: 0.5rem;
+  }
+
+  .slide {
+    max-inline-size: var(--carousel-slide-max-width, 26rem);
+  }
+}
+
+@media (min-width: 640px) {
+  .root {
+    --carousel-slide-width: 86%;
+    --carousel-offset-1: 52%;
+    --carousel-offset-2: 96%;
+    --carousel-offset-3: 132%;
+  }
+
+  .stage {
+    block-size: var(--carousel-stage-height, clamp(190px, 46vw, 320px));
+  }
+
+  .slide {
+    max-inline-size: var(--carousel-slide-max-width, 28rem);
+  }
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  margin-block-start: 1rem;
+}
+
+.dot {
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  padding: 0;
+  background: var(--text-muted);
+  opacity: 0.45;
+  cursor: pointer;
+  transition:
+    inline-size 0.3s ease,
+    background-color 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.dot:hover {
+  opacity: 0.75;
+}
+
+.dotActive {
+  inline-size: 2rem;
+  background: var(--brand-primary);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide {
+    transition: none;
+    will-change: auto;
+  }
+
+  .dot {
+    transition: none;
+  }
+
+  .stage {
+    cursor: default;
+  }
+}

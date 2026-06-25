@@ -1,4 +1,6 @@
 .footer {
+  position: relative;
+  z-index: 101;
   margin-block-start: 1.5rem;
   margin-inline: calc(-1 * var(--page-inline-padding));
   padding: 2rem var(--page-inline-padding) calc(1.5rem + env(safe-area-inset-bottom, 0px));

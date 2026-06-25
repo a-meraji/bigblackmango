@@ -1,5 +1,15 @@
 .section {
   padding-block-start: 0;
+  margin-inline: calc(-1 * var(--page-inline-padding));
+}
+
+.header {
+  padding-inline: calc(2 * var(--page-inline-padding));
+}
+
+.carousel {
+  --carousel-stage-height: clamp(148px, calc(100vw * 0.72 * 9 / 16), 280px);
+  --carousel-stage-padding: 0;
 }
 
 .lead {
@@ -7,28 +17,6 @@
   font-size: 0.8125rem;
   line-height: 1.55;
   color: var(--text-muted);
-}
-
-.list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-}
-
-.item {
-  opacity: 0;
-  transform: translateY(1.25rem) scale(0.98);
-  transition:
-    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.item[data-revealed='true'] {
-  opacity: 1;
-  transform: translateY(0) scale(1);
 }
 
 .tile {
@@ -41,16 +29,15 @@
   cursor: pointer;
   background: transparent;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: box-shadow 0.15s ease;
 }
 
-.tile:hover {
-  transform: translateY(-2px);
+.tileActive:hover {
   box-shadow: var(--shadow-md);
 }
 
-.tile:active {
-  transform: translateY(0);
+.tileInactive {
+  cursor: default;
 }
 
 .imageWrap {
@@ -82,8 +69,8 @@
   block-size: 55%;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.72) 0%,
-    rgba(0, 0, 0, 0.28) 55%,
+    rgba(0, 0, 0, 0.78) 0%,
+    rgba(0, 0, 0, 0.32) 55%,
     transparent 100%
   );
   pointer-events: none;
@@ -94,8 +81,8 @@
   inset-block-end: 0;
   inset-inline-end: 0;
   max-inline-size: 85%;
-  padding: 0.875rem 1rem;
-  font-size: 0.9375rem;
+  padding: 0.75rem 0.875rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #fff;
   line-height: 1.35;
@@ -103,12 +90,23 @@
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
 }
 
+@media (min-width: 480px) {
+  .name {
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+  }
+}
+
 .cta {
   margin-block-start: 1rem;
 }
 
-.skeleton {
+.carouselSkeleton {
+  inline-size: 72%;
+  margin-inline: auto;
   aspect-ratio: 16 / 9;
+  block-size: auto;
+  max-block-size: clamp(148px, calc(100vw * 0.72 * 9 / 16), 280px);
   border-radius: var(--radius-lg);
   background: linear-gradient(
     90deg,
@@ -126,17 +124,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .item {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-
   .tile {
     transition: none;
   }
 
-  .skeleton {
+  .carouselSkeleton {
     animation: none;
   }
 }

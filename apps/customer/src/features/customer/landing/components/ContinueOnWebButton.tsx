@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { UtensilsCrossed } from 'lucide-react';
 import clsx from 'clsx';
 import Icon from '@components/icon/Icon';
 import styles from './ContinueOnWebButton.module.css';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function ContinueOnWebButton({
-  label = 'ادامه در وب بدون نصب',
+  label = 'مشاهده منو',
   onClick,
   fullWidth = false,
   className,
@@ -22,9 +22,8 @@ export default function ContinueOnWebButton({
       className={clsx(styles.button, fullWidth && styles.fullWidth, className)}
       onClick={onClick}
     >
+      <Icon icon={UtensilsCrossed} size="sm" decorative />
       {label}
-      {/* RTL: ArrowLeft visually points "forward" / into the app. */}
-      <Icon icon={ArrowLeft} size="sm" decorative />
     </button>
   );
 }

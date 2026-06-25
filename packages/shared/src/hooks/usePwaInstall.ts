@@ -23,14 +23,28 @@ export function isInStandaloneMode(): boolean {
 // entry) into a single shared store, so every usePwaInstall() consumer sees the same deferred
 // prompt regardless of when it mounts. A per-instance useEffect listener would miss the event.
 
+// After page load, Chrome needs a moment (service-worker install + engagement heuristics) before
+// it fires `beforeinstallprompt` — longer on slow connections. Until then install CTAs stay
+// hidden, so the user only ever sees an install button once the app is actually installable. If
+// the event still hasn't arrived after this grace window (Firefox, in-app browsers, desktop
+// without the heuristic), we reveal the CTAs anyway so a click can fall back to manual install
+// instructions rather than the button never appearing.
+const INSTALL_READY_GRACE_MS = 5000;
+
 let deferredPrompt: BeforeInstallPromptEvent | null = null;
 let installed = typeof window !== 'undefined' ? isInStandaloneMode() : false;
+let graceElapsed = false;
 
 interface InstallState {
   isInstallable: boolean;
   isInstalled: boolean;
+  graceElapsed: boolean;
 }
-let snapshot: InstallState = { isInstallable: false, isInstalled: installed };
+let snapshot: InstallState = {
+  isInstallable: false,
+  isInstalled: installed,
+  graceElapsed: false,
+};
 
 const listeners = new Set<() => void>();
 // Resolvers waiting for a *late* `beforeinstallprompt`. The event is gated behind Chrome's
@@ -40,7 +54,7 @@ const listeners = new Set<() => void>();
 const promptWaiters = new Set<(available: boolean) => void>();
 
 function update(): void {
-  snapshot = { isInstallable: deferredPrompt !== null, isInstalled: installed };
+  snapshot = { isInstallable: deferredPrompt !== null, isInstalled: installed, graceElapsed };
   listeners.forEach((listener) => listener());
   if (deferredPrompt) {
     promptWaiters.forEach((resolve) => resolve(true));
@@ -85,6 +99,13 @@ if (typeof window !== 'undefined') {
     installed = true;
     update();
   });
+  // Fallback so install CTAs don't stay in "preparing" forever where no prompt ever fires.
+  if (!installed) {
+    setTimeout(() => {
+      graceElapsed = true;
+      update();
+    }, INSTALL_READY_GRACE_MS);
+  }
 }
 
 export async function triggerInstall(
@@ -105,10 +126,16 @@ export async function triggerInstall(
 
 export function usePwaInstall() {
   const state = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  const isIos = isIosSafari();
+  // An install CTA should be shown once the app is actually installable: the native prompt is
+  // captured, or it's iOS (manual flow — no prompt to wait for), or the grace window has elapsed
+  // (manual fallback). Already-installed users never see CTAs.
+  const isInstallReady = !state.isInstalled && (state.isInstallable || isIos || state.graceElapsed);
   return {
     isInstallable: state.isInstallable,
     isInstalled: state.isInstalled,
-    isIos: isIosSafari(),
+    isInstallReady,
+    isIos,
     triggerInstall,
   };
 }

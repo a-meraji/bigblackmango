@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ShoppingCart, X } from 'lucide-react';
+import { CreditCard, ShoppingCart, X } from 'lucide-react';
 import { useCartStore } from '@store/cart.store';
-import { formatPrice } from '@utils/format-price';
 import Icon from '@components/icon/Icon';
 import { isFloatingCartBarHidden } from '@features/customer/cart/cart-bar-visibility';
 import styles from './FloatingCartBar.module.css';
@@ -13,7 +12,7 @@ import { formatNumber } from '@utils/locale';
  */
 export default function FloatingCartBar() {
   const { pathname } = useLocation();
-  const { itemCount, total, openCart, closeCart, dismissedFloatingBar, dismissFloatingBar } = useCartStore();
+  const { itemCount, openCart, closeCart, dismissedFloatingBar, dismissFloatingBar } = useCartStore();
   const hidden = isFloatingCartBarHidden(pathname);
 
   useEffect(() => {
@@ -36,19 +35,14 @@ export default function FloatingCartBar() {
       >
         <Icon icon={X} size="sm" decorative />
       </button>
-      <button type="button" className={styles.btn} onClick={openCart} aria-label="مشاهده سبد خرید">
+      <button type="button" className={styles.btn} onClick={openCart} aria-label="پرداخت خرید">
+        <span className={styles.label}>
+          <Icon icon={CreditCard} size="sm" decorative />
+          پرداخت
+        </span>
         <span className={styles.leading}>
           <Icon icon={ShoppingCart} size="sm" decorative />
           <span className={styles.count}>{formatNumber(itemCount)} مورد</span>
-        </span>
-        <span className={styles.label}>مشاهده سبد</span>
-        <span
-          className={styles.total}
-          aria-live="polite"
-          aria-atomic="true"
-          title={formatPrice(total)}
-        >
-          {formatPrice(total)}
         </span>
       </button>
     </div>

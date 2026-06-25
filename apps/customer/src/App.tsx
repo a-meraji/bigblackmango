@@ -8,6 +8,7 @@ import { useAuthQueryRecovery } from '@hooks/useAuthQueryRecovery';
 import { useAuthSessionRecovery } from '@hooks/useAuthSessionRecovery';
 import { useAuthStorageSync } from '@hooks/useAuthStorageSync';
 import { useProactiveTokenRefresh } from '@hooks/useProactiveTokenRefresh';
+import { usePushReconcile } from '@hooks/usePushReconcile';
 import SkipLink from '@components/skip-link/SkipLink';
 import ToastContainer from '@components/toast/ToastContainer';
 import PwaInstallModal from '@components/pwa-install-modal/PwaInstallModal';
@@ -19,6 +20,7 @@ function AppInner() {
   useAuthStorageSync();
   useProactiveTokenRefresh();
   useAuthQueryRecovery();
+  usePushReconcile();
 
   return (
     <>

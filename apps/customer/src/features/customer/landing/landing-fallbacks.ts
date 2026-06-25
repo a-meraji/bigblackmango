@@ -93,9 +93,9 @@ export const LANDING_FALLBACK: LandingPayload = {
   testimonialsSectionTitle: 'رضایت مشتریان',
   trustSectionTitle: 'اعتماد شما',
   finalCta: {
-    title: 'همین الان نصب کن',
-    subtitle: 'همه منو و سفارش در یک اپ',
-    trustItems: ['نصب رایگان', 'بدون فضای اضافه', 'پشتیبانی فارسی', 'پرداخت امن'],
+    title: '',
+    subtitle: '',
+    trustItems: [],
     links: [],
   },
   footer: {
@@ -147,12 +147,10 @@ export function mergeLandingWithFallback(
     },
     partySection: { ...LANDING_FALLBACK.partySection, ...data.partySection },
     finalCta: {
-      ...LANDING_FALLBACK.finalCta,
-      ...data.finalCta,
-      trustItems:
-        data.finalCta.trustItems.length > 0
-          ? data.finalCta.trustItems
-          : LANDING_FALLBACK.finalCta.trustItems,
+      title: data.finalCta.title || LANDING_FALLBACK.finalCta.title,
+      subtitle: data.finalCta.subtitle || LANDING_FALLBACK.finalCta.subtitle,
+      trustItems: data.finalCta.trustItems,
+      links: data.finalCta.links.length > 0 ? data.finalCta.links : LANDING_FALLBACK.finalCta.links,
     },
     footer: {
       ...LANDING_FALLBACK.footer,
